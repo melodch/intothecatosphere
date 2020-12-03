@@ -1,8 +1,8 @@
 import pygame as pg
 import random
 import math
-from OnBoard import OnBoard
-from Constants import *
+from onboard import OnBoard
+from constants import *
 
 
 class Fireball(OnBoard):

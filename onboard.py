@@ -1,5 +1,5 @@
 import pygame as pg
-from Constants import *
+from constants import *
 
 
 class OnBoard(pg.sprite.Sprite):
@@ -27,20 +27,25 @@ class OnBoard(pg.sprite.Sprite):
         # create attributes for the image and the position
         # sets the rect attribute to be the image
         # sets the center of the rect atrribute as the position
-        pass
+        self._position = position
+        self.image = raw_image
+        self.rect = self.image.get_rect()
+        self.rect.center = self._position
+        
 
-    def modify_size(self, raw_image, height, width):
-        """
-        Scale the raw image.
 
-        Args:
-            raw_image: A string representing the path to a png.
-            height: An integer representing the height of the object.
-            width: An integer representing the width o the object.
-        """
+    # def modify_size(self, raw_image, height, width):
+    #     """
+    #     Scale the raw image.
 
-        # Scale the raw image to a standard size.
-        pass
+    #     Args:
+    #         raw_image: A string representing the path to a png.
+    #         height: An integer representing the height of the object.
+    #         width: An integer representing the width o the object.
+    #     """
+
+    #     # Scale the raw image to a standard size.
+    #     pass
 
     # Getters and Setters
     def set_center(self, position):
@@ -53,10 +58,10 @@ class OnBoard(pg.sprite.Sprite):
         """
         Get the position of the object.
         """
-        return self.position
+        return self._position
 
     def set_position(self, position):
         """
         Set the position of the object.
         """
-        self.position = position
+        self._position = position

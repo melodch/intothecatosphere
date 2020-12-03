@@ -15,15 +15,15 @@ class Platform(OnBoard):
             position: A tuple representing the coordinates of
             the platform.
         """
-        # Using super to call the attributes from the parent OnBoard class.
-        pass
+        super(Platform, self).__init__(raw_image, position)
 
-    def update_image(self, raw_image):
-        """
-        Update the platform image.
+    # def update_image(self, raw_image):
+    #     """
+    #     Update the platform image.
 
-        Args:
-            raw_image: A string representing the path to a png.
-        """
-        # Update the platform image from the raw image and scale it
-        pass
+    #     Args:
+    #         raw_image: A string representing the path to a png.
+    #     """
+    #     # Update the platform image from the raw image and scale it
+    #     self.image = raw_image
+    #     self.image = pg.transform.scale(self.image, (15, 15))

@@ -1,5 +1,5 @@
 import pygame as pg
-from Constants import *
+from constants import *
 
 
 class Person(pg.sprite.Sprite):
@@ -23,25 +23,30 @@ class Person(pg.sprite.Sprite):
             image: A string representing the path to a png.
             position: A tuple of integers representing coordinates.
         """
-        pass
+        super(Person, self).__init__()
+        self.__position = position
+        self.image = image
+        self.image = pg.transform.scale(self.image, (15, 15))
+        self.rect = self.image.get_rect()
+        self.rect.center = self._position
 
     def set_center(self, position):
         """
         Set the center of the person's image to the position.
         """
-        pass
+        self.rect.center = position
 
     def get_position(self):
         """
         Get the coordinates of the person.
         """
-        pass
+        return self._position
 
     def set_position(self, position):
         """
         Set the position of the person.
         """
-        pass
+        self._position = position
 
     def get_speed(self):
         """
@@ -55,6 +60,17 @@ class Person(pg.sprite.Sprite):
         """
         raise NotImplementedError("Subclass must implement this.")
 
+    
+    def update_position(self, raw_image, value, direction):
+        if direction == 'V'
+            self._position = (self._position[0], self._position[1] + value)
+        if direction == 'H'
+            self._position = (self._position[0] + value, self._position[1])
+        self.rect.center = self._position
+
+    def check_collision(self, colliderGroup):
+        colliders = pg.sprite.spritecollide(self, colliderGroup, False)
+        return colliders
 
 class Player(Person):
     """
@@ -75,7 +91,10 @@ class Player(Person):
             raw_image: A string representing the path to a png.
             position: A tuple of integers representing coordinates.
         """
-        pass
+        super(Player, self).__init__(raw_image, position)
+        self.onLadder = 0
+        self.__gravity = 1  # Gravity affecting the jump velocity of the player
+        self.__speed = 5  # Movement speed of the player
 
     def get_speed(self):
         """
@@ -84,13 +103,13 @@ class Player(Person):
         Returns:
             An integer representing the player's movement speed.
         """
-        pass
+        return self.__speed
 
     def set_speed(self, speed):
         """
         Set the player movement speed.
         """
-        pass
+        self.__speed = speed
 
 
 class PlayerView(Player):

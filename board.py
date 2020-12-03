@@ -2,12 +2,12 @@ import pygame as pg
 import math
 import random
 import sys
-from Constants import *
-from OnBoard import OnBoard
-from Gem import Gem
-from Player import Player
-from Fireball import Fireball
-from Button import Button
+from constants import *
+from onboard import OnBoard
+from gem import Gem
+from player import Player
+from fireball import Fireball
+from button import Button
 
 
 class Board:
@@ -63,7 +63,27 @@ class Board:
 
         # Initialize instance groups that are used to display instances on
         # the screen.
-        pass
+        self.__width = constants.width
+        self.__height = constants.height
+        self.score = 0
+        self.direction = 0
+        self.white = (255, 255, 255)
+
+        self.map = []
+        # These are the arrays in which we store our instances of different classes
+        self.Players = self.Gems = self.Platforms = self.Boards = []
+
+        # Resets the above groups and initializes the game for us
+        self.reset_groups()
+
+        self.background = pg.load('Assets/background.png')
+        self.background = pg.transform.scale(self.background, (width, height))
+
+        # Initialize the instance groups which we use to display our instances on the screen
+        self.player_group = pg.sprite.RenderPlain(self.Players)
+        self.platform_group = pg.sprite.RenderPlain(self.Platforms)
+        self.gem_group = pg.sprite.RenderPlain(self.Gems)
+        self.board_group = pg.sprite.RenderPlain(self.Boards)
 
     def reset_groups(self):
         """
@@ -76,7 +96,17 @@ class Board:
         # Populate lists with instances of game components
         # Call initialize_game() method to initialize the game and generate map
         # Call create_groups() method to create instance groups
-        pass
+        self.score = 0
+        self.map = []  # We will create the map again when we reset the game
+        self.Players = [Player(pygame.image.load('Assets/still.png'), (50, 440))]
+        self.Gems = []
+        self.Platforms = []
+        self.Boards = [OnBoard(pygame.image.load('Assets/board.png'), (200, 480)),
+                       OnBoard(pygame.image.load('Assets/board.png'), (685, 480))]
+        self.Boards[0].modifySize(self.Boards[0].image, 40, 150)  # Do this on purpose to get a pixelated image
+        self.Boards[1].modifySize(self.Boards[1].image, 40, 150)
+        self.initialize_game()  # This initializes the game and generates our map
+        self.create_groups()  # This creates the instance groups
 
     def create_fireball(self):
         """
@@ -89,7 +119,38 @@ class Board:
         Randomly generate gems (where there is a platform below the coin so
         the player can reach it). Add the coin to map and update coin list.
         """
-        pass
+        for i in range(len(self.map)):
+            for j in range(len(self.map[i])):
+                if self.map[i][j] == 0 and ((i + 1 < len(self.map) and self.map[i + 1][j] == 1) or (
+                            i + 2 < len(self.map) and self.map[i + 2][j] == 1)):
+                    randNumber = math.floor(random.random() * 1000)
+                    if randNumber % 35 == 0 and len(self.Coins) <= 9:  # At max there will be 10 gems in map
+                        self.map[i][j] = 3
+                        # Check if there is a platform below where the gem is to be placed
+                        if j - 1 >= 0 and self.map[i][j - 1] == 3:
+                            self.map[i][j] = 0
+                        if self.map[i][j] == 3:
+                            # Add the gem to our gem list
+                            self.Gems.append(Gem(pygame.image.load('///GEM IMAGE FILE///'), (j * 10 + 10 / 2, i * 10 + 10 / 2)))
+        if len(self.Gems) <= 5:  # If there are less than 6 gem, we call the function again
+            self.generate_gems()
+    
+    def generate_platforms(self):
+        """
+        Randomly generate platforms. Add the platform to map and update platforms list.
+        """
+        height = self.__height
+        width = self.__height
+        for y in range(10, height - 1):
+            x = 1
+            while x < width - 1:
+                rand_platform_size = random.randint(10, 15)
+                for _ in range(rand_platfrom_size):
+                    self.map[x][y] = 3
+                    self.Platforms.append(Platform(pygame.image.load('///PLATFORM IMAGE FILE///'), (j * 10 + 10 / 2, i * 10 + 10s / 2)))
+                    x += 1
+                rand_space = random.randint(10, 15)
+                x += rand_space
 
     def check_map_for_match(self, x_pos, y_pos, check_no):
         """
@@ -108,14 +169,23 @@ class Board:
         Create an empty map.
         """
         # Make 2D array filled with zeros
-        pass
+        for point in range(0, self.__height / 10 + 1):
+            row = []
+            for point2 in range(0, self.__width / 10):
+                row.append(0)
+            self.map.append(row)
 
     def make_boundaries(self):
         """
-        Add walls to our map boundaries and also the floor.
+        Add boundaries to the four sides of our map.
         """
         # Update map to have 1s where there are boundaries
-        pass
+        # Left and right sides
+        for row in range(self.__height):
+            self.map[row][0] = self.map[row][self.__width] = 1
+        # Top and bottom sides
+        for col in range(self.__width):
+            self.map[0][col] = self.map[self.__height][col] = 1
 
     def make_ladders(self):
         """
@@ -133,7 +203,11 @@ class Board:
         # Loop through map
         # Where there is a 1, add platform instance to platform list
         # Where there is a 2, add ladder instance to ladder list
-        # Where there is a 3, add gem instance to gem list
+        # for x in range(len(self.map)):
+        #     for y in range(len(self.map[x])):
+                # if self.map[x][y] == 2:
+                #     # Add a ladder at that position
+                #     self.Ladders.append(OnBoard(pygame.image.load('Assets/ladder.png'), (y * 15 + 15 / 2, x * 15 + 15 / 2)))
         pass
 
     def ladder_check(self, ladders_collided_below, platforms_collided_below):
@@ -172,7 +246,14 @@ class Board:
         # loop through gems in gems_collected
         # call collect_gem method from Gem class
         # update map, gem list, gem group
-        pass
+        for gem in gems_collected:
+            self.score += gem.collect_gem()
+            # We also remove the coin entry from our map
+            self.map[(gem.get_position()[1] - 15 / 2) / 15][(gem.get_position()[0] - 15 / 2) / 15] = 0
+            # Remove the coin entry from our list
+            self.Gems.remove(gem)
+            # Update the coin group since we modified the coin list
+            self.create_groups()
 
     def process_button(self):
         """
@@ -195,19 +276,35 @@ class Board:
         # or postgame state
         # If we are in the game state, draw the background first
         # Then draw all our game component groups on the background
-        pass
+        displayScreen.fill((0, 0, 0))  # Fill it with black
+        # Draw the background first
+        displayScreen.blit(self.background, self.background.get_rect())
+        # Draw all our groups on the background
+        self.player_group.draw(displayScreen)
+        self.gem_group.draw(displayScreen)
+        self.platform_group.draw(displayScreen)
+        self.board_group.draw(displayScreen)
+        displayScreen.blit(score_label, (265-score_label.get_width()/2, 470)) #Center the text on the board
 
-    def createGroups(self):
+    def create_groups(self):
         """
         Update all the game component groups from their corresponding lists.
         """
         # Here, we use the PyGame Sprite RenderPlain method
-        pass
+        self.player_group = pygame.sprite.RenderPlain(self.Players)
+        self.platform_group = pygame.sprite.RenderPlain(self.Platforms)
+        self.gem_group = pygame.sprite.RenderPlain(self.Gems)
+        self.board_group = pygame.sprite.RenderPlain(self.Boards)
 
-    def initializeGame(self):
+    def initialize_game(self):
         """
         Initialize the game by calling the methods to make the map, generate
         platforms, ladders, and gems randomly, populating the map with our
         game components, then creating the groups of those game components.
         """
-        pass
+        self.make_map()
+        self.make_boundaries()
+        self.generate_platforms()
+        self.generate_gems()
+        self.populate_instance_groups()
+        self.create_groups()
