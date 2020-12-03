@@ -6,7 +6,7 @@ from Constants import *
 class Gem(OnBoard):
     """
     Defining all the gems in the game. This class inherits
-    from the OnBoard class. The gems increase the player score.
+    from the OnBoard class. The gems increase the player score. SImrun is here.
 
     Attributes:
         position: A tuple representing the coordinates of a gem.
