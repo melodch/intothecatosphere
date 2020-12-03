@@ -1,5 +1,5 @@
 import pygame as pg
-from OnBoard import OnBoard
+from onboard import OnBoard
 from Constants import *
 
 
