@@ -40,7 +40,8 @@ class Fireball(OnBoard):
         pass
 
     def update_image(self, raw_image):
-        """Updating the fireball image
+        """
+        Updating the fireball image
 
         Args:
             raw_image: A fireball image file

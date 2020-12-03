@@ -28,8 +28,10 @@ class Game:
         from this instance to the group attributes. Initialize the rest of the
         instance attributes.
         """
-        self.displayScreen = pg.display.set_mode((constants.width, constants.height))
-        self.newGame = Board(constants.width, constants.height)
+        self.width = constants.width
+        self.height = constants.height
+        self.displayScreen = pg.display.set_mode((self.width, self.height))
+        self.newGame = Board(self.width, self.height)
         self.player_group = self.newGame.player_group
         self.platform_group = self.newGame.platform_group
 
@@ -107,10 +109,10 @@ class Game:
         # Redraw all instances onto the screen
         self.newGame.redrawScreen(self.displayScreen, self.scoreLabel, self.width, self.height)
 
-        # Update the fireball and check for collisions with player
+        # Update the fireball and check for collisions with player.
         
         # Check for gem collection
-        gems_collected = pygame.sprite.spritecollide(self.newGame.Players[0], self.gem_group, True)
+        gems_collected = pg.sprite.spritecollide(self.newGame.Players[0], self.gem_group, True)
         self.newGame.gem_check(gems_collected)
 
         # Update the display to view changes

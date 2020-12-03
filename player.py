@@ -114,8 +114,8 @@ class Player(Person):
 
 class PlayerView(Player):
     """
-    An object inheriting from the Player class,
-    representing the character's view.
+    An object inheriting from the Player class, representing the
+    character's view. This updates every time the player moves.
     The view is a circle centered around the player with a certain radius.
     Everything else in the game is in black.
 
