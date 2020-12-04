@@ -24,7 +24,7 @@ class Person(pg.sprite.Sprite):
             position: A tuple of integers representing coordinates.
         """
         super(Person, self).__init__()
-        self.__position = position
+        self._position = position
         self.image = image
         self.image = pg.transform.scale(self.image, (15, 15))
         self.rect = self.image.get_rect()
@@ -62,9 +62,9 @@ class Person(pg.sprite.Sprite):
 
     
     def update_position(self, raw_image, value, direction):
-        if direction == 'V'
+        if direction == 'V':
             self._position = (self._position[0], self._position[1] + value)
-        if direction == 'H'
+        if direction == 'H':
             self._position = (self._position[0] + value, self._position[1])
         self.rect.center = self._position
 

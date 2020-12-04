@@ -8,7 +8,7 @@ from gem import Gem
 from player import Player
 from fireball import Fireball
 from button import Button
-
+from platform import Platform
 
 class Board:
     """
@@ -63,11 +63,12 @@ class Board:
 
         # Initialize instance groups that are used to display instances on
         # the screen.
-        self.__width = constants.width
-        self.__height = constants.height
+        self.__width = 500 #constants.width
+        self.__height = 500 #constants.height
         self.score = 0
         self.direction = 0
         self.white = (255, 255, 255)
+        
 
         self.map = []
         # These are the arrays in which we store our instances of different classes
@@ -76,7 +77,7 @@ class Board:
         # Resets the above groups and initializes the game for us
         self.reset_groups()
 
-        self.background = pg.load('Assets/background.png')
+        self.background = pg.image.load('Assets/background.png') #added image
         self.background = pg.transform.scale(self.background, (width, height))
 
         # Initialize the instance groups which we use to display our instances on the screen
@@ -98,13 +99,13 @@ class Board:
         # Call create_groups() method to create instance groups
         self.score = 0
         self.map = []  # We will create the map again when we reset the game
-        self.Players = [Player(pygame.image.load('Assets/still.png'), (50, 440))]
+        self.Players = [Player(pg.image.load('/home/smutha/interactivegame/player.png'), (50, 440))]
         self.Gems = []
         self.Platforms = []
-        self.Boards = [OnBoard(pygame.image.load('Assets/board.png'), (200, 480)),
-                       OnBoard(pygame.image.load('Assets/board.png'), (685, 480))]
-        self.Boards[0].modifySize(self.Boards[0].image, 40, 150)  # Do this on purpose to get a pixelated image
-        self.Boards[1].modifySize(self.Boards[1].image, 40, 150)
+        self.Boards = [OnBoard(pg.image.load('/home/smutha/interactivegame/board.png'), (200, 480)),
+                       OnBoard(pg.image.load('/home/smutha/interactivegame/board.png'), (685, 480))]
+        #self.Boards[0].modifySize(self.Boards[0].image, 40, 150)  # Do this on purpose to get a pixelated image
+        #self.Boards[1].modifySize(self.Boards[1].image, 40, 150)
         self.initialize_game()  # This initializes the game and generates our map
         self.create_groups()  # This creates the instance groups
 
@@ -124,14 +125,14 @@ class Board:
                 if self.map[i][j] == 0 and ((i + 1 < len(self.map) and self.map[i + 1][j] == 1) or (
                             i + 2 < len(self.map) and self.map[i + 2][j] == 1)):
                     randNumber = math.floor(random.random() * 1000)
-                    if randNumber % 35 == 0 and len(self.Coins) <= 9:  # At max there will be 10 gems in map
+                    if randNumber % 35 == 0 and len(self.Gems) <= 9:  # At max there will be 10 gems in map
                         self.map[i][j] = 3
                         # Check if there is a platform below where the gem is to be placed
                         if j - 1 >= 0 and self.map[i][j - 1] == 3:
                             self.map[i][j] = 0
                         if self.map[i][j] == 3:
                             # Add the gem to our gem list
-                            self.Gems.append(Gem(pygame.image.load('///GEM IMAGE FILE///'), (j * 10 + 10 / 2, i * 10 + 10 / 2)))
+                            self.Gems.append(Gem(pg.image.load('gem.png'), (j * 10 + 10 / 2, i * 10 + 10 / 2)))
         if len(self.Gems) <= 5:  # If there are less than 6 gem, we call the function again
             self.generate_gems()
     
@@ -145,9 +146,9 @@ class Board:
             x = 1
             while x < width - 1:
                 rand_platform_size = random.randint(10, 15)
-                for _ in range(rand_platfrom_size):
+                for _ in range(rand_platform_size):
                     self.map[x][y] = 3
-                    self.Platforms.append(Platform(pygame.image.load('///PLATFORM IMAGE FILE///'), (j * 10 + 10 / 2, i * 10 + 10s / 2)))
+                    self.Platforms.append(Platform(pg.image.load('platform.png'), (x * 10 + 10 / 2, y * 10 + 10 / 2)))
                     x += 1
                 rand_space = random.randint(10, 15)
                 x += rand_space
@@ -169,9 +170,9 @@ class Board:
         Create an empty map.
         """
         # Make 2D array filled with zeros
-        for point in range(0, self.__height / 10 + 1):
+        for point in range(0, self.__height // 10 + 1):
             row = []
-            for point2 in range(0, self.__width / 10):
+            for point2 in range(0, self.__width // 10):
                 row.append(0)
             self.map.append(row)
 
@@ -181,11 +182,11 @@ class Board:
         """
         # Update map to have 1s where there are boundaries
         # Left and right sides
-        for row in range(self.__height):
-            self.map[row][0] = self.map[row][self.__width] = 1
+        for row in range(self.__height // 10):
+            self.map[row][0] = self.map[row][self.__width // 10] = 1
         # Top and bottom sides
         for col in range(self.__width):
-            self.map[0][col] = self.map[self.__height][col] = 1
+            self.map[0][col] = self.map[self.__height // 10][col] = 1
 
     def make_ladders(self):
         """
@@ -260,8 +261,8 @@ class Board:
         Perform needed actions when a button is clicked.
         """
         pass
-
-    def redraw_screen(self, display_screen, score_label, width, height):
+    # changed the syntax of the display screen thing
+    def redraw_screen(self, displayScreen, score_label, width, height):
         """
         Redraws the entire game screen.
 
@@ -291,10 +292,10 @@ class Board:
         Update all the game component groups from their corresponding lists.
         """
         # Here, we use the PyGame Sprite RenderPlain method
-        self.player_group = pygame.sprite.RenderPlain(self.Players)
-        self.platform_group = pygame.sprite.RenderPlain(self.Platforms)
-        self.gem_group = pygame.sprite.RenderPlain(self.Gems)
-        self.board_group = pygame.sprite.RenderPlain(self.Boards)
+        self.player_group = pg.sprite.RenderPlain(self.Players)
+        self.platform_group = pg.sprite.RenderPlain(self.Platforms)
+        self.gem_group = pg.sprite.RenderPlain(self.Gems)
+        self.board_group = pg.sprite.RenderPlain(self.Boards)
 
     def initialize_game(self):
         """
