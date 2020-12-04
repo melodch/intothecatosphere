@@ -28,12 +28,26 @@ class Game:
         from this instance to the group attributes. Initialize the rest of the
         instance attributes.
         """
-        self.width = constants.width
-        self.height = constants.height
+        self.width = width
+        self.height = height
         self.displayScreen = pg.display.set_mode((self.width, self.height))
         self.newGame = Board(self.width, self.height)
         self.player_group = self.newGame.player_group
         self.platform_group = self.newGame.platform_group
+        # Fill the screen with a fog of war
+        self.fog = pg.Surface((width, height), pg.SRCALPHA)
+        self.fog.fill((0, 0, 0, 255))
+
+    def render_fog(self):
+        """
+        Render the fog around the player. There will be a gradient circle
+        around the Sprite that the player will be able to see.
+        """
+        self.fog.fill((0, 0, 0, 255))
+        m = float(255/200)
+        # Draw circles around the Sprite that get darker as they get further away.
+        for i in range(200, 1, -1):
+            pg.draw.circle(self.fog, (0, 0, 0, i*m), self.player_group.get_position(), i)
 
     def runGame(self):
         """
