@@ -142,10 +142,10 @@ class Board:
         """
         height = self.__height // 10
         width = self.__width // 10
-        for y in range(30, height - 1, 10):
+        for y in range(5, height, 10):
             x = 1
             while x < width - 1:
-                rand_platform_size = random.randint(10, 15)
+                rand_platform_size = random.randint(4, 7)
                 for _ in range(rand_platform_size):
                     self.map[x][y] = 3
                     self.Platforms.append(Platform(pg.image.load('platform.png'), (x * 10 + 10 / 2, y * 10 + 10 / 2)))
@@ -172,9 +172,9 @@ class Board:
         Create an empty map.
         """
         # Make 2D array filled with zeros
-        for point in range(0, self.__height // 10 ):
+        for _ in range(0, self.__height // 10 + 1):
             row = []
-            for point2 in range(0, self.__width // 10):
+            for _ in range(0, self.__width // 10):
                 row.append(0)
             self.map.append(row)
 
