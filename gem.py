@@ -26,15 +26,15 @@ class Gem(OnBoard):
         """
         # using super to call the attributes from the parent OnBoard class.
         # initializing the value attribute as some integer.
-        pass
+        super(Gem, self).__init__(raw_image, position)
 
-    def update_image(self, raw_image):
-        """
-        Update the gem image.
+    # def update_image(self, raw_image):
+    #     """
+    #     Update the gem image.
 
-        Args:
-            raw_image: A string representing the path to a png.
-        """
+    #     Args:
+    #         raw_image: A string representing the path to a png.
+    #     """
 
-        # Update the gem image from the raw image and scale it
-        pass
+    #     # Update the gem image from the raw image and scale it
+    #     pass

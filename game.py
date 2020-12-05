@@ -3,6 +3,17 @@ import sys
 from board import Board
 from constants import *
 
+from pygame.locals import (
+    RLEACCEL,
+    K_UP,
+    K_DOWN,
+    K_LEFT,
+    K_RIGHT,
+    K_ESCAPE,
+    KEYDOWN,
+    QUIT,
+)
+
 
 class Game:
     """
@@ -38,7 +49,7 @@ class Game:
         self.fog = pg.Surface((width, height), pg.SRCALPHA)
         self.fog.fill((0, 0, 0, 255))
         # constants
-        self.FPS = 30
+        self.FPS = 100
         self.clock = pg.time.Clock()
         self.myFont = pg.font.SysFont("comicsansms", 30)
 
@@ -66,77 +77,78 @@ class Game:
         # If game state is not 1 then don't run the game,
         # just display menu buttons
         # Check which button was clicked and change game state accordingly
-        pg.init()
-        self.clock.tick(self.FPS)
-        self.scoreLabel = self.myFont.render(str(self.newGame.score), 1,
-                                                 (0, 0, 0)) 
+        while True:
 
-        # If game state is 1 then run the game:
-        if True:#if self.newGame.gameState == 1:
-            self.gem_group = self.newGame.gem_group
-            
-            # Get the appropriate groups
-            # Create fireballs
-            # Check for collisions below
-            # Check for collisions above
-            self.newGame.Players[0].updateY(-2)
-            self.wallsCollidedAbove = self.newGame.Players[0].check_collision(self.platform_group)
-            self.newGame.Players[0].updateY(2)
-            # Set the on_ladder state of the player
+            self.clock.tick(self.FPS)
+            self.scoreLabel = self.myFont.render(str(self.newGame.score), 1,
+                                                    (0, 0, 0)) 
 
-            # In a PyGame event loop, check which key is being pressed:
-            for event in pg.event.get():
-                # Exit to desktop
-                if event.type == QUIT:
-                    pg.quit()
-                    sys.exit()
+            # If game state is 1 then run the game:
+            if True:# self.newGame.gameState == 1:
+                self.gem_group = self.newGame.gem_group
+                
+                # Get the appropriate groups
+                # Create fireballs
+                # Check for collisions below
+                # Check for collisions above
+                #self.newGame.Players[0].updateY(-2)
+                self.wallsCollidedAbove = self.newGame.Players[0].check_collision(self.platform_group)
+                #self.newGame.Players[0].updateY(2)
+                # Set the on_ladder state of the player
 
-            # If QUIT, exit to desktop
+                # In a PyGame event loop, check which key is being pressed:
+                for event in pg.event.get():
+                    # Exit to desktop
+                    if event.type == QUIT:
+                        pg.quit()
+                        sys.exit()
 
-            # If KEYDOWN,
-            # If quit key pressed:
-            # We quit the game and go to the restart screen
+                # If QUIT, exit to desktop
 
-            # If up key pressed and player is on a ladder:
-            # Set the player to move up
+                # If KEYDOWN,
+                # If quit key pressed:
+                # We quit the game and go to the restart screen
 
-            # Update the player's position
-            #self.newGame.Players[0].continuousUpdate(self.platform_group, self.ladder_group)
-            keys = pg.key.get_pressed()
-            #Change this
-            if keys[pg.K_RIGHT]:
+                # If up key pressed and player is on a ladder:
+                # Set the player to move up
 
-                # Check which key is being pressed, update position accordingly
-                self.newGame.Players[0].update_position(pg.image.load('Assets/right.png'), self.newGame.Players[0].getSpeed(), 'H')
-                # If we have collided a wall, move the player back to where he was in the last state
-                platforms_collided = self.newGame.Players[0].checkCollision(self.platform_group)
-                if platforms_collided: 
-                    self.newGame.Players[0].update_position(pg.image.load('Assets/left.png'), -self.newGame.Players[0].getSpeed(), 'H')
+                # Update the player's position
+                #self.newGame.Players[0].continuousUpdate(self.platform_group, self.ladder_group)
+                keys = pg.key.get_pressed()
+                #Change this
+                if keys[K_RIGHT]:
 
-            if keys[pg.K_LEFT]:
+                    # Check which key is being pressed, update position accordingly
+                    self.newGame.Players[0].update_position(pg.image.load('player.png'), self.newGame.Players[0].get_speed(), 'H')
+                    # If we have collided a wall, move the player back to where he was in the last state
+                    platforms_collided = self.newGame.Players[0].check_collision(self.platform_group)
+                    if platforms_collided: 
+                        self.newGame.Players[0].update_position(pg.image.load('player.png'), -self.newGame.Players[0].get_speed(), 'H')
 
-                # Check which key is being pressed, update position accordingly
-                self.newGame.Players[0].update_position(pg.image.load('Assets/right.png'), -self.newGame.Players[0].getSpeed(), 'H')
-                # If we have collided a wall, move the player back to where he was in the last state
-                wallsCollided = self.newGame.Players[0].checkCollision(self.platform_group)
-                if wallsCollided: 
-                    self.newGame.Players[0].update_position(pg.image.load('Assets/left.png'), self.newGame.Players[0].getSpeed(),'H')
-            
-            if keys[pg.K_DOWN]:
-                self.newGame.Players[0].update_position(pg.image.load('Assets/still.png'), -10, 'V')
-                wallsCollided = self.newGame.Players[0].checkCollision(self.platform_group)
-                if wallsCollided: 
-                    self.newGame.Players[0].update_position(pg.image.load('Assets/left.png'), 10,'V')
+                if keys[K_LEFT]:
 
-            
-            # Redraw all instances onto the screen
-            self.newGame.redraw_screen(self.displayScreen, self.scoreLabel, self.width, self.height)
+                    # Check which key is being pressed, update position accordingly
+                    self.newGame.Players[0].update_position(pg.image.load('player.png'), -self.newGame.Players[0].get_speed(), 'H')
+                    # If we have collided a wall, move the player back to where he was in the last state
+                    wallsCollided = self.newGame.Players[0].check_collision(self.platform_group)
+                    if wallsCollided: 
+                        self.newGame.Players[0].update_position(pg.image.load('player.png'), self.newGame.Players[0].get_speed(),'H')
+                
+                if keys[K_DOWN]:
+                    self.newGame.Players[0].update_position(pg.image.load('player.png'), 10, 'V')
+                    wallsCollided = self.newGame.Players[0].check_collision(self.platform_group)
+                    if wallsCollided: 
+                        self.newGame.Players[0].update_position(pg.image.load('player.png'), -10,'V')
 
-            # Update the fireball and check for collisions with player.
-            
-            # Check for gem collection
-            gems_collected = pg.sprite.spritecollide(self.newGame.Players[0], self.gem_group, True)
-            self.newGame.gem_check(gems_collected)
+                
+                # Redraw all instances onto the screen
+                self.newGame.redraw_screen(self.displayScreen, self.scoreLabel, self.width, self.height)
 
-            # Update the display to view changes
-        pg.display.update()
+                # Update the fireball and check for collisions with player.
+                
+                # Check for gem collection
+                gems_collected = pg.sprite.spritecollide(self.newGame.Players[0], self.gem_group, True)
+                self.newGame.gem_check(gems_collected)
+
+                # Update the display to view changes
+            pg.display.update()

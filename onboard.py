@@ -27,6 +27,7 @@ class OnBoard(pg.sprite.Sprite):
         # create attributes for the image and the position
         # sets the rect attribute to be the image
         # sets the center of the rect atrribute as the position
+        super(OnBoard, self).__init__()
         self._position = position
         self.image = raw_image
         self.rect = self.image.get_rect()

@@ -77,7 +77,7 @@ class Board:
         # Resets the above groups and initializes the game for us
         self.reset_groups()
 
-        self.background = pg.image.load('Assets/background.png') #added image
+        self.background = pg.image.load('/home/smutha/interactivegame/board.png') #added image
         self.background = pg.transform.scale(self.background, (width, height))
 
         # Initialize the instance groups which we use to display our instances on the screen
@@ -99,7 +99,7 @@ class Board:
         # Call create_groups() method to create instance groups
         self.score = 0
         self.map = []  # We will create the map again when we reset the game
-        self.Players = [Player(pg.image.load('/home/smutha/interactivegame/player.png'), (50, 440))]
+        self.Players = [Player(pg.image.load('/home/smutha/interactivegame/player.png'), (self.__width // 2, self.__height - 20))]
         self.Gems = []
         self.Platforms = []
         self.Boards = [OnBoard(pg.image.load('/home/smutha/interactivegame/board.png'), (200, 480)),
@@ -140,9 +140,9 @@ class Board:
         """
         Randomly generate platforms. Add the platform to map and update platforms list.
         """
-        height = self.__height
-        width = self.__height
-        for y in range(10, height - 1):
+        height = self.__height // 10
+        width = self.__width // 10
+        for y in range(30, height - 1, 10):
             x = 1
             while x < width - 1:
                 rand_platform_size = random.randint(10, 15)
@@ -150,6 +150,8 @@ class Board:
                     self.map[x][y] = 3
                     self.Platforms.append(Platform(pg.image.load('platform.png'), (x * 10 + 10 / 2, y * 10 + 10 / 2)))
                     x += 1
+                    if x == width - 1:
+                        break
                 rand_space = random.randint(10, 15)
                 x += rand_space
 
@@ -170,7 +172,7 @@ class Board:
         Create an empty map.
         """
         # Make 2D array filled with zeros
-        for point in range(0, self.__height // 10 + 1):
+        for point in range(0, self.__height // 10 ):
             row = []
             for point2 in range(0, self.__width // 10):
                 row.append(0)
@@ -183,10 +185,12 @@ class Board:
         # Update map to have 1s where there are boundaries
         # Left and right sides
         for row in range(self.__height // 10):
-            self.map[row][0] = self.map[row][self.__width // 10] = 1
+            self.map[row][0] = 1
+            self.map[row][(self.__width// 10) -1 ] = 1
         # Top and bottom sides
-        for col in range(self.__width):
-            self.map[0][col] = self.map[self.__height // 10][col] = 1
+        for col in range(self.__width // 10):
+            self.map[0][col] = 1
+            self.map[(self.__height// 10) -1][col] = 1
 
     def make_ladders(self):
         """
@@ -248,9 +252,9 @@ class Board:
         # call collect_gem method from Gem class
         # update map, gem list, gem group
         for gem in gems_collected:
-            self.score += gem.collect_gem()
+            self.score += 1
             # We also remove the coin entry from our map
-            self.map[(gem.get_position()[1] - 15 / 2) / 15][(gem.get_position()[0] - 15 / 2) / 15] = 0
+            #self.map[(gem.get_position()[1]) // 10][(gem.get_position()[0]) // 10] = 0
             # Remove the coin entry from our list
             self.Gems.remove(gem)
             # Update the coin group since we modified the coin list
@@ -281,10 +285,13 @@ class Board:
         # Draw the background first
         displayScreen.blit(self.background, self.background.get_rect())
         # Draw all our groups on the background
-        self.player_group.draw(displayScreen)
-        self.gem_group.draw(displayScreen)
-        self.platform_group.draw(displayScreen)
         self.board_group.draw(displayScreen)
+        self.platform_group.draw(displayScreen)
+        self.gem_group.draw(displayScreen)
+        self.player_group.draw(displayScreen)
+        
+        
+        
         displayScreen.blit(score_label, (265-score_label.get_width()/2, 470)) #Center the text on the board
 
     def create_groups(self):
