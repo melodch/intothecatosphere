@@ -77,7 +77,7 @@ class Board:
         # Resets the above groups and initializes the game for us
         self.reset_groups()
 
-        self.background = pg.image.load('/home/smutha/interactivegame/board.png') #added image
+        self.background = pg.image.load('board.png') #added image
         self.background = pg.transform.scale(self.background, (width, height))
 
         # Initialize the instance groups which we use to display our instances on the screen
@@ -99,11 +99,11 @@ class Board:
         # Call create_groups() method to create instance groups
         self.score = 0
         self.map = []  # We will create the map again when we reset the game
-        self.Players = [Player(pg.image.load('/home/smutha/interactivegame/player.png'), (self.__width // 2, self.__height - 20))]
+        self.Players = [Player(pg.image.load('player.png'), (self.__width // 2, self.__height - 20))]
         self.Gems = []
         self.Platforms = []
-        self.Boards = [OnBoard(pg.image.load('/home/smutha/interactivegame/board.png'), (200, 480)),
-                       OnBoard(pg.image.load('/home/smutha/interactivegame/board.png'), (685, 480))]
+        self.Boards = [OnBoard(pg.image.load('board.png'), (200, 480)),
+                       OnBoard(pg.image.load('board.png'), (685, 480))]
         #self.Boards[0].modifySize(self.Boards[0].image, 40, 150)  # Do this on purpose to get a pixelated image
         #self.Boards[1].modifySize(self.Boards[1].image, 40, 150)
         self.initialize_game()  # This initializes the game and generates our map
