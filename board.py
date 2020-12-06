@@ -121,10 +121,10 @@ class Board:
         Render the fog around the player. There will be a gradient circle
         around the Sprite that the player will be able to see.
         """
-        m = float(1/1000)
+        m = float(225/1000)
         # Draw circles around the Sprite that get darker as they get further away.
         for i in range(1000, 1, -1):
-            pg.draw.circle(display_screen, (0, 0, 0, 0.3), self.Players.get_position(), i+100, width=2)
+            pg.draw.circle(display_screen, (0, 0, 0, 0), self.Players.get_position(), i+100, width=2)
 
     def generate_gems(self):
         """
