@@ -68,16 +68,16 @@ class Board:
         self.score = 0
         self.direction = 0
         self.white = (255, 255, 255)
-        
 
         self.map = []
         # These are the arrays in which we store our instances of different classes
-        self.Players = self.Gems = self.Platforms = self.Boards = []
+        self.Players = None
+        self.Gems = self.Platforms = self.Boards = []
 
         # Resets the above groups and initializes the game for us
         self.reset_groups()
 
-        self.background = pg.image.load('/home/smutha/interactivegame/board.png') #added image
+        self.background = pg.image.load('board.png') #added image
         self.background = pg.transform.scale(self.background, (width, height))
 
         # Initialize the instance groups which we use to display our instances on the screen
@@ -85,6 +85,7 @@ class Board:
         self.platform_group = pg.sprite.RenderPlain(self.Platforms)
         self.gem_group = pg.sprite.RenderPlain(self.Gems)
         self.board_group = pg.sprite.RenderPlain(self.Boards)
+         
 
     def reset_groups(self):
         """
@@ -99,11 +100,11 @@ class Board:
         # Call create_groups() method to create instance groups
         self.score = 0
         self.map = []  # We will create the map again when we reset the game
-        self.Players = [Player(pg.image.load('/home/smutha/interactivegame/player.png'), (self.__width // 2, self.__height - 20))]
+        self.Players = Player(pg.image.load('player.png'), (self.__width // 2, self.__height - 20))
         self.Gems = []
         self.Platforms = []
-        self.Boards = [OnBoard(pg.image.load('/home/smutha/interactivegame/board.png'), (200, 480)),
-                       OnBoard(pg.image.load('/home/smutha/interactivegame/board.png'), (685, 480))]
+        self.Boards = [OnBoard(pg.image.load('board.png'), (200, 480)),
+                       OnBoard(pg.image.load('board.png'), (685, 480))]       
         #self.Boards[0].modifySize(self.Boards[0].image, 40, 150)  # Do this on purpose to get a pixelated image
         #self.Boards[1].modifySize(self.Boards[1].image, 40, 150)
         self.initialize_game()  # This initializes the game and generates our map
@@ -114,6 +115,16 @@ class Board:
         Randomly generate fireballs.
         """
         pass
+
+    def render_fog(self, display_screen):
+        """
+        Render the fog around the player. There will be a gradient circle
+        around the Sprite that the player will be able to see.
+        """
+        m = float(1/1000)
+        # Draw circles around the Sprite that get darker as they get further away.
+        for i in range(1000, 1, -1):
+            pg.draw.circle(display_screen, (0, 0, 0, 0.3), self.Players.get_position(), i+100, width=2)
 
     def generate_gems(self):
         """
@@ -142,10 +153,10 @@ class Board:
         """
         height = self.__height // 10
         width = self.__width // 10
-        for y in range(30, height - 1, 10):
+        for y in range(0, height, 10):
             x = 1
             while x < width - 1:
-                rand_platform_size = random.randint(10, 15)
+                rand_platform_size = random.randint(4, 7)
                 for _ in range(rand_platform_size):
                     self.map[x][y] = 3
                     self.Platforms.append(Platform(pg.image.load('platform.png'), (x * 10 + 10 / 2, y * 10 + 10 / 2)))
@@ -172,9 +183,9 @@ class Board:
         Create an empty map.
         """
         # Make 2D array filled with zeros
-        for point in range(0, self.__height // 10 ):
+        for _ in range(0, self.__height // 10 + 1):
             row = []
-            for point2 in range(0, self.__width // 10):
+            for _ in range(0, self.__width // 10):
                 row.append(0)
             self.map.append(row)
 
@@ -266,6 +277,7 @@ class Board:
         """
         pass
     # changed the syntax of the display screen thing
+
     def redraw_screen(self, displayScreen, score_label, width, height):
         """
         Redraws the entire game screen.
@@ -289,8 +301,14 @@ class Board:
         self.platform_group.draw(displayScreen)
         self.gem_group.draw(displayScreen)
         self.player_group.draw(displayScreen)
+        # Fill the screen with a fog of war        
+        # self.fog.fill((0, 0, 0, 255))
+        # self.fog.blit
+        # displayScreen.fill((0, 0, 0, 255))
+        # displayScreen.blit(self.fog, self.fog.get_rect())
+        self.render_fog(displayScreen)
         
-        
+        # displayScreen.blit(self.fog, (0, 0))
         
         displayScreen.blit(score_label, (265-score_label.get_width()/2, 470)) #Center the text on the board
 

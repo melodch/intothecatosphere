@@ -15,7 +15,8 @@ class Button:
     """
 
     def __init__(self, raw_image, position, name):
-        """Initialize the image, position, name and rect instance attributes.
+        """
+        Initialize the image, position, name and rect instance attributes.
 
         Args:
             raw_image: A string representing the path to a png.
