@@ -78,7 +78,7 @@ class Game:
                 # Check for collisions below
                 # Check for collisions above
                 #self.newGame.Players[0].updateY(-2)
-                self.wallsCollidedAbove = self.newGame.Players[0].check_collision(self.platform_group)
+                self.wallsCollidedAbove = self.newGame.Players.check_collision(self.platform_group)
                 #self.newGame.Players[0].updateY(2)
                 # Set the on_ladder state of the player
 
@@ -105,35 +105,35 @@ class Game:
                 if keys[K_RIGHT]:
 
                     # Check which key is being pressed, update position accordingly
-                    self.newGame.Players[0].update_position(pg.image.load('player.png'), self.newGame.Players[0].get_speed(), 'H')
+                    self.newGame.Players.update_position(pg.image.load('player.png'), self.newGame.Players.get_speed(), 'H')
                     # If we have collided a wall, move the player back to where he was in the last state
-                    platforms_collided = self.newGame.Players[0].check_collision(self.platform_group)
+                    platforms_collided = self.newGame.Players.check_collision(self.platform_group)
                     if platforms_collided: 
-                        self.newGame.Players[0].update_position(pg.image.load('player.png'), -self.newGame.Players[0].get_speed(), 'H')
+                        self.newGame.Players.update_position(pg.image.load('player.png'), -self.newGame.Players.get_speed(), 'H')
 
                 if keys[K_LEFT]:
 
                     # Check which key is being pressed, update position accordingly
-                    self.newGame.Players[0].update_position(pg.image.load('player.png'), -self.newGame.Players[0].get_speed(), 'H')
+                    self.newGame.Players.update_position(pg.image.load('player.png'), -self.newGame.Players.get_speed(), 'H')
                     # If we have collided a wall, move the player back to where he was in the last state
-                    wallsCollided = self.newGame.Players[0].check_collision(self.platform_group)
+                    wallsCollided = self.newGame.Players.check_collision(self.platform_group)
                     if wallsCollided: 
-                        self.newGame.Players[0].update_position(pg.image.load('player.png'), self.newGame.Players[0].get_speed(),'H')
+                        self.newGame.Players.update_position(pg.image.load('player.png'), self.newGame.Players.get_speed(),'H')
                 
                 if keys[K_DOWN]:
-                    self.newGame.Players[0].update_position(pg.image.load('player.png'), 10, 'V')
-                    wallsCollided = self.newGame.Players[0].check_collision(self.platform_group)
+                    self.newGame.Players.update_position(pg.image.load('player.png'), 10, 'V')
+                    wallsCollided = self.newGame.Players.check_collision(self.platform_group)
                     if wallsCollided: 
-                        self.newGame.Players[0].update_position(pg.image.load('player.png'), -10,'V')
+                        self.newGame.Players.update_position(pg.image.load('player.png'), -10,'V')
 
                 
                 # Redraw all instances onto the screen
                 self.newGame.redraw_screen(self.displayScreen, self.scoreLabel, self.width, self.height)
-                self.newGame.render_fog()
+
                 # Update the fireball and check for collisions with player.
                 
                 # Check for gem collection
-                gems_collected = pg.sprite.spritecollide(self.newGame.Players[0], self.gem_group, True)
+                gems_collected = pg.sprite.spritecollide(self.newGame.Players, self.gem_group, True)
                 self.newGame.gem_check(gems_collected)
 
                 # Update the display to view changes
