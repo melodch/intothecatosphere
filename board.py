@@ -68,7 +68,10 @@ class Board:
         self.score = 0
         self.direction = 0
         self.white = (255, 255, 255)
-        
+
+        # Fill the screen with a fog of war
+        self.fog = pg.Surface((width, height), pg.SRCALPHA)
+        self.fog.fill((0, 0, 0, 255))
 
         self.map = []
         # These are the arrays in which we store our instances of different classes
@@ -114,6 +117,17 @@ class Board:
         Randomly generate fireballs.
         """
         pass
+
+    def render_fog(self):
+        """
+        Render the fog around the player. There will be a gradient circle
+        around the Sprite that the player will be able to see.
+        """
+        self.fog.fill((0, 0, 0, 255))
+        m = float(255/200)
+        # Draw circles around the Sprite that get darker as they get further away.
+        for i in range(200, 1, -1):
+            pg.draw.circle(self.fog, (0, 0, 0, i*m), self.player_group.get_position(), i)
 
     def generate_gems(self):
         """
@@ -266,6 +280,7 @@ class Board:
         """
         pass
     # changed the syntax of the display screen thing
+
     def redraw_screen(self, displayScreen, score_label, width, height):
         """
         Redraws the entire game screen.

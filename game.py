@@ -45,24 +45,10 @@ class Game:
         self.newGame = Board()
         self.player_group = self.newGame.player_group
         self.platform_group = self.newGame.platform_group
-        # Fill the screen with a fog of war
-        self.fog = pg.Surface((width, height), pg.SRCALPHA)
-        self.fog.fill((0, 0, 0, 255))
         # constants
         self.FPS = 100
         self.clock = pg.time.Clock()
         self.myFont = pg.font.SysFont("comicsansms", 30)
-
-    def render_fog(self):
-        """
-        Render the fog around the player. There will be a gradient circle
-        around the Sprite that the player will be able to see.
-        """
-        self.fog.fill((0, 0, 0, 255))
-        m = float(255/200)
-        # Draw circles around the Sprite that get darker as they get further away.
-        for i in range(200, 1, -1):
-            pg.draw.circle(self.fog, (0, 0, 0, i*m), self.player_group.get_position(), i)
 
     def runGame(self):
         """
@@ -143,7 +129,7 @@ class Game:
                 
                 # Redraw all instances onto the screen
                 self.newGame.redraw_screen(self.displayScreen, self.scoreLabel, self.width, self.height)
-
+                self.newGame.render_fog()
                 # Update the fireball and check for collisions with player.
                 
                 # Check for gem collection
