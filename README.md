@@ -4,7 +4,7 @@
 Describe relevant installation packages to modify and play the game with.
 
 ### Usage
-Describe the usage of the game and instructions.
+To play the game, run the main.py file.
 
 ### Contributors
 - Serena Chang, Olin College of Engineering
