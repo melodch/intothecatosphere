@@ -2,6 +2,7 @@ import pygame as pg
 import math
 import random
 import sys
+import time
 from constants import *
 from onboard import OnBoard
 from gem import Gem
@@ -9,6 +10,7 @@ from player import Player
 from fireball import Fireball
 from button import Button
 from platform import Platform
+
 
 class Board:
     """
@@ -221,7 +223,16 @@ class Board:
         too close to each other.
         """
         # Update map to have 2s where there are ladders
-        pass
+        # for i in range(2, (self.__height / (15 * 5) - 1)):
+        #     ladderPos = math.floor(random.random() * (self.__width / 15 - 20))
+        #     ladderPos = int(10 + ladderPos)
+        #     while self.checkMapForMatch(ladderPos, i - 1, 2, 0) == 1:
+        #         ladderPos = math.floor(random.random() * (self.__width / 15 - 20))
+        #         ladderPos = int(10 + ladderPos)
+        #     for k in range(0, 5):
+        #         self.map[i * 5 + k][ladderPos] = self.map[i * 5 + k][ladderPos + 1] = 2
+
+        # self.Ladders.append(OnBoard(pygame.image.load('Assets/ladder.png'), (y * 15 + 15 / 2, x * 15 + 15 / 2)))
 
     def populate_instance_groups(self):
         """
