@@ -31,24 +31,14 @@ class Fireball(OnBoard):
             index: An integer that uniquely identifies each fireball
             speed: An integer that sets the speed of the fireball.
         """
-        # Using super to get the image and position attributes from the
-        # parent OnBoard class
-        # Initializing an attribute for index based on the input argument
-        # Initializing the attribute for fall to be at 0 so the fireball
-        # is not falling initially.
-        # Initializing the attribute for speed as the input argument.
+        super(Fireball,self).__init__(raw_image, position)
+        self.index = index
+        #The newly spawned fireball is not falling
+        self._fall = 0
+        #The speed of a fireball is set
+        self._speed = speed
         pass
 
-    def update_image(self, raw_image):
-        """
-        Updating the fireball image
-
-        Args:
-            raw_image: A fireball image file
-
-        """
-        # Update the fireball image from the raw image and scale it.
-        pass
 
     # Getting and setting variables
     def get_speed(self):
@@ -58,7 +48,7 @@ class Fireball(OnBoard):
         self.speed = speed
 
     def get_fall(self):
-        return self.fall
+        return self._fall
 
     def update(self, raw_image, speed):
         """
@@ -69,10 +59,11 @@ class Fireball(OnBoard):
             speed: The speed at which the fireball moves.
         """
         # Move the fireball in the required direction with
-        # the required value and also set the image of the fireball
-        pass
+        # the required value and also set the image of the fireball        
+        self.setPosition((self.getPosition()[0], self.getPosition()[1] + speed))
+        self.rect.center = self.getPosition()
 
-    def check_collision(self, colliderGroup):
+    def check_collision(self, collider_group):
         """
         Checking to see if the fireball collides with the player.
 
@@ -87,13 +78,19 @@ class Fireball(OnBoard):
         # between the sprite and the player.
 
         # return Colliders
-        pass
+        self.update(self.image, self.__speed)  # Bottom collision
+        colliders = pg.sprite.spritecollide(self, collider_group, True)
 
-    def continuous_update(self):
+    def continuous_update(self,collider_group):
         """
         Continously updating the fireball.
         """
         # Set the fireball as falling
         # Update the position of the fireball
         # If there is a colllision, then set the fireball as not colliding
-        pass
+        if self._fall == 1:
+        #We move the fireball downwards with speed of self.__speed
+            self.update(self.image, self.__speed)
+            if self.check_collision(collider_group):
+                #We have collided with a wall below, so the fireball can stop falling
+                self._fall = 0

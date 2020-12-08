@@ -75,6 +75,7 @@ class Game:
                 
                 # Get the appropriate groups
                 # Create fireballs
+                self.newGame.create_fireball(self.width, self.height)
                 # Check for collisions below
                 # Check for collisions above
                 #self.newGame.Players[0].updateY(-2)

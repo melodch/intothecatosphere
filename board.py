@@ -72,7 +72,7 @@ class Board:
         self.map = []
         # These are the arrays in which we store our instances of different classes
         self.Players = None
-        self.Gems = self.Platforms = self.Boards = []
+        self.Fireballs = self.Gems = self.Platforms = self.Boards = []
 
         # Resets the above groups and initializes the game for us
         self.reset_groups()
@@ -85,6 +85,7 @@ class Board:
         self.platform_group = pg.sprite.RenderPlain(self.Platforms)
         self.gem_group = pg.sprite.RenderPlain(self.Gems)
         self.board_group = pg.sprite.RenderPlain(self.Boards)
+        self.fireball_group = pg.sprite.RenderPlain(self.Fireballs) 
          
 
     def reset_groups(self):
@@ -103,6 +104,7 @@ class Board:
         self.Players = Player(pg.image.load('player.png'), (self.__width // 2, self.__height - 20))
         self.Gems = []
         self.Platforms = []
+        self.Fireballs = []
         self.Boards = [OnBoard(pg.image.load('board.png'), (200, 480)),
                        OnBoard(pg.image.load('board.png'), (685, 480))]       
         #self.Boards[0].modifySize(self.Boards[0].image, 40, 150)  # Do this on purpose to get a pixelated image
@@ -110,11 +112,16 @@ class Board:
         self.initialize_game()  # This initializes the game and generates our map
         self.create_groups()  # This creates the instance groups
 
-    def create_fireball(self):
+    def create_fireball(self, width, height):
         """
         Randomly generate fireballs.
         """
-        pass
+
+        if len(self.Fireballs) < 10:
+            location = random.randint(10,width)
+            self.Fireballs.append(
+                Fireball(pygame.image.load('fireball.png'), (location, height), len(self.Fireballs),-10))
+            self.create_groups() 
 
     def render_fog(self, display_screen):
         """
@@ -247,7 +254,13 @@ class Board:
         # Call check_collision method in Fireball class to
         # check for collisions with player
         # If it has hit the player, game over
-        pass
+        for fireball in self.fireball_group:
+            fireball.continuous_update(self.player_group)
+            if fireball.check_collision(self.player_group):
+                #if len(self.Hearts) >= 2:  # Reduce the player's life by 1
+                self.Fireballs.remove(fireball)
+                self.createGroups()
+                    #self.Hearts.pop(len(self.Hearts) - 1)
 
     def gem_check(self, gems_collected):
         """
@@ -300,7 +313,7 @@ class Board:
         self.platform_group.draw(displayScreen)
         self.gem_group.draw(displayScreen)
         self.player_group.draw(displayScreen)
-        
+         self.fireball_group.draw(displayScreen)
         # Fill the screen with a fog
         # self.render_fog(displayScreen)
         
@@ -315,6 +328,7 @@ class Board:
         self.platform_group = pg.sprite.RenderPlain(self.Platforms)
         self.gem_group = pg.sprite.RenderPlain(self.Gems)
         self.board_group = pg.sprite.RenderPlain(self.Boards)
+        self.fireball_group = pg.sprite.RenderPlain(self.Fireballs)
 
     def initialize_game(self):
         """
