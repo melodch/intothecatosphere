@@ -120,7 +120,7 @@ class Board:
         if len(self.Fireballs) < 10:
             location = random.randint(10,width)
             self.Fireballs.append(
-                Fireball(pygame.image.load('fireball.png'), (location, height), len(self.Fireballs),-10))
+                Fireball(pg.image.load('fireball.png'), (location, height), len(self.Fireballs),-10))
             self.create_groups() 
 
     def render_fog(self, display_screen):
@@ -259,7 +259,7 @@ class Board:
             if fireball.check_collision(self.player_group):
                 #if len(self.Hearts) >= 2:  # Reduce the player's life by 1
                 self.Fireballs.remove(fireball)
-                self.createGroups()
+                self.create_groups()
                     #self.Hearts.pop(len(self.Hearts) - 1)
 
     def gem_check(self, gems_collected):
@@ -313,7 +313,7 @@ class Board:
         self.platform_group.draw(displayScreen)
         self.gem_group.draw(displayScreen)
         self.player_group.draw(displayScreen)
-         self.fireball_group.draw(displayScreen)
+        self.fireball_group.draw(displayScreen)
         # Fill the screen with a fog
         # self.render_fog(displayScreen)
         
