@@ -10,6 +10,7 @@ from player import Player
 from fireball import Fireball
 from button import Button
 from platform import Platform
+from ladder import Ladder
 
 
 class Board:
@@ -74,7 +75,7 @@ class Board:
         self.map = []
         # These are the arrays in which we store our instances of different classes
         self.Players = None
-        self.Fireballs = self.Gems = self.Platforms = self.Boards = []
+        self.Fireballs = self.Gems = self.Platforms = self.Boards = self.Ladders = []
 
         # Resets the above groups and initializes the game for us
         self.reset_groups()
@@ -87,9 +88,9 @@ class Board:
         self.platform_group = pg.sprite.RenderPlain(self.Platforms)
         self.gem_group = pg.sprite.RenderPlain(self.Gems)
         self.board_group = pg.sprite.RenderPlain(self.Boards)
-        self.fireball_group = pg.sprite.RenderPlain(self.Fireballs) 
+        self.fireball_group = pg.sprite.RenderPlain(self.Fireballs)
+        self.ladder_group = pg.sprite.RenderPlain(self.Ladders)
          
-
     def reset_groups(self):
         """
         Reset game component groups that tie their respective instances
@@ -107,6 +108,7 @@ class Board:
         self.Gems = []
         self.Platforms = []
         self.Fireballs = []
+        self.Ladders = []
         self.Boards = [OnBoard(pg.image.load('board.png'), (200, 480)),
                        OnBoard(pg.image.load('board.png'), (685, 480))]       
         #self.Boards[0].modifySize(self.Boards[0].image, 40, 150)  # Do this on purpose to get a pixelated image
@@ -178,15 +180,25 @@ class Board:
         for y in range(0, height, 10):
             x = 1
             while x < width:
-                rand_platform_size = random.randint(4, 15)
+                rand_platform_size = random.randint(7, 15)
                 for _ in range(rand_platform_size):
                     self.map[x][y] = 1
-                    self.Platforms.append(Platform(pg.image.load('platform.png'), (x * 10 + 10 / 2, y * 10 + 10 / 2)))
+                    # self.Platforms.append(Platform(pg.image.load('platform.png'), (x * 10 + 10 / 2, y * 10 + 10 / 2)))
                     x += 1
                     if x >= width - 1:
                         break
                 rand_space = random.randint(7, 15)
                 x += rand_space
+
+    def populate_map(self):
+        for x in range(len(self.map)):
+            for y in range(len(self.map[x])):
+                if self.map[x][y] == 1:
+                    # Add a wall at that position
+                    self.Platforms.append(OnBoard(pg.image.load('platform.png'), (x * 10 + 10 / 2, y * 10 + 10 / 2)))
+                elif self.map[x][y] == 2:
+                    # Add a ladder at that position
+                    self.Ladders.append(OnBoard(pg.image.load('ladder.png'), (x * 10 + 10 / 2, y * 10 + 10 / 2)))
 
     def check_map_for_match(self, x_pos, y_pos, check_no):
         """
@@ -228,26 +240,38 @@ class Board:
         for row in range(0, width - 1, 2):
             self.map[0][row] = 1
             self.map[(height) - 1][row] = 1
-            self.Platforms.append(Platform(pg.image.load('platform.png'), (- 15, row * 10 + 10 / 2)))
-            self.Platforms.append(Platform(pg.image.load('platform.png'), (height * 10 + 15, row * 10 + 10 / 2)))
+            self.Platforms.append(Platform(pg.image.load('platform.png'), (- 20, row * 10 + 10 / 2)))
+            self.Platforms.append(Platform(pg.image.load('platform.png'), (height * 10 + 20, row * 10 + 10 / 2)))
 
-    def make_ladders(self):
-        """
-        Generate ladders randomly such that they are not
-        too close to each other.
-        """
-        # Update map to have 2s where there are ladders
-        # for i in range(2, (self.__height / (15 * 5) - 1)):
-        #     ladderPos = math.floor(random.random() * (self.__width / 15 - 20))
-        #     ladderPos = int(10 + ladderPos)
-        #     while self.checkMapForMatch(ladderPos, i - 1, 2, 0) == 1:
-        #         ladderPos = math.floor(random.random() * (self.__width / 15 - 20))
-        #         ladderPos = int(10 + ladderPos)
-        #     for k in range(0, 5):
-        #         self.map[i * 5 + k][ladderPos] = self.map[i * 5 + k][ladderPos + 1] = 2
+    def generate_ladders(self):
+        width = len(self.map)
+        height = len(self.map[0])
+        num_on_this_lvl = False
+        h_spacing = 5
+        # Loop through each platform level
+        for y in range(0, height - 10, 10):
+            num_on_this_lvl = 0
+            rand_num = random.randint(1, 2)
+            while num_on_this_lvl < rand_num:
+                for x in range(5, width - 2, h_spacing):
+                    rand_ladder = random.randint(1, 5)
+                    if num_on_this_lvl >= 2:
+                        break
+                    # If there hasn't already been a ladder placed on this level
+                    # If there is a platform on this level and one level lower
+                    # Chance of a ladder being placed is 1/5
+                    elif self.map[x][y] == 1 and self.map[x][y + 10] == 1 and rand_ladder == 1 and \
+                    self.map[x - h_spacing][y] != 2 and self.map[x + h_spacing][y] != 2:
+                        # Call helper method to create a ladder to connect between upper and lower platform
+                        # print("x, y: ", x, y)
+                        self.create_ladder(x, y, y + 10)
+                        num_on_this_lvl += 1
 
-        # self.Ladders.append(OnBoard(pygame.image.load('Assets/ladder.png'), (y * 15 + 15 / 2, x * 15 + 15 / 2)))
-
+    def create_ladder(self, x, upper_y, lower_y):
+        for y in range(upper_y, lower_y, 2):
+            self.map[x][y] = 2
+            # self.Ladders.append(Ladder(pg.image.load('ladder.png'), (x * 10 + 10 / 2, y * 10 + 10 / 2)))
+    
     def populate_instance_groups(self):
         """
         Use the 2D map to add instances to the component lists. This is called
@@ -344,6 +368,7 @@ class Board:
         self.platform_group.draw(displayScreen)
         self.gem_group.draw(displayScreen)
         self.player_group.draw(displayScreen)
+        self.ladder_group.draw(displayScreen)
         self.fireball_group.draw(displayScreen)
         # Fill the screen with a fog
         # self.render_fog(displayScreen)
@@ -359,6 +384,7 @@ class Board:
         self.platform_group = pg.sprite.RenderPlain(self.Platforms)
         self.gem_group = pg.sprite.RenderPlain(self.Gems)
         self.board_group = pg.sprite.RenderPlain(self.Boards)
+        self.ladder_group = pg.sprite.RenderPlain(self.Ladders)
         self.fireball_group = pg.sprite.RenderPlain(self.Fireballs)
 
     def initialize_game(self):
@@ -368,8 +394,10 @@ class Board:
         game components, then creating the groups of those game components.
         """
         self.make_map()
-        self.make_boundaries()
         self.generate_platforms()
         self.generate_gems()
+        self.generate_ladders()
+        self.populate_map()
         self.populate_instance_groups()
+        self.make_boundaries()
         self.create_groups()
