@@ -135,6 +135,20 @@ class Board:
         #for i in range(1000, 1, -1):
         #    pg.draw.circle(display_screen, (0, 0, 0, 0), self.Players.get_position(), i+100, width=2)
 
+        screen = pg.display.set_mode(display_screen, 0, 32)
+        # Fill the screen with white
+        screen.fill((255, 255, 255))
+        # Make a black surface the size of the display
+        fog_of_war = pg.Surface(display_screen)
+        fog_of_war.fill((0, 0, 0))
+        # Make a gray circle on top of the black surface
+        pg.draw.circle(fog_of_war, (60, 60, 60), self.Players.get_position(), 100, 0)
+        # Set the transparent colorkey to gray
+        # Using this method (if it works), we can a gradient using different grays
+        fog_of_war.set_colorkey((60, 60, 60))
+        screen.blit(fog_of_war, (0, 0))
+        pg.display.update()
+
     def generate_gems(self):
         """
         Randomly generate gems (where there is a platform below the gem so
