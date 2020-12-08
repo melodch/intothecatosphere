@@ -140,12 +140,11 @@ class Board:
         """
         width = len(self.map)
         height = len(self.map[0])
-        for x in range(width):
+        for x in range(5, width, 5):
             for y in range(0, height, 10):
-                rand_gem = random.randint(1, 15)
-                if self.map[x][y] == 1 and rand_gem == 1 and (y + 1) < height:
-                    self.map[x][y + 1] == 3
-                    self.Gems.append(Gem(pg.image.load('gem.png'), ((y + 1) * 10 + 10 / 2, (x + 1) * 10 + 10 / 2)))
+                rand_gem = random.randint(1, 5)
+                if self.map[x][y] == 1 and rand_gem == 1 and y < height:
+                    self.Gems.append(Gem(pg.image.load('gem.png'), (x * 10 + 10 / 2, (y * 10 + 10 / 2) - 30)))
     
     def generate_platforms(self):
         """

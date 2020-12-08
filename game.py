@@ -127,7 +127,6 @@ class Game:
                     if wallsCollided: 
                         self.newGame.Players.update_position(pg.image.load('player.png'), -10,'V')
 
-                
                 # Redraw all instances onto the screen
                 self.newGame.redraw_screen(self.displayScreen, self.scoreLabel, self.width, self.height)
 
