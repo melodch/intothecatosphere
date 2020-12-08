@@ -117,10 +117,11 @@ class Board:
         Randomly generate fireballs.
         """
 
-        if len(self.Fireballs) < 10:
+        if len(self.Fireballs) < 5:
+            time.sleep(3)
             location = random.randint(10,width)
             self.Fireballs.append(
-                Fireball(pg.image.load('fireball.png'), (location, height), len(self.Fireballs),-10))
+                Fireball(pg.image.load('fireball.png'), (location, height), len(self.Fireballs),-3))
             self.create_groups() 
 
     def render_fog(self, display_screen):
@@ -128,23 +129,29 @@ class Board:
         Render the fog around the player. There will be a gradient circle
         around the Sprite that the player will be able to see.
         """
-        m = float(225/1000)
         # Draw circles around the Sprite that get darker as they get further away.
-        for i in range(1000, 1, -1):
-            pg.draw.circle(display_screen, (0, 0, 0, 0), self.Players.get_position(), i+100, width=2)
+        #for i in range(1000, 1, -1):
+        #    pg.draw.circle(display_screen, (0, 0, 0, 0), self.Players.get_position(), i+100, width=2)
+
+            
 
     def generate_gems(self):
         """
-        Randomly generate gems (where there is a platform below the coin so
-        the player can reach it). Add the coin to map and update coin list.
+        Randomly generate gems (where there is a platform below the gem so
+        the player can reach it). Add the gem to map and update gem list.
         """
         width = len(self.map)
         height = len(self.map[0])
-        for x in range(5, width, 5):
-            for y in range(0, height, 10):
+        h_spacing = 5
+        # Traverse the platforms
+        for y in range(0, height, 10):
+            for x in range(h_spacing, width, h_spacing):
                 rand_gem = random.randint(1, 5)
-                if self.map[x][y] == 1 and rand_gem == 1 and y < height:
-                    self.Gems.append(Gem(pg.image.load('gem.png'), (x * 10 + 10 / 2, (y * 10 + 10 / 2) - 30)))
+                if self.map[x][y] == 1 and rand_gem == 1 and self.map[x - h_spacing][y-3] != 3:
+                    self.map[x][y-3] == 3
+                    self.Gems.append(Gem(pg.image.load('gem.png'), (x * 10 + 10 / 2, (y - 3) * 10 + 10 / 2)))
+        if len(self.Gems) <= 3:  # If there are less than 3 gems, call the function again
+            self.generate_gems()
     
     def generate_platforms(self):
         """

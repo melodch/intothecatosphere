@@ -75,7 +75,7 @@ class Game:
                 
                 # Get the appropriate groups
                 # Create fireballs
-                self.newGame.create_fireball(self.width, self.height)
+                self.newGame.create_fireball(self.width, 0)
                 # Check for collisions below
                 # Check for collisions above
                 #self.newGame.Players[0].updateY(-2)
@@ -126,6 +126,13 @@ class Game:
                     wallsCollided = self.newGame.Players.check_collision(self.platform_group)
                     if wallsCollided: 
                         self.newGame.Players.update_position(pg.image.load('player.png'), -10,'V')
+
+                # if keys[K_UP]:                  
+                #     laddersCollided = self.newGame.Players.check_collision(self.ladder_group)
+                #     if laddersCollided: 
+                #         self.newGame.Players.update_position(pg.image.load('player.png'), self.newGame.Players.get_speed(),'V')
+
+                
 
                 # Redraw all instances onto the screen
                 self.newGame.redraw_screen(self.displayScreen, self.scoreLabel, self.width, self.height)

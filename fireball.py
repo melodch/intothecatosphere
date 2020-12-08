@@ -80,6 +80,7 @@ class Fireball(OnBoard):
         # return Colliders
         self.update(self.image, self.__speed)  # Bottom collision
         colliders = pg.sprite.spritecollide(self, collider_group, True)
+        return colliders
 
     def continuous_update(self,collider_group):
         """
