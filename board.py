@@ -133,8 +133,6 @@ class Board:
         #for i in range(1000, 1, -1):
         #    pg.draw.circle(display_screen, (0, 0, 0, 0), self.Players.get_position(), i+100, width=2)
 
-            
-
     def generate_gems(self):
         """
         Randomly generate gems (where there is a platform below the gem so
@@ -144,11 +142,13 @@ class Board:
         height = len(self.map[0])
         h_spacing = 5
         # Traverse the platforms
-        for y in range(0, height, 10):
+        for y in range(10, height, 10):
             for x in range(h_spacing, width, h_spacing):
                 rand_gem = random.randint(1, 5)
-                if self.map[x][y] == 1 and rand_gem == 1 and self.map[x - h_spacing][y-3] != 3:
-                    self.map[x][y-3] == 3
+                if self.map[x][y] == 1 and rand_gem == 1 and self.map[x - h_spacing][y - 3] != 3:
+                    # print("x,y check: ", x - h_spacing, y - 3)
+                    self.map[x][y - 3] = 3
+                    # print("x, y: ", x, y - 3)
                     self.Gems.append(Gem(pg.image.load('gem.png'), (x * 10 + 10 / 2, (y - 3) * 10 + 10 / 2)))
         if len(self.Gems) <= 3:  # If there are less than 3 gems, call the function again
             self.generate_gems()
