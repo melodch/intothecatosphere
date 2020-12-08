@@ -131,39 +131,32 @@ class Board:
         Randomly generate gems (where there is a platform below the coin so
         the player can reach it). Add the coin to map and update coin list.
         """
-        for i in range(len(self.map)):
-            for j in range(len(self.map[i])):
-                if self.map[i][j] == 0 and ((i + 1 < len(self.map) and self.map[i + 1][j] == 1) or (
-                            i + 2 < len(self.map) and self.map[i + 2][j] == 1)):
-                    randNumber = math.floor(random.random() * 1000)
-                    if randNumber % 35 == 0 and len(self.Gems) <= 9:  # At max there will be 10 gems in map
-                        self.map[i][j] = 3
-                        # Check if there is a platform below where the gem is to be placed
-                        if j - 1 >= 0 and self.map[i][j - 1] == 3:
-                            self.map[i][j] = 0
-                        if self.map[i][j] == 3:
-                            # Add the gem to our gem list
-                            self.Gems.append(Gem(pg.image.load('gem.png'), (j * 10 + 10 / 2, i * 10 + 10 / 2)))
-        if len(self.Gems) <= 5:  # If there are less than 6 gem, we call the function again
-            self.generate_gems()
+        width = len(self.map)
+        height = len(self.map[0])
+        for x in range(width):
+            for y in range(0, height, 10):
+                rand_gem = random.randint(1, 15)
+                if self.map[x][y] == 1 and rand_gem == 1 and (y + 1) < height:
+                    self.map[x][y + 1] == 3
+                    self.Gems.append(Gem(pg.image.load('gem.png'), ((y + 1) * 10 + 10 / 2, (x + 1) * 10 + 10 / 2)))
     
     def generate_platforms(self):
         """
         Randomly generate platforms. Add the platform to map and update platforms list.
         """
-        height = self.__height // 10
-        width = self.__width // 10
+        width = len(self.map)
+        height = len(self.map[0])
         for y in range(0, height, 10):
             x = 1
-            while x < width - 1:
-                rand_platform_size = random.randint(4, 7)
+            while x < width:
+                rand_platform_size = random.randint(4, 15)
                 for _ in range(rand_platform_size):
-                    self.map[x][y] = 3
+                    self.map[x][y] = 1
                     self.Platforms.append(Platform(pg.image.load('platform.png'), (x * 10 + 10 / 2, y * 10 + 10 / 2)))
                     x += 1
-                    if x == width - 1:
+                    if x >= width - 1:
                         break
-                rand_space = random.randint(10, 15)
+                rand_space = random.randint(7, 15)
                 x += rand_space
 
     def check_map_for_match(self, x_pos, y_pos, check_no):
@@ -194,14 +187,20 @@ class Board:
         Add boundaries to the four sides of our map.
         """
         # Update map to have 1s where there are boundaries
+        width = len(self.map)
+        height = len(self.map[0])
+
+        # Bottom floor
+        for col in range(0, height):
+            self.map[col][(width) - 2] = 1
+            self.Platforms.append(Platform(pg.image.load('platform.png'), (col * 10 + 10 / 2, width * 10 + 10 / 2)))
+        
         # Left and right sides
-        for row in range(self.__height // 10):
-            self.map[row][0] = 1
-            self.map[row][(self.__width// 10) -1 ] = 1
-        # Top and bottom sides
-        for col in range(self.__width // 10):
-            self.map[0][col] = 1
-            self.map[(self.__height// 10) -1][col] = 1
+        for row in range(0, width - 1, 2):
+            self.map[0][row] = 1
+            self.map[(height) - 1][row] = 1
+            self.Platforms.append(Platform(pg.image.load('platform.png'), (- 15, row * 10 + 10 / 2)))
+            self.Platforms.append(Platform(pg.image.load('platform.png'), (height * 10 + 15, row * 10 + 10 / 2)))
 
     def make_ladders(self):
         """
@@ -301,14 +300,9 @@ class Board:
         self.platform_group.draw(displayScreen)
         self.gem_group.draw(displayScreen)
         self.player_group.draw(displayScreen)
-        # Fill the screen with a fog of war        
-        # self.fog.fill((0, 0, 0, 255))
-        # self.fog.blit
-        # displayScreen.fill((0, 0, 0, 255))
-        # displayScreen.blit(self.fog, self.fog.get_rect())
-        self.render_fog(displayScreen)
         
-        # displayScreen.blit(self.fog, (0, 0))
+        # Fill the screen with a fog
+        # self.render_fog(displayScreen)
         
         displayScreen.blit(score_label, (265-score_label.get_width()/2, 470)) #Center the text on the board
 
