@@ -69,12 +69,14 @@ class Game:
             self.clock.tick(self.FPS)
             self.score_label = self.myFont.render(str(self.new_game.score), 1,
                                                     (0, 0, 0))
+            self.lives_label = self.myFont.render(str(self.new_game.lives), 1,
+                                                    (0, 0, 0))
             # If the game state is not 1 then we will not have to run the game,
             # we just need to display buttons
             if self.new_game.gameState != 1:
 
                 self.new_game.check_button()  # Checks the buttons for hover effects
-                self.new_game.redraw_screen(self.display_screen, self.score_label, self.width,
+                self.new_game.redraw_screen(self.display_screen, self.score_label,self.lives_label, self.width,
                                           self.height)  # Redraws the buttons onto the screen
 
                 for event in pg.event.get():
@@ -97,7 +99,7 @@ class Game:
 
                 # Get the appropriate groups
                 # Create fireballs
-                self.new_game.create_fireball(self.width, 0)
+                self.new_game.create_fireball(self.width)
                 # Check for collisions below
                 # Check for collisions above
                 #self.new_game.Players[0].updateY(-2)
@@ -157,7 +159,7 @@ class Game:
 
                 # Redraw all instances onto the screen
                 self.new_game.redraw_screen(self.display_screen,
-                                            self.score_label,
+                                            self.score_label,self.lives_label,
                                             self.width, self.height)
 
                 # Update the fireball and check for collisions with player.

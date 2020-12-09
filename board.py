@@ -75,6 +75,7 @@ class Board:
         self._width = WIDTH
         self._height = HEIGHT
         self.score = 0
+        self.lives = 3
         self.gameState = 0
         self.direction = 0
         self.white = (255, 255, 255)
@@ -114,6 +115,7 @@ class Board:
         # Call initialize_game() method to initialize the game and generate map
         # Call create_groups() method to create instance groups
         self.score = 0
+        self.lives = 3
         self.map = []  # We will create the map again when we reset the game
         self.Players = Player(pg.image.load('player.png'),
                               (self._width // 2, self._height - 20))
@@ -128,42 +130,65 @@ class Board:
         self.initialize_game()  # Initialize game and generate map
         self.create_groups()  # Creates instance groups
 
-    def create_fireball(self, width, height):
+    def create_fireball(self, width):
         """
         Randomly generate fireballs.
         """
 
-        if len(self.Fireballs) < 5:
-            time.sleep(3)
-            location = random.randint(10, width)
+        if len(self.Fireballs) < 3:
+            #time.sleep(0.5)
+            location = (random.randint(5, width),random.randint(-1000,0))
             self.Fireballs.append(Fireball(pg.image.load('fireball.png'),
-                                  (location, height), len(self.Fireballs), -3))
+                                  location, len(self.Fireballs), -1))
             self.create_groups()
 
-    def render_fog(self, display_screen):
+    def fireball_check(self):
         """
-        Render the fog around the player. There will be a gradient circle
-        around the Sprite that the player will be able to see.
+        Update all the fireball positions and check for collisions with player.
         """
-        # Draw circles around the Sprite that get darker as they get further away.
-        # for i in range(1000, 1, -1):
-        #    pg.draw.circle(display_screen, (0, 0, 0, 0), self.Players.get_position(), i+100, width=2)
+        # Loop through all fireballs
+        # Call continuous_update method in Fireball class to
+        # updatetheir position
+        # Call check_collision method in Fireball class to
+        # check for collisions with player
+        # If it has hit the player, game over
+        for fireball in self.fireball_group:
+            fireball.continuous_update(self.player_group)
+            if fireball.check_collision(self.player_group):
+                # if len(self.Hearts) >= 2:  # Reduce the player's life by 1
+                self.Fireballs.remove(fireball)
+                self.lives -= 1
+                self.create_groups()
+            if self.lives == 0:
+                self.gameState = 2
+            if fireball.get_position()[1] >= 490:
+                self.Fireballs.remove(fireball)
+                    # self.Hearts.pop(len(self.Hearts) - 1)
 
-        # screen = pg.display.set_mode(display_screen, 0, 32)
-        screen = pg.display.set_mode((self._width, self._height), 0, 32)
-        # Fill the screen with white
-        screen.fill((255, 255, 255))
-        # Make a black surface the size of the display
-        fog_of_war = pg.Surface(display_screen)
-        fog_of_war.fill((0, 0, 0))
-        # Make a gray circle on top of the black surface
-        pg.draw.circle(fog_of_war, (60, 60, 60), self.Players.get_position(), 100, 0)
-        # Set the transparent colorkey to gray
-        # Using this method (if it works), we can a
-        # gradient using different grays
-        fog_of_war.set_colorkey((60, 60, 60))
-        screen.blit(fog_of_war, (0, 0))
-        pg.display.update()
+    # def render_fog(self, display_screen):
+    #     """
+    #     Render the fog around the player. There will be a gradient circle
+    #     around the Sprite that the player will be able to see.
+    #     """
+    #     # Draw circles around the Sprite that get darker as they get further away.
+    #     # for i in range(1000, 1, -1):
+    #     #    pg.draw.circle(display_screen, (0, 0, 0, 0), self.Players.get_position(), i+100, width=2)
+
+    #     # screen = pg.display.set_mode(display_screen, 0, 32)
+    #     screen = pg.display.set_mode((self._width, self._height), 0, 32)
+    #     # Fill the screen with white
+    #     screen.fill((255, 255, 255))
+    #     # Make a black surface the size of the display
+    #     fog_of_war = pg.Surface(display_screen) UNCOMMENT LATER
+    #     fog_of_war.fill((0, 0, 0))
+    #     # Make a gray circle on top of the black surface
+    #     pg.draw.circle(fog_of_war, (60, 60, 60), self.Players.get_position(), 100, 0)
+    #     # Set the transparent colorkey to gray
+    #     # Using this method (if it works), we can a
+    #     # gradient using different grays
+    #     fog_of_war.set_colorkey((60, 60, 60))
+    #     screen.blit(fog_of_war, (0, 0))
+    #     pg.display.update()
 
     def generate_gems(self):
         """
@@ -207,7 +232,8 @@ class Board:
                     if x >= width - 1:
                         break
                 rand_space = random.randint(7, 15)
-                x += rand_space
+                if random.randint(0, 1) == 0:
+                    x += rand_space
 
     def check_map_for_match(self, x_pos, y_pos, check_no):
         """
@@ -236,54 +262,52 @@ class Board:
         """
         Add boundaries to the four sides of our map.
         """
-        # Update map to have 1s where there are boundaries
-        width = len(self.map)
-        height = len(self.map[0])
-
+        height = len(self.map)
+        width = len(self.map[0])
+        
         # Bottom floor
-        for col in range(0, height):
-            self.map[col][(width) - 2] = 1
-            self.Platforms.append(Platform(pg.image.load('platform.png'),
-                                  (col * 10 + 10 / 2, width * 10 + 10 / 2)))
-
+        for i in range(0, height):
+            self.map[i][width - 1] = 1
+            self.Platforms.append(Platform(pg.image.load('platform.png'), (i * 10 + 10 / 2, width * 10 + 10 / 2)))
         # Left and right sides
-        for row in range(0, width - 1, 2):
-            self.map[0][row] = 1
-            self.map[height - 1][row] = 1
-            self.Platforms.append(Platform(pg.image.load('platform.png'),
-                                  (- 20, row * 10 + 10 / 2)))
-            self.Platforms.append(Platform(pg.image.load('platform.png'),
-                                  ((height - 1) * 10 + 20, row * 10 + 10 / 2)))
-
+        for j in range(0, width):
+            self.map[0][j] = 1
+            self.map[height - 1][j] = 1
+            self.Platforms.append(Platform(pg.image.load('platform.png'), (- 20, j * 10 + 10 / 2)))
+            self.Platforms.append(Platform(pg.image.load('platform.png'), (height * 10 + 15, j * 10 + 10 / 2)))
+    
     def generate_ladders(self):
         height = len(self.map) - 1
         width = len(self.map[0]) - 1
+        print("gen ladd height: ", height)
         h_spacing = 5
         # Loop through each platform level
         for y in range(0, height, 10):
             num_on_this_lvl = 0
             rand_num = random.randint(1, 2)
+            print('ran')
             while num_on_this_lvl < rand_num:
                 for x in range(5, width, h_spacing):
                     rand_ladder = random.randint(1, 5)
-                    if num_on_this_lvl >= 2:
+                    if num_on_this_lvl == rand_num:
                         break
                     # If there hasn't already been a ladder placed on this level
                     # If there is a platform on this level and one level lower
                     # Chance of a ladder being placed is 1/5
-                    elif self.place_ladder(x, y, h_spacing, rand_ladder):
-                        # Call helper method to create a ladder to connect
-                        # between upper and lower platform
+                    elif self.map[x][y] == 1 and self.map[x][y + 10] == 1 and rand_ladder == 1 and \
+                    self.map[x - h_spacing][y] != 2 and self.map[x + h_spacing][y] != 2:
+                        # Call helper method to create a ladder to connect between upper and lower platform
+                        print("x, y: ", x, y, height)
                         self.create_ladder(x, y, y + 10)
+                        print('here')
                         num_on_this_lvl += 1
 
-    def place_ladder(self, x, y, h_spacing, rand_ladder):
-        if self.map[x][y] == self.map[x][y + 10] == rand_ladder == 1:
-            if self.map[x - h_spacing][y] != 2 and self.map[x + h_spacing][y] != 2:
-                if self.map[x][y - 10] != 2 and \
-                   self.map[x][y + 10] != 2:
-                    return True
-        return False
+                
+    # def place_ladder(self, x, y, h_spacing, rand_ladder):
+    #     if self.map[x][y] == self.map[x][y + 10] == rand_ladder == 1 and self.map[x - h_spacing][y] != 2 and self.map[x + h_spacing][y] != 2:
+    #         # if self.map[x][y - 10] != 2 and self.map[x][y + 10] != 2:
+    #         return True
+    #     return False
 
     def create_ladder(self, x, upper_y, lower_y):
         for y in range(upper_y, lower_y, 2):
@@ -318,23 +342,7 @@ class Board:
         """
         pass
 
-    def fireball_check(self):
-        """
-        Update all the fireball positions and check for collisions with player.
-        """
-        # Loop through all fireballs
-        # Call continuous_update method in Fireball class to
-        # updatetheir position
-        # Call check_collision method in Fireball class to
-        # check for collisions with player
-        # If it has hit the player, game over
-        for fireball in self.fireball_group:
-            fireball.continuous_update(self.player_group)
-            if fireball.check_collision(self.player_group):
-                # if len(self.Hearts) >= 2:  # Reduce the player's life by 1
-                self.Fireballs.remove(fireball)
-                self.create_groups()
-                    # self.Hearts.pop(len(self.Hearts) - 1)
+
 
     def gem_check(self, gems_collected):
         """
@@ -408,7 +416,7 @@ class Board:
                     self.Buttons[button].change_image(pg.image.load('restart.png'))
 
     # changed the syntax of the display screen thing
-    def redraw_screen(self, display_screen, score_label, width, height):
+    def redraw_screen(self, display_screen, score_label, lives_label, width, height):
         """
         Redraws the entire game screen.
 
@@ -448,11 +456,12 @@ class Board:
             self.ladder_group.draw(display_screen)
             self.fireball_group.draw(display_screen)
             # Fill the screen with a fog
-            self.render_fog(display_screen)
+            #self.render_fog(display_screen)
 
             # Center text on the board
             score_width = score_label.get_width()
-            display_screen.blit(score_label, (265 - score_width / 2, 470))
+            display_screen.blit(score_label, (265 - score_width / 2, 470))      
+            display_screen.blit(lives_label, (470, 470))
 
     def create_groups(self):
         """
@@ -473,9 +482,8 @@ class Board:
         game components, then creating the groups of those game components.
         """
         self.make_map()
+        self.make_boundaries()
         self.generate_platforms()
         self.generate_gems()
-        # self.generate_ladders()
-        self.populate_instance_groups()
-        self.make_boundaries()
+        self.generate_ladders()
         self.create_groups()
