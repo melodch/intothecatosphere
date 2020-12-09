@@ -26,7 +26,7 @@ class Gem(OnBoard):
         """
         # using super to call the attributes from the parent OnBoard class.
         # initializing the value attribute as some integer.
-        super(Gem, self).__init__(raw_image, position)
+        super().__init__(raw_image, position)
 
     # def update_image(self, raw_image):
     #     """

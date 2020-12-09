@@ -17,14 +17,13 @@ class Ladder(OnBoard):
             the ladder.
         """
         # Using super to call the attributes from the parent OnBoard class.
-        pass
+        super().__init__(raw_image, position)
 
-    def update_image(self, raw_image):
-        """
-        Update the ladder image.
-
-        Args:
-            raw_image: A string representing the path to a png.
-        """
-        # Update the ladder image from the raw image and scale it
-        pass
+#     def update_image(self, raw_image):
+#         """
+#         Update the ladder image.
+#         Args:
+#             raw_image: A string representing the path to a png.
+#         """
+#         # Update the ladder image from the raw image and scale it
+#         pass

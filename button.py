@@ -27,33 +27,37 @@ class Button:
         # Initialize attributes for the image, position and name
         # Sets the rect attribute to be the image
         # Sets the center of the rect atrribute as the position
-        pass
+        self.image = raw_image
+        self._position = position
+        self.rect = self.image.get_rect()
+        self.rect.center = self._position
+        self.name = name  # Set the name of the button with a string
 
-    def changeImage(self, raw_image):
+    def change_image(self, raw_image):
         """
         Updating the buttons image as the input image
 
         Args:
             raw_image: A string representing the path to a png.
         """
-        pass
+        self.image = raw_image
 
     def get_top_left_pos(self):
         """
         Return a tuple representing the coordinates of the top left
         corner of a button.
         """
-        pass
+        return (self._position[0] - self.rect.width / 2, self._position[1] - self.rect.height / 2)
 
     # Getters and Setters
     def get_position(self):
         """
         Get the position of a button.
         """
-        pass
+        return self._position
 
     def set_position(self, position):
         """
         Set the position of a button.
         """
-        pass
+        self._position = position

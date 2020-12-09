@@ -16,6 +16,6 @@ Set various constants that will stay the same throughout the game.
 
 # Set various colors like white as (255, 255, 255) and black as (0, 0, 0).
 # Colors use HTML5 format.
-height = 500
-width = 500
+HEIGHT = 500
+WIDTH = 500
 

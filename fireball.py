@@ -31,14 +31,13 @@ class Fireball(OnBoard):
             index: An integer that uniquely identifies each fireball
             speed: An integer that sets the speed of the fireball.
         """
-        super(Fireball,self).__init__(raw_image, position)
+        super().__init__(raw_image, position)
         self.index = index
         #The newly spawned fireball is not falling
         self._fall = 0
         #The speed of a fireball is set
         self._speed = speed
         pass
-
 
     # Getting and setting variables
     def get_speed(self):
@@ -60,8 +59,8 @@ class Fireball(OnBoard):
         """
         # Move the fireball in the required direction with
         # the required value and also set the image of the fireball        
-        self.setPosition((self.getPosition()[0], self.getPosition()[1] + speed))
-        self.rect.center = self.getPosition()
+        self.set_position((self.get_position()[0], self.get_position()[1] - speed))
+        self.rect.center = self.get_position()
 
     def check_collision(self, collider_group):
         """
@@ -78,11 +77,11 @@ class Fireball(OnBoard):
         # between the sprite and the player.
 
         # return Colliders
-        self.update(self.image, self.__speed)  # Bottom collision
+        self.update(self.image, self._speed)  # Bottom collision
         colliders = pg.sprite.spritecollide(self, collider_group, True)
         return colliders
 
-    def continuous_update(self,collider_group):
+    def continuous_update(self, collider_group):
         """
         Continously updating the fireball.
         """
@@ -91,7 +90,7 @@ class Fireball(OnBoard):
         # If there is a colllision, then set the fireball as not colliding
         if self._fall == 1:
         #We move the fireball downwards with speed of self.__speed
-            self.update(self.image, self.__speed)
+            self.update(self.image, self._speed)
             if self.check_collision(collider_group):
                 #We have collided with a wall below, so the fireball can stop falling
                 self._fall = 0
