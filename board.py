@@ -63,12 +63,19 @@ class Board:
 
         # Create the buttons used in the pregame and postgame screens.
         # Initialize font and background for those screens.
+        # The buttons used in the pregame and postgame screens
+        self.Buttons = [Button(pg.image.load('start.png'), (500, 400), "start"),
+                        Button(pg.image.load('exit.png'), (700, 400), "exit"),
+                        Button(pg.image.load('restart.png'), (500, 400), "restart"), ]
+        self.ActiveButtons = [1, 1, 0]  # Initially the pregame screen uses the first 2 buttons
+        self.myfont = pg.font.SysFont("comicsansms", 50)
 
         # Initialize instance groups that are used to display instances on
         # the screen.
         self.__width = 500 #constants.width
         self.__height = 500 #constants.height
         self.score = 0
+        self.gameState = 0
         self.direction = 0
         self.white = (255, 255, 255)
 
@@ -82,6 +89,8 @@ class Board:
 
         self.background = pg.image.load('board.png') #added image
         self.background = pg.transform.scale(self.background, (width, height))
+        self.startbackground = pg.image.load('buttonbackground.jpg')
+        self.startbackground = pg.transform.scale(self.startbackground, (width, height))
 
         # Initialize the instance groups which we use to display our instances on the screen
         self.player_group = pg.sprite.RenderPlain(self.Players)
@@ -185,22 +194,12 @@ class Board:
                 rand_platform_size = random.randint(7, 15)
                 for _ in range(rand_platform_size):
                     self.map[x][y] = 1
-                    # self.Platforms.append(Platform(pg.image.load('platform.png'), (x * 10 + 10 / 2, y * 10 + 10 / 2)))
+                    self.Platforms.append(Platform(pg.image.load('platform.png'), (x * 10 + 10 / 2, y * 10 + 10 / 2)))
                     x += 1
                     if x >= width - 1:
                         break
                 rand_space = random.randint(7, 15)
                 x += rand_space
-
-    def populate_map(self):
-        for x in range(len(self.map)):
-            for y in range(len(self.map[x])):
-                if self.map[x][y] == 1:
-                    # Add a wall at that position
-                    self.Platforms.append(OnBoard(pg.image.load('platform.png'), (x * 10 + 10 / 2, y * 10 + 10 / 2)))
-                elif self.map[x][y] == 2:
-                    # Add a ladder at that position
-                    self.Ladders.append(OnBoard(pg.image.load('ladder.png'), (x * 10 + 10 / 2, y * 10 + 10 / 2)))
 
     def check_map_for_match(self, x_pos, y_pos, check_no):
         """
@@ -241,10 +240,10 @@ class Board:
         # Left and right sides
         for row in range(0, width - 1, 2):
             self.map[0][row] = 1
-            self.map[(height) - 1][row] = 1
+            self.map[height - 1][row] = 1
             self.Platforms.append(Platform(pg.image.load('platform.png'), (- 20, row * 10 + 10 / 2)))
-            self.Platforms.append(Platform(pg.image.load('platform.png'), (height * 10 + 20, row * 10 + 10 / 2)))
-
+            self.Platforms.append(Platform(pg.image.load('platform.png'), ((height - 1) * 10 + 20, row * 10 + 10 / 2)))
+    
     def generate_ladders(self):
         height = len(self.map) - 1
         width = len(self.map[0]) - 1
@@ -261,16 +260,22 @@ class Board:
                     # If there hasn't already been a ladder placed on this level
                     # If there is a platform on this level and one level lower
                     # Chance of a ladder being placed is 1/5
-                    elif self.map[x][y] == 1 and self.map[x][y + 10] == 1 and rand_ladder == 1 and \
-                    self.map[x - h_spacing][y] != 2 and self.map[x + h_spacing][y] != 2:
+                    elif self.place_ladder(x, y, h_spacing, rand_ladder):
                         # Call helper method to create a ladder to connect between upper and lower platform
                         self.create_ladder(x, y, y + 10)
                         num_on_this_lvl += 1
 
+    def place_ladder(self, x, y, h_spacing, rand_ladder):
+        if self.map[x][y] == self.map[x][y + 10] == rand_ladder == 1:
+            if self.map[x - h_spacing][y] != 2 and self.map[x + h_spacing][y] != 2:
+                if self.map[x][y - 10] != 2 and self.map[x][y + 10] != 2:
+                    return True
+        return False
+
     def create_ladder(self, x, upper_y, lower_y):
         for y in range(upper_y, lower_y, 2):
             self.map[x][y] = 2
-            # self.Ladders.append(Ladder(pg.image.load('ladder.png'), (x * 10 + 10 / 2, y * 10 + 10 / 2)))
+            self.Ladders.append(Ladder(pg.image.load('ladder.png'), (x * 10 + 10 / 2, y * 10 + 10 / 2)))
     
     def populate_instance_groups(self):
         """
@@ -342,10 +347,26 @@ class Board:
         """
         Perform needed actions when a button is clicked.
         """
-        pass
-    # changed the syntax of the display screen thing
+        # If the start button is pressed
+        if self.ActiveButtons[0] == 1 and self.Buttons[0].rect.collidepoint(pg.mouse.get_pos()):
+            self.reset_groups()
+            self.gameState = 1
+            self.ActiveButtons[0] = 0
+            self.ActiveButtons[1] = 0
+            self.ActiveButtons[2] = 0
+        # If the exit button is pressed
+        if self.ActiveButtons[1] == 1 and self.Buttons[1].rect.collidepoint(pg.mouse.get_pos()):
+            pg.quit()
+            sys.exit()
+        # If the restart button is pressed
+        if self.ActiveButtons[2] == 1 and self.Buttons[2].rect.collidepoint(pg.mouse.get_pos()):
+            self.gameState = 0
+            self.ActiveButtons[0] = 1
+            self.ActiveButtons[1] = 1
+            self.ActiveButtons[2] = 0
 
-    def redraw_screen(self, displayScreen, score_label, width, height):
+    # changed the syntax of the display screen thing
+    def redraw_screen(self, display_screen, score_label, width, height):
         """
         Redraws the entire game screen.
 
@@ -356,24 +377,35 @@ class Board:
             height: An integer representing the height of the screen.
         """
         # Fill display screen with black
-        # Update screen depending on whether we are in pregame, game,
-        # or postgame state
-        # If we are in the game state, draw the background first
-        # Then draw all our game component groups on the background
-        displayScreen.fill((0, 0, 0))  # Fill it with black
-        # Draw the background first
-        displayScreen.blit(self.background, self.background.get_rect())
-        # Draw all our groups on the background
-        self.board_group.draw(displayScreen)
-        self.platform_group.draw(displayScreen)
-        self.gem_group.draw(displayScreen)
-        self.player_group.draw(displayScreen)
-        self.ladder_group.draw(displayScreen)
-        self.fireball_group.draw(displayScreen)
-        # Fill the screen with a fog
-        # self.render_fog(displayScreen)
-        
-        displayScreen.blit(score_label, (265-score_label.get_width()/2, 470)) #Center the text on the board
+        display_screen.fill((0, 0, 0))  # Fill it with black
+        # If we are in either pregame or postgame states
+        if self.gameState != 1:
+            display_screen.blit(self.startbackground, self.startbackground.get_rect())
+            if self.gameState == 0:
+                # Pregame state
+                display_screen.blit(pg.image.load('Assets/donkeykongtext.png'), (340, 50))
+            if self.gameState == 2:
+                # Post game state
+                label = self.myfont.render("Your score is " + str(self.score), 1, (255, 255, 255))
+                display_screen.blit(label, (410, 70))
+            for button in range(len(self.ActiveButtons)):
+                if self.ActiveButtons[button] == 1:
+                    display_screen.blit(self.Buttons[button].image, self.Buttons[button].getTopLeftPosition())
+        # If we are in the game state,
+        if self.gameState == 1:
+            # Draw the background first
+            display_screen.blit(self.background, self.background.get_rect())
+            # Draw all our groups on the background
+            self.board_group.draw(display_screen)
+            self.platform_group.draw(display_screen)
+            self.gem_group.draw(display_screen)
+            self.player_group.draw(display_screen)
+            self.ladder_group.draw(display_screen)
+            self.fireball_group.draw(display_screen)
+            # Fill the screen with a fog
+            # self.render_fog(display_screen)
+            
+            display_screen.blit(score_label, (265-score_label.get_width()/2, 470)) #Center the text on the board
 
     def create_groups(self):
         """
@@ -396,8 +428,7 @@ class Board:
         self.make_map()
         self.generate_platforms()
         self.generate_gems()
-        self.generate_ladders()
-        self.populate_map()
+        # self.generate_ladders()
         self.populate_instance_groups()
         self.make_boundaries()
         self.create_groups()

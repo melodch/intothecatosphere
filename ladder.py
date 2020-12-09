@@ -17,7 +17,7 @@ class Ladder(OnBoard):
             the ladder.
         """
         # Using super to call the attributes from the parent OnBoard class.
-        super(Ladder, self).__init__(raw_image, position)
+        super().__init__(raw_image, position)
 
 #     def update_image(self, raw_image):
 #         """

@@ -31,7 +31,7 @@ class Fireball(OnBoard):
             index: An integer that uniquely identifies each fireball
             speed: An integer that sets the speed of the fireball.
         """
-        super(Fireball,self).__init__(raw_image, position)
+        super().__init__(raw_image, position)
         self.index = index
         #The newly spawned fireball is not falling
         self._fall = 0

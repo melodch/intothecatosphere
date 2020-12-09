@@ -68,9 +68,27 @@ class Game:
             self.clock.tick(self.FPS)
             self.scoreLabel = self.myFont.render(str(self.newGame.score), 1,
                                                     (0, 0, 0)) 
+            # If the game state is not 1 then we will not have to run the game, we just need to display buttons
+            if self.newGame.gameState != 1:
 
+                self.newGame.redraw_screen(self.display_screen, self.score_label, self.width,
+                                          self.height)  # Redraws the buttons onto the screen
+
+                for event in pygame.event.get():
+                    # Exit to desktop
+                    if event.type == QUIT:
+                        pg.quit()
+                        sys.exit()
+
+                    if event.type == pg.MOUSEBUTTONUP:
+                        self.newGame.process_button()  # Check which button was clicked and change game state accordingly
+                        # Assign groups again
+                        self.player_group = self.newGame.player_group
+                        self.platform_group = self.newGame.platform_group
+                        # self.ladderGroup = self.newGame.ladderGroup
+        
             # If game state is 1 then run the game:
-            if True:# self.newGame.gameState == 1:
+            if self.newGame.gameState == 1:
                 self.gem_group = self.newGame.gem_group
                 
                 # Get the appropriate groups
