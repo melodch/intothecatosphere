@@ -177,7 +177,9 @@ class Board:
         """
         width = len(self.map)
         height = len(self.map[0])
-        for y in range(0, height, 10):
+        # Generate platforms at all levels but the ground
+        # Vertically spaced out by 10
+        for y in range(0, height - 10, 10):
             x = 1
             while x < width:
                 rand_platform_size = random.randint(7, 15)
@@ -219,7 +221,7 @@ class Board:
         # Make 2D array filled with zeros
         for _ in range(0, self.__height // 10 + 1):
             row = []
-            for _ in range(0, self.__width // 10):
+            for _ in range(0, self.__width // 10 + 1):
                 row.append(0)
             self.map.append(row)
 
@@ -244,16 +246,15 @@ class Board:
             self.Platforms.append(Platform(pg.image.load('platform.png'), (height * 10 + 20, row * 10 + 10 / 2)))
 
     def generate_ladders(self):
-        width = len(self.map)
-        height = len(self.map[0])
-        num_on_this_lvl = False
+        height = len(self.map) - 1
+        width = len(self.map[0]) - 1
         h_spacing = 5
         # Loop through each platform level
-        for y in range(0, height - 10, 10):
+        for y in range(0, height, 10):
             num_on_this_lvl = 0
             rand_num = random.randint(1, 2)
             while num_on_this_lvl < rand_num:
-                for x in range(5, width - 2, h_spacing):
+                for x in range(5, width, h_spacing):
                     rand_ladder = random.randint(1, 5)
                     if num_on_this_lvl >= 2:
                         break
@@ -263,7 +264,6 @@ class Board:
                     elif self.map[x][y] == 1 and self.map[x][y + 10] == 1 and rand_ladder == 1 and \
                     self.map[x - h_spacing][y] != 2 and self.map[x + h_spacing][y] != 2:
                         # Call helper method to create a ladder to connect between upper and lower platform
-                        # print("x, y: ", x, y)
                         self.create_ladder(x, y, y + 10)
                         num_on_this_lvl += 1
 
