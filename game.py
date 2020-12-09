@@ -12,6 +12,7 @@ from pygame.locals import (
     K_ESCAPE,
     KEYDOWN,
     QUIT,
+    MOUSEBUTTONUP,
 )
 
 
@@ -41,7 +42,7 @@ class Game:
         """
         self.width = width
         self.height = height
-        self.displayScreen = pg.display.set_mode((self.width, self.height))
+        self.display_screen = pg.display.set_mode((self.width, self.height))
         self.newGame = Board()
         self.player_group = self.newGame.player_group
         self.platform_group = self.newGame.platform_group
@@ -66,7 +67,7 @@ class Game:
         while True:
 
             self.clock.tick(self.FPS)
-            self.scoreLabel = self.myFont.render(str(self.newGame.score), 1,
+            self.score_label = self.myFont.render(str(self.newGame.score), 1,
                                                     (0, 0, 0)) 
             # If the game state is not 1 then we will not have to run the game, we just need to display buttons
             if self.newGame.gameState != 1:
@@ -74,7 +75,7 @@ class Game:
                 self.newGame.redraw_screen(self.display_screen, self.score_label, self.width,
                                           self.height)  # Redraws the buttons onto the screen
 
-                for event in pygame.event.get():
+                for event in pg.event.get():
                     # Exit to desktop
                     if event.type == QUIT:
                         pg.quit()
@@ -153,7 +154,7 @@ class Game:
                 
 
                 # Redraw all instances onto the screen
-                self.newGame.redraw_screen(self.displayScreen, self.scoreLabel, self.width, self.height)
+                self.newGame.redraw_screen(self.display_screen, self.score_label, self.width, self.height)
 
                 # Update the fireball and check for collisions with player.
                 

@@ -33,7 +33,7 @@ class Button:
         self.rect.center = self._position
         self.name = name  # Set the name of the button with a string
 
-    def changeImage(self, raw_image):
+    def change_image(self, raw_image):
         """
         Updating the buttons image as the input image
 
