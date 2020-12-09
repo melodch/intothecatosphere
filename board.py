@@ -64,9 +64,9 @@ class Board:
         # Create the buttons used in the pregame and postgame screens.
         # Initialize font and background for those screens.
         # The buttons used in the pregame and postgame screens
-        self.Buttons = [Button(pg.image.load('start.png'), (500, 400), "start"),
-                        Button(pg.image.load('exit.png'), (700, 400), "exit"),
-                        Button(pg.image.load('restart.png'), (500, 400), "restart"), ]
+        self.Buttons = [Button(pg.image.load('start.png'), (150, 300), "start"),
+                        Button(pg.image.load('exit.png'), (350, 300), "exit"),
+                        Button(pg.image.load('restart.png'), (150, 300), "restart"), ]
         self.ActiveButtons = [1, 1, 0]  # Initially the pregame screen uses the first 2 buttons
         self.myfont = pg.font.SysFont("comicsansms", 50)
 
@@ -89,7 +89,7 @@ class Board:
 
         self.background = pg.image.load('board.png') #added image
         self.background = pg.transform.scale(self.background, (width, height))
-        self.startbackground = pg.image.load('buttonbackground.jpg')
+        self.startbackground = pg.image.load('startbackground.png')
         self.startbackground = pg.transform.scale(self.startbackground, (width, height))
 
         # Initialize the instance groups which we use to display our instances on the screen
@@ -364,6 +364,26 @@ class Board:
             self.ActiveButtons[0] = 1
             self.ActiveButtons[1] = 1
             self.ActiveButtons[2] = 0
+    # Checks for mouse hovers over buttons to change their images giving a hover button effect
+    def checkButton(self):
+        mouse_pos = pygame.mouse.get_pos()
+        for button in range(len(self.Buttons)):
+            # If the button is active
+            if self.ActiveButtons[button] == 1 and self.Buttons[button].rect.collidepoint(mouse_pos):
+                if button == 0:
+                    self.Buttons[button].changeImage(pg.image.load('start1.png'))
+                elif button == 1:
+                    self.Buttons[button].changeImage(pg.image.load('exit1.png'))
+                elif button == 2:
+                    self.Buttons[button].changeImage(pg.image.load('restart1.png'))
+            # Inactive button
+            else:
+                if button == 0:
+                    self.Buttons[button].changeImage(pg.image.load('start.png'))
+                elif button == 1:
+                    self.Buttons[button].changeImage(pg.image.load('exit.png'))
+                elif button == 2:
+                    self.Buttons[button].changeImage(pg.image.load('restart.png'))
 
     # changed the syntax of the display screen thing
     def redraw_screen(self, display_screen, score_label, width, height):
@@ -383,14 +403,15 @@ class Board:
             display_screen.blit(self.startbackground, self.startbackground.get_rect())
             if self.gameState == 0:
                 # Pregame state
-                display_screen.blit(pg.image.load('Assets/donkeykongtext.png'), (340, 50))
+                # display_screen.blit(pg.image.load('Assets/donkeykongtext.png'), (340, 50))
+                pass
             if self.gameState == 2:
                 # Post game state
                 label = self.myfont.render("Your score is " + str(self.score), 1, (255, 255, 255))
                 display_screen.blit(label, (410, 70))
             for button in range(len(self.ActiveButtons)):
                 if self.ActiveButtons[button] == 1:
-                    display_screen.blit(self.Buttons[button].image, self.Buttons[button].getTopLeftPosition())
+                    display_screen.blit(self.Buttons[button].image, self.Buttons[button].get_top_left_pos())
         # If we are in the game state,
         if self.gameState == 1:
             # Draw the background first
