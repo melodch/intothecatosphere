@@ -149,7 +149,8 @@ class Board:
         # for i in range(1000, 1, -1):
         #    pg.draw.circle(display_screen, (0, 0, 0, 0), self.Players.get_position(), i+100, width=2)
 
-        screen = pg.display.set_mode(display_screen, 0, 32)
+        # screen = pg.display.set_mode(display_screen, 0, 32)
+        screen = pg.display.set_mode((self._width, self._height), 0, 32)
         # Fill the screen with white
         screen.fill((255, 255, 255))
         # Make a black surface the size of the display
@@ -447,7 +448,7 @@ class Board:
             self.ladder_group.draw(display_screen)
             self.fireball_group.draw(display_screen)
             # Fill the screen with a fog
-            # self.render_fog(display_screen)
+            self.render_fog(display_screen)
 
             # Center text on the board
             score_width = score_label.get_width()
