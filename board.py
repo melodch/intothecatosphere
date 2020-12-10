@@ -84,7 +84,7 @@ class Board:
         # Arrays in which we store our instances of different classes
         self.Players = None
         self.Fireballs = self.Gems = self.Platforms = []
-        self.Boards = self.Ladders = []
+        self.Boards = self.Ladders = self.References = []
 
         # Resets the above groups and initializes the game for us
         self.reset_groups()
@@ -102,6 +102,7 @@ class Board:
         self.board_group = pg.sprite.RenderPlain(self.Boards)
         self.fireball_group = pg.sprite.RenderPlain(self.Fireballs)
         self.ladder_group = pg.sprite.RenderPlain(self.Ladders)
+        self.reference_group = pg.sprite.RenderPlain(self.References)
 
     def reset_groups(self):
         """
@@ -118,11 +119,12 @@ class Board:
         self.lives = 3
         self.map = []  # We will create the map again when we reset the game
         self.Players = Player(pg.image.load('player.png'),
-                              (self._width // 2, self._height - 20))
+                              (self._width // 2, self._height - 5))
         self.Gems = []
         self.Platforms = []
         self.Fireballs = []
         self.Ladders = []
+        self.Refereces = []
         self.Boards = [OnBoard(pg.image.load('board.png'), (200, 480)),
                        OnBoard(pg.image.load('board.png'), (685, 480))]
         # self.Boards[0].modifySize(self.Boards[0].image, 40, 150)  # Do this on purpose to get a pixelated image
@@ -234,6 +236,11 @@ class Board:
                 rand_space = random.randint(7, 15)
                 if random.randint(0, 1) == 0:
                     x += rand_space
+    
+    def generate_reference_lines(self):
+        for platform in self.platform_group:
+            position = platform.get_position()
+            
 
     def check_map_for_match(self, x_pos, y_pos, check_no):
         """

@@ -91,7 +91,7 @@ class Game:
                         # Assign groups again
                         self.player_group = self.new_game.player_group
                         self.platform_group = self.new_game.platform_group
-                        # self.ladderGroup = self.new_game.ladderGroup
+                        self.ladder_group = self.new_game.ladder_group
 
             # If game state is 1 then run the game:
             if self.new_game.gameState == 1:
@@ -128,34 +128,59 @@ class Game:
                 keys = pg.key.get_pressed()
                 #Change this
                 if keys[K_RIGHT]:
+                    ladders_collided = self.new_game.Players.check_collision(self.ladder_group)
 
-                    # Check which key is being pressed,
-                    # update position accordingly
-                    self.new_game.Players.update_position(pg.image.load('player.png'), self.new_game.Players.get_speed(), 'H')
-                    # If collided with wall, move player back to last state
-                    platforms_collided = self.new_game.Players.check_collision(self.platform_group)
-                    if platforms_collided:
+                    #collisions down
+                    self.new_game.Players.update_position(pg.image.load('player.png'), -2,'V')                    
+                    walls_collided_down = self.new_game.Players.check_collision(self.platform_group)
+                    self.new_game.Players.update_position(pg.image.load('player.png'), 2,'V') 
+                    
+                    #collisions up
+                    self.new_game.Players.update_position(pg.image.load('player.png'), 2,'V')
+                    walls_collided_up = self.new_game.Players.check_collision(self.platform_group)
+                    self.new_game.Players.update_position(pg.image.load('player.png'), -2,'V') 
+                    
+                    # moving character
+                    if (walls_collided_down != []) and (walls_collided_up == []):                        
                         self.new_game.Players.update_position(pg.image.load('player.png'), -self.new_game.Players.get_speed(), 'H')
+                    
+                    # if ladders_collided == [] and walls_collided_up == [] and walls_collided_down:
+                    #     self.new_game.Players.update_position(pg.image.load('player.png'), -self.new_game.Players.get_speed(), 'V')
 
                 if keys[K_LEFT]:
-
-                    # Check which key is being pressed, update position accordingly
-                    self.new_game.Players.update_position(pg.image.load('player.png'), -self.new_game.Players.get_speed(), 'H')
-                    # If we have collided a wall, move the player back to where he was in the last state
-                    wallsCollided = self.new_game.Players.check_collision(self.platform_group)
-                    if wallsCollided:
+                    ladders_collided = self.new_game.Players.check_collision(self.ladder_group)
+                    #collisions down
+                    self.new_game.Players.update_position(pg.image.load('player.png'), -2,'V')                    
+                    walls_collided_down = self.new_game.Players.check_collision(self.platform_group)
+                    self.new_game.Players.update_position(pg.image.load('player.png'), 2,'V') 
+                    
+                    #collisions up
+                    self.new_game.Players.update_position(pg.image.load('player.png'), 2,'V')
+                    walls_collided_up = self.new_game.Players.check_collision(self.platform_group)
+                    self.new_game.Players.update_position(pg.image.load('player.png'), -2,'V') 
+                    
+                    #moving character
+                    if (walls_collided_down != []) and (walls_collided_up == []):                        
                         self.new_game.Players.update_position(pg.image.load('player.png'), self.new_game.Players.get_speed(), 'H')
 
-                if keys[K_DOWN]:
-                    self.new_game.Players.update_position(pg.image.load('player.png'), 10, 'V')
-                    wallsCollided = self.new_game.Players.check_collision(self.platform_group)
-                    if wallsCollided:
-                        self.new_game.Players.update_position(pg.image.load('player.png'), -10,'V')
+                    # if ladders_collided == [] and walls_collided_up == [] and walls_collided_down == []:
+                    #     self.new_game.Players.update_position(pg.image.load('player.png'), -self.new_game.Players.get_speed(), 'V')
 
-                # if keys[K_UP]:
-                #     laddersCollided = self.new_game.Players.check_collision(self.ladder_group)
-                #     if laddersCollided:
-                #         self.new_game.Players.update_position(pg.image.load('player.png'), self.new_game.Players.get_speed(),'V')
+                if keys[K_DOWN]:
+                    walls_collided = self.new_game.Players.check_collision(self.platform_group)
+                    ladders_collided = self.new_game.Players.check_collision(self.ladder_group)
+                    if ladders_collided:
+                        self.new_game.Players.update_position(pg.image.load('player.png'), -self.new_game.Players.get_speed(),'V')
+                    if ladders_collided == [] and walls_collided_up == [] and walls_collided_down == []:
+                        self.new_game.Players.update_position(pg.image.load('player.png'), -self.new_game.Players.get_speed(), 'V')
+
+                if keys[K_UP]:
+                    ladders_collided = self.new_game.Players.check_collision(self.ladder_group)
+                    if ladders_collided:
+                        self.new_game.Players.update_position(pg.image.load('player.png'), self.new_game.Players.get_speed(),'V')
+  
+                
+               
 
                 # Redraw all instances onto the screen
                 self.new_game.redraw_screen(self.display_screen,
