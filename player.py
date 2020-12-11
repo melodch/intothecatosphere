@@ -63,9 +63,9 @@ class Person(pg.sprite.Sprite):
     
     def update_position(self, raw_image, value, direction):
         if direction == 'V':
-            self._position = (self._position[0], self._position[1] + value)
+            self._position = (self._position[0], self._position[1] - value)
         if direction == 'H':
-            self._position = (self._position[0] + value, self._position[1])
+            self._position = (self._position[0] - value, self._position[1])
         self.rect.center = self._position
 
     def check_collision(self, colliderGroup):
