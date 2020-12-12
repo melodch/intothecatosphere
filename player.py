@@ -26,7 +26,7 @@ class Person(pg.sprite.Sprite):
         super(Person, self).__init__()
         self._position = position
         self.image = image
-        self.image = pg.transform.scale(self.image, (15, 15))
+        self.image = pg.transform.scale(self.image, (30, 30))
         self.rect = self.image.get_rect()
         self.rect.center = self._position
 
@@ -62,6 +62,8 @@ class Person(pg.sprite.Sprite):
 
     
     def update_position(self, raw_image, value, direction):
+        self.image = raw_image
+        self.image = pg.transform.scale(self.image, (30, 30))
         if direction == 'V':
             self._position = (self._position[0], self._position[1] - value)
         if direction == 'H':

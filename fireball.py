@@ -37,6 +37,8 @@ class Fireball(OnBoard):
         self._fall = 0
         #The speed of a fireball is set
         self._speed = speed
+        self.image = raw_image
+        #self.image = pg.transform.scale(self.image, (20, 20))
         pass
 
     # Getting and setting variables

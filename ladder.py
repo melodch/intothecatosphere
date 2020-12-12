@@ -18,6 +18,8 @@ class Ladder(OnBoard):
         """
         # Using super to call the attributes from the parent OnBoard class.
         super().__init__(raw_image, position)
+        self.image = raw_image
+        #self.image = pg.transform.scale(self.image, (20, 20))
 
 #     def update_image(self, raw_image):
 #         """

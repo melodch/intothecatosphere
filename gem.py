@@ -27,6 +27,8 @@ class Gem(OnBoard):
         # using super to call the attributes from the parent OnBoard class.
         # initializing the value attribute as some integer.
         super().__init__(raw_image, position)
+        self.image = raw_image
+        self.image = pg.transform.scale(self.image, (10,10))
 
     # def update_image(self, raw_image):
     #     """

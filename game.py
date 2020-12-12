@@ -45,7 +45,7 @@ class Game:
         self.display_screen = pg.display.set_mode((self.width, self.height))
         self.new_game = Board()
         # constants
-        self.FPS = 100
+        self.FPS = 150
         self.clock = pg.time.Clock()
         self.myFont = pg.font.SysFont("comicsansms", 30)
 
@@ -122,69 +122,60 @@ class Game:
                 # Update the player's position
                 #self.new_game.Players[0].continuousUpdate(self.new_game.platform_group, self.ladder_group)
                 keys = pg.key.get_pressed()
+
+                # put catfacefront here/ defualt image when no key is being pressed
+                image = 'catfaceleft.png'
+
                 #Change this
-                if keys[K_RIGHT]:
-                    # ladders_collided = self.new_game.Players.check_collision(self.ladder_group)
-
-                    reference_collided = self.new_game.Players.check_collision(self.new_game.reference_group)
+                if keys[K_RIGHT]:         
+                    reference_collided = self.new_game.Players.check_collision(self.new_game.reference_platform_group)                                       
+                    ladders_collided =  self.new_game.Players.check_collision(self.new_game.ladder_group)
+                    walls_collided = self.new_game.Players.check_collision(self.new_game.platform_group)
+                    image = 'catfaceright.png'
+                    if self.new_game.Players.get_position()[0] <= self.width:
+                        if reference_collided != []:
+                            self.new_game.Players.update_position(pg.image.load('catfaceright.png'), -self.new_game.Players.get_speed(), 'H')
+                        
+                        if walls_collided == [] and ladders_collided == []:
+                            self.new_game.Players.update_position(pg.image.load('catfaceright.png'), -self.new_game.Players.get_speed(), 'H')
+                if keys[K_LEFT]:               
+                    reference_collided = self.new_game.Players.check_collision(self.new_game.reference_platform_group)                 
+                    ladders_collided =  self.new_game.Players.check_collision(self.new_game.ladder_group)
+                    walls_collided = self.new_game.Players.check_collision(self.new_game.platform_group)
                     
+                    image = 'catfaceleft.png'
+                    if reference_collided != [] and self.new_game.Players.get_position()[0] >= 0:                        
+                        self.new_game.Players.update_position(pg.image.load('catfaceleft.png'), self.new_game.Players.get_speed(), 'H')
                     
-                    if reference_collided:
-                        self.new_game.Players.update_position(pg.image.load('player.png'), -self.new_game.Players.get_speed(), 'H')
-
-                if keys[K_LEFT]:
-                    # ladders_collided = self.new_game.Players.check_collision(self.ladder_group)
-                    # #collisions down
-                    # self.new_game.Players.update_position(pg.image.load('player.png'), -2,'V')                    
-                    # walls_collided_down = self.new_game.Players.check_collision(self.new_game.platform_group)
-                    # self.new_game.Players.update_position(pg.image.load('player.png'), 2,'V') 
-                    
-                    # #collisions up
-                    # self.new_game.Players.update_position(pg.image.load('player.png'), 2,'V')
-                    # walls_collided_up = self.new_game.Players.check_collision(self.new_game.platform_group)
-                    # self.new_game.Players.update_position(pg.image.load('player.png'), -2,'V') 
-
-                    reference_collided = self.new_game.Players.check_collision(self.new_game.reference_group)
-                    
-                    #moving character
-                    if reference_collided:                        
-                        self.new_game.Players.update_position(pg.image.load('player.png'), self.new_game.Players.get_speed(), 'H')
-
-                    # if ladders_collided == [] and walls_collided_up == [] and walls_collided_down == []:
-                    #     self.new_game.Players.update_position(pg.image.load('player.png'), -self.new_game.Players.get_speed(), 'V')
+                    if walls_collided == [] and ladders_collided == [] and self.new_game.Players.get_position()[0] >= 0:
+                            self.new_game.Players.update_position(pg.image.load('catfaceright.png'), self.new_game.Players.get_speed(), 'H')
 
                 if keys[K_DOWN]:
-                    #walls_collided = self.new_game.Players.check_collision(self.new_game.platform_group)
-                    # ladders_collided = self.new_game.Players.check_collision(self.ladder_group)
-                    # if ladders_collided:
-                    #     self.new_game.Players.update_position(pg.image.load('player.png'), -self.new_game.Players.get_speed(),'V')
-
                     self.new_game.Players.update_position(pg.image.load('player.png'), -5,'V')                    
-                    ladders_collided_down = self.new_game.Players.check_collision(self.new_game.ladder_group)
-                    self.new_game.Players.update_position(pg.image.load('player.png'), 5,'V') 
+                    references_collided_down = self.new_game.Players.check_collision(self.new_game.reference_ladder_group)
+                    self.new_game.Players.update_position(pg.image.load('catfaceleft.png'), 5,'V')
                     
-                    # self.new_game.Players.update_position(pg.image.load('player.png'), 2,'V')
-                    # ladders_collided_up = self.new_game.Players.check_collision(self.ladder_group)
-                    # self.new_game.Players.update_position(pg.image.load('player.png'), -2,'V') 
-
-                    if ladders_collided_down:
-                        self.new_game.Players.update_position(pg.image.load('player.png'), -self.new_game.Players.get_speed(),'V')
+                    
+                    if references_collided_down != [] and self.new_game.Players.get_position()[1] <= self.height + 10:
+                        self.new_game.Players.update_position(pg.image.load('catfaceleft.png'), -self.new_game.Players.get_speed(),'V')
+                    
 
 
+                    
 
                 if keys[K_UP]:
-                    ladders_collided = self.new_game.Players.check_collision(self.new_game.ladder_group)
-                    if ladders_collided:
-                        self.new_game.Players.update_position(pg.image.load('player.png'), self.new_game.Players.get_speed(),'V')
+                    references_collided = self.new_game.Players.check_collision(self.new_game.reference_ladder_group)
+                    if references_collided != [] and self.new_game.Players.get_position()[1] >= 0:
+                        self.new_game.Players.update_position(pg.image.load('catfaceleft.png'), self.new_game.Players.get_speed(),'V')
   
                 ladders_collided = self.new_game.Players.check_collision(self.new_game.ladder_group)
 
-                self.new_game.Players.update_position(pg.image.load('player.png'), -2,'V')                    
+                self.new_game.Players.update_position(pg.image.load(image), -5,'V')                    
                 walls_collided_down = self.new_game.Players.check_collision(self.new_game.platform_group)
-                self.new_game.Players.update_position(pg.image.load('player.png'), 2,'V') 
+                self.new_game.Players.update_position(pg.image.load(image), 5,'V') 
 
-                if ladders_collided == [] and walls_collided_down == []:
-                    self.new_game.Players.update_position(pg.image.load('player.png'), -self.new_game.Players.get_speed()*1.2,'V')
+                if ladders_collided == [] and walls_collided_down == [] and self.new_game.Players.get_position()[1] <= self.height - 10:
+                    self.new_game.Players.update_position(pg.image.load(image), -self.new_game.Players.get_speed()*1.2,'V')
 
                 # Redraw all instances onto the screen
                 self.new_game.redraw_screen(self.display_screen,

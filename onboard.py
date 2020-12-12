@@ -29,7 +29,7 @@ class OnBoard(pg.sprite.Sprite):
         # sets the center of the rect atrribute as the position
         super(OnBoard, self).__init__()
         self._position = position
-        self.image = raw_image
+        self.image = raw_image        
         self.rect = self.image.get_rect()
         self.rect.center = self._position
         
@@ -43,10 +43,9 @@ class OnBoard(pg.sprite.Sprite):
     #         raw_image: A string representing the path to a png.
     #         height: An integer representing the height of the object.
     #         width: An integer representing the width o the object.
-    #     """
-
-    #     # Scale the raw image to a standard size.
-    #     pass
+    #     """   
+    #     self.image = raw_image
+    #     self.image = pg.transform.scale(self.image, (width, height))
 
     # Getters and Setters
     def set_center(self, position):
