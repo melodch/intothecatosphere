@@ -172,7 +172,7 @@ class Board:
         if len(self.Fireballs) < 3:
             #time.sleep(0.5)
             location = (random.randint(5, width),random.randint(-1000,0))
-            self.Fireballs.append(Fireball(pg.image.load('fireball.png'),
+            self.Fireballs.append(Fireball(pg.image.load('fireball1.png'),
                                   location, len(self.Fireballs), -3))
             self.create_groups()
 
@@ -476,8 +476,8 @@ class Board:
             self.ladder_group.draw(display_screen)
             self.player_group.draw(display_screen)
             self.fireball_group.draw(display_screen)
-            self.reference_platform_group.draw(display_screen)
-            self.reference_ladder_group.draw(display_screen)
+            #self.reference_platform_group.draw(display_screen)
+            #self.reference_ladder_group.draw(display_screen)
             # Fill the screen with a fog
             #self.render_fog(display_screen)
 
