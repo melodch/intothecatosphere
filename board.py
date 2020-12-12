@@ -13,6 +13,7 @@ from platform import Platform
 from ladder import Ladder
 from reference import ReferencePlatform
 from reference import ReferenceLadder
+from reference import ReferenceEndcap
 
 
 
@@ -26,7 +27,6 @@ class Board:
         score: An integer representing how many gems have been collected.
         game_state: An integer that represents the state of the game,
         where 0 is pre-game, 1 is game, and 2 is post-game.
-        direction: An integer that represents the direction that the player is
         facing.
         map: A list of lists representing a 2D array with the positions of the
         game components on screen.
@@ -55,7 +55,6 @@ class Board:
         # dimensions of board (height and width)
         # score
         # game state
-        # direction of playerf
 
         # Create an array map where we can store and keep track of what each
         # block is where 1 represents a platform, 2 ladder, and 3 gem.
@@ -71,37 +70,38 @@ class Board:
                         Button(pg.image.load('exit.png'), (350, 300), "exit"),
                         Button(pg.image.load('restart.png'), (150, 300), "restart"), ]
         self.ActiveButtons = [1, 1, 0]  # Pregame screen uses first 2 buttons
-        self.myfont = pg.font.SysFont("comicsansms", 20)
+        self.myfont = pg.font.SysFont("comicsans", 20)
 
         # Initialize instance groups that are used to display instances on
         # the screen.
         self._width = WIDTH
         self._height = HEIGHT
         self.score = 0
-        self.lives = 3
+        self.lives = 9
         self.game_state = 0
-        self.direction = 0
         self.white = (255, 255, 255)
 
         # Arrays in which we store our instances of different classes
         self.Players = self.ReferenceLadders = []
         self.Fireballs = self.Gems = self.Platforms = []
-        self.Boards = self.Ladders = self.ReferencePlatforms = []
+        self.Ladders = self.ReferencePlatforms = []
+        self.ReferenceEndcaps = []
 
         # Initialize instance groups which we use to display instances on screen
         self.player_group = pg.sprite.RenderPlain(self.Players)
         self.platform_group = pg.sprite.RenderPlain(self.Platforms)
         self.gem_group = pg.sprite.RenderPlain(self.Gems)
-        self.board_group = pg.sprite.RenderPlain(self.Boards)
+        #self.board_group = pg.sprite.RenderPlain(self.Boards)
         self.fireball_group = pg.sprite.RenderPlain(self.Fireballs)
         self.ladder_group = pg.sprite.RenderPlain(self.Ladders)
         self.reference_platform_group = pg.sprite.RenderPlain(self.ReferencePlatforms)
         self.reference_ladder_group = pg.sprite.RenderPlain(self.ReferenceLadders)
+        self.reference_endcap_group = pg.sprite.RenderPlain(self.ReferenceEndcaps)
 
         # Resets the above groups and initializes the game for us
-        self.reset_groups(0, 3)
+        self.reset_groups(0, 9)
 
-        self.background = pg.image.load('gradientpurplebg.png')  # added image
+        self.background = pg.image.load('purplebg.png')  # added image
         self.background = pg.transform.scale(self.background, (WIDTH, HEIGHT))
         self.startbackground = pg.image.load('start_bg.png')
         self.startbackground = pg.transform.scale(self.startbackground,
@@ -121,7 +121,7 @@ class Board:
         self.score = score
         self.lives = lives
         self.map = []  # We will create the map again when we reset the game
-        self.Players = Player(pg.image.load('catfaceleft.png'),
+        self.Players = Player(pg.image.load('catforward.png'),
                               (self._width // 2, self._height - 30))
         self.Gems = []
         self.Platforms = []
@@ -129,11 +129,12 @@ class Board:
         self.Ladders = []
         self.ReferencePlatforms = []
         self.ReferenceLadders = []
-        self.Boards = [OnBoard(pg.image.load('gradientpurplebg.png'), (200, 480)),
-                       OnBoard(pg.image.load('gradientpurplebg.png'), (685, 480))]
+        self.ReferenceEndcaps = []
+        #self.Boards = [OnBoard(pg.image.load('purplebg.png'), (0, 0))]
+                       #OnBoard(pg.image.load('purplebg.png'), (685, 480))]
         
         #self.Boards[0].modify_size(self.Boards[0].image, 40, 150)  # Do this on purpose to get a pixelated image
-        #self.Boards[1].modify_size(self.Boards[1].image, 40, 150)
+        #self.Boards[0].modify_size(self.Boards[0].image, 500, 500)
         self.initialize_game()  # Initialize game and generate map
         self.create_groups()  # Creates instance groups
 
@@ -143,12 +144,19 @@ class Board:
         platforms, ladders, and gems randomly, populating the map with our
         game components, then creating the groups of those game components.
         """
-        self.make_map()  
-        self.make_boundaries()      
-        self.generate_platforms()
-        self.generate_ladders()
+        while True:
+            self.map = []
+            self.make_map()
+            self.Ladders = self.Platforms = []
+            self.ReferenceEndcaps = []
+            self.generate_platforms()
+            self.create_endcap_reference_lines()
+            self.generate_ladders()
+            if self.are_platforms_reachable(0, 0) is True:
+                break
+        self.make_boundaries()
         self.create_reference_lines()
-        self.generate_gems()        
+        self.generate_gems()
         self.create_groups()
 
     def create_groups(self):
@@ -158,12 +166,14 @@ class Board:
         # Here, we use the PyGame Sprite RenderPlain method
         self.platform_group = pg.sprite.RenderPlain(self.Platforms)
         self.gem_group = pg.sprite.RenderPlain(self.Gems)
-        self.board_group = pg.sprite.RenderPlain(self.Boards)
+        #self.board_group = pg.sprite.RenderPlain(self.Boards)
         self.ladder_group = pg.sprite.RenderPlain(self.Ladders)
         self.fireball_group = pg.sprite.RenderPlain(self.Fireballs)
         self.reference_ladder_group = pg.sprite.RenderPlain(self.ReferenceLadders)
         self.reference_platform_group = pg.sprite.RenderPlain(self.ReferencePlatforms)
+        self.reference_endcap_group = pg.sprite.RenderPlain(self.ReferenceEndcaps)
         self.player_group = pg.sprite.RenderPlain(self.Players)  
+
 
     def create_fireball(self, width):
         """
@@ -233,6 +243,7 @@ class Board:
         height = len(self.map[0])
         h_spacing = 10
         w_spacing = 5
+        offset = -8
         # Traverse the platforms
         for y in range(h_spacing, height, h_spacing):
             for x in range(w_spacing, width, w_spacing):
@@ -240,8 +251,8 @@ class Board:
                 if self.map[x][y] == 1 and rand_gem == 1 and \
                    self.map[x - w_spacing][y - 3] != 3:
                     self.map[x][y - 1] = 3
-                    self.Gems.append(Gem(pg.image.load('gem.png'),
-                                     (x * 10 + 10 / 2, (y - 1) * 10 + 10 / 2)))
+                    self.Gems.append(Gem(pg.image.load('yellow star.png'),
+                                     (x * 10, (y - 1) * 10 + offset)))
         if len(self.Gems) < 3:  # If less than 3 gems, call function again
             self.generate_gems()
 
@@ -257,13 +268,17 @@ class Board:
         # Vertically spaced out by 10
         h_spacing = 10
 
+        for i in range(0, width):
+            self.map[i][height - 1] = 1
+            self.Platforms.append(Platform(pg.image.load('platform28.png'), (i * 10 + 10 / 2, (height - 1) * 10 + 10 / 2)))
+        
         for y in range(0, height - h_spacing, h_spacing):
             x = 1
             while x < width:
                 rand_platform_size = random.randint(7, 15)
                 for i in range(rand_platform_size):
                     self.map[x][y] = 1
-                    self.Platforms.append(Platform(pg.image.load('lightblueplatform.png'), (x * 10 + 5, y * 10 + 5)))
+                    self.Platforms.append(Platform(pg.image.load('platform28.png'), (x * 10 + 5, y * 10 + 5)))
                     #self.Platforms[i].modify_size(self.Platforms[i].image, 2, 2)
                     x += 1
                     if x >= width - 1:
@@ -307,10 +322,38 @@ class Board:
         for y in range(upper_y, lower_y - 1, 3):
             self.map[x][y] = 2
             self.Ladders.append(Ladder(pg.image.load('ladder figure.png'),
-                                (x * 10 + 10 / 2, y * 10 + 10 / 2)))
+                                (x * 10 + 10 / 2, y * 10 + 10)))
         self.map[x][lower_y - 1] = 2
         self.Ladders.append(Ladder(pg.image.load('ladder figure.png'),
-                            (x * 10 + 10 / 2, (upper_y - 1) * 10 + 10 / 2)))
+                            (x * 10 + 10 / 2, (upper_y - 1) * 10 + 10)))
+
+    def are_platforms_reachable(self, x, y):
+        height = len(self.map)
+        width = len(self.map[0])
+        # Base case
+        # If reached the other end of the board
+        if y == height - 1:
+            return True
+        next_ladder = self.help_function(x, y)
+        if next_ladder[0] != 0 and self.map[next_ladder[0]][y] == 2:
+            return self.are_platforms_reachable(next_ladder[0], y + 10)
+        if next_ladder[1] != 49 and self.map[next_ladder[1]][y] == 2:
+            return self.are_platforms_reachable(next_ladder[1], y + 10)
+        else:
+            return False
+    
+    def help_function(self, x, y):
+        left = right = x
+        while left > 0:
+            if self.map[left][y] == 2 or (y > 0 and self.map[left][y] == 0):
+                break
+            left -= 1
+        height = len(self.map)
+        while right < height - 2:
+            if self.map[right][y] == 2 or (y > 0 and self.map[right][y] == 0):
+                break
+            right += 1
+        return (left, right)
 
     def create_reference_lines(self):
         for j in range(len(self.map)):
@@ -322,20 +365,33 @@ class Board:
                # for platforms
                 if self.map[j][i] == 1:
                     #position = [i,j]                  
-                    self.ReferencePlatforms.append(ReferencePlatform(pg.image.load('reference.png'),(j* 10, (i-3) * 10 + 5 )))
+                    self.ReferencePlatforms.append(ReferencePlatform(pg.image.load('reference.png'),(j* 10, (i-3) * 10 + 2 )))
                     if j != len(self.map) - 1:
                         if self.map[j+1][i] == 0 or self.map[j+1][i] == 4:
-                            self.ReferencePlatforms.append(ReferencePlatform(pg.image.load('reference.png'),((j+1)* 10, (i - 3) * 10 + 5 )))
+                            #for k in range(i, i+6):
+                            self.ReferencePlatforms.append(ReferencePlatform(pg.image.load('reference.png'),((j+1)* 10, (i - 3) * 10 +5 )))
                             self.ReferencePlatforms.append(ReferencePlatform(pg.image.load('reference.png'),((j+2)* 10, (i - 3) * 10 + 5)))
                         if self.map[j-1][i] == 0 or self.map[j-1][i] == 4:
-                            self.ReferencePlatforms.append(ReferencePlatform(pg.image.load('reference.png'),((j-1)* 10, (i - 3) * 10 + 5)))
-                            self.ReferencePlatforms.append(ReferencePlatform(pg.image.load('reference.png'),((j-2)* 10, (i - 3) * 10 + 5 )))
+                            self.ReferencePlatforms.append(ReferencePlatform(pg.image.load('reference.png'),((j-1)* 10, (i - 3) * 10 +5)))
+                            self.ReferencePlatforms.append(ReferencePlatform(pg.image.load('reference.png'),((j-2)* 10, (i - 3) * 10 +5)))
                 #for ladders
                 if self.map[j][i] == 2:
-                    self.ReferenceLadders.append(ReferenceLadder(pg.image.load('referenceladder.png'),((j * 10) + 5, (i * 10) - 40)))
+                    self.ReferenceLadders.append(ReferenceLadder(pg.image.load('referenceladder.png'),((j * 10) + 5, (i * 10) - 30)))
 
-                    
-        
+                
+    def create_endcap_reference_lines(self):
+        for j in range(len(self.map)):
+            for i in range(len(self.map)):
+                if self.map[j][i] == 1:           
+                    if j != len(self.map) - 1:
+                        if self.map[j+1][i] == 0:
+                            for k in range(i + 2, i + 6):
+                                self.ReferenceEndcaps.append(ReferenceEndcap(pg.image.load('referenceladder.png'),((j+2)* 10, (k - 3) * 10 + 5 )))
+                        if self.map[j-1][i] == 0:
+                            for k in range(i + 2, i + 6):
+                                self.ReferenceEndcaps.append(ReferenceEndcap(pg.image.load('referenceladder.png'),((j-1)* 10, (k - 3) * 10 + 5 )))
+                                #self.ReferencePlatforms.append(ReferencePlatform(pg.image.load('reference.png'),((j+2)* 10, (k - 3) * 10 + 5)))
+
     def make_map(self):
         """
         Create an empty map.
@@ -346,7 +402,7 @@ class Board:
             for _ in range(0, self._width // 10 + 1):
                 row.append(0)
             self.map.append(row)
-        print(map)
+        
 
     def make_boundaries(self):
         """
@@ -355,9 +411,9 @@ class Board:
         height = len(self.map)
         width = len(self.map[0])
         # Bottom floor
-        for i in range(0, width):
-            self.map[i][height - 1] = 1
-            self.Platforms.append(Platform(pg.image.load('lightblueplatform.png'), (i * 10 + 10 / 2, (height - 1) * 10 + 10 / 2)))
+        # for i in range(0, width):
+        #     self.map[i][height - 1] = 1
+        #     self.Platforms.append(Platform(pg.image.load('platform28.png'), (i * 10 + 10 / 2, (height - 1) * 10 + 10 / 2)))
         # Left and right sides
         for j in range(0, height):
             self.map[0][j] = 4
@@ -470,14 +526,15 @@ class Board:
             # Draw the background first
             display_screen.blit(self.background, self.background.get_rect())
             # Draw all our groups on the background
-            self.board_group.draw(display_screen)
+            #self.board_group.draw(display_screen)
             self.platform_group.draw(display_screen)
             self.gem_group.draw(display_screen)
             self.ladder_group.draw(display_screen)
             self.player_group.draw(display_screen)
             self.fireball_group.draw(display_screen)
-            #self.reference_platform_group.draw(display_screen)
-            #self.reference_ladder_group.draw(display_screen)
+            self.reference_platform_group.draw(display_screen)
+            self.reference_ladder_group.draw(display_screen)
+            self.reference_endcap_group.draw(display_screen)
             # Fill the screen with a fog
             #self.render_fog(display_screen)
 
@@ -485,8 +542,6 @@ class Board:
             score_width = score_label.get_width()
             display_screen.blit(score_label, (265 - score_width / 2, 470))      
             display_screen.blit(lives_label, (470, 470))
-
-
 
     def update_level(self, current_score, current_lives):
         """

@@ -28,7 +28,7 @@ class Gem(OnBoard):
         # initializing the value attribute as some integer.
         super().__init__(raw_image, position)
         self.image = raw_image
-        self.image = pg.transform.scale(self.image, (10,10))
+        self.image = pg.transform.scale(self.image, (20,20))
 
     # def update_image(self, raw_image):
     #     """
