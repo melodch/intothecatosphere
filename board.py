@@ -376,7 +376,7 @@ class Board:
                             self.ReferencePlatforms.append(ReferencePlatform(pg.image.load('reference.png'),((j-2)* 10, (i - 3) * 10 +5)))
                 #for ladders
                 if self.map[j][i] == 2:
-                    self.ReferenceLadders.append(ReferenceLadder(pg.image.load('referenceladder.png'),((j * 10) + 5, (i * 10) - 30)))
+                    self.ReferenceLadders.append(ReferenceLadder(pg.image.load('referenceladder.png'),((j * 10) + 5, ((i+1) * 10) - 30)))
 
                 
     def create_endcap_reference_lines(self):
@@ -532,9 +532,9 @@ class Board:
             self.ladder_group.draw(display_screen)
             self.player_group.draw(display_screen)
             self.fireball_group.draw(display_screen)
-            # self.reference_platform_group.draw(display_screen)
-            # self.reference_ladder_group.draw(display_screen)
-            # self.reference_endcap_group.draw(display_screen)
+            self.reference_platform_group.draw(display_screen)
+            self.reference_ladder_group.draw(display_screen)
+            self.reference_endcap_group.draw(display_screen)
             # Fill the screen with a fog
             #self.render_fog(display_screen)
 

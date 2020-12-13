@@ -170,15 +170,13 @@ class Game:
                     if self.new_game.Players.get_position()[1] <= 30:
                         self.new_game.update_level(self.new_game.score, self.new_game.lives)
 
-                ladders_collided = self.new_game.Players.check_collision(self.new_game.ladder_group)
-
+                reference_ladders_collided = self.new_game.Players.check_collision(self.new_game.reference_ladder_group)
                 self.new_game.Players.update_position(pg.image.load(image), -5,'V')                    
                 walls_collided_down = self.new_game.Players.check_collision(self.new_game.platform_group)
                 self.new_game.Players.update_position(pg.image.load(image), 5,'V') 
                 reference_ends_collided = self.new_game.Players.check_collision(self.new_game.reference_endcap_group)
 
-
-                if ladders_collided == [] and walls_collided_down == [] and self.new_game.Players.get_position()[1] <= self.height - 10:
+                if reference_ladders_collided == [] and walls_collided_down == [] and self.new_game.Players.get_position()[1] <= self.height - 10:
                     self.new_game.Players.update_position(pg.image.load(image), -self.new_game.Players.get_speed()*1.2,'V')
                     if reference_ends_collided:
                         self.new_game.Players.update_position(pg.image.load(image), -2,'H')                    
