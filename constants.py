@@ -14,8 +14,12 @@ Set various constants that will stay the same throughout the game.
 # fps:
 # font:
 
+# platform and ladder: 48 by 48
+
+
 # Set various colors like white as (255, 255, 255) and black as (0, 0, 0).
 # Colors use HTML5 format.
+# h and w: 720s
 HEIGHT = 500
 WIDTH = 500
 
