@@ -69,7 +69,7 @@ class Board:
         # The buttons used in the pregame and postgame screens
         self.Buttons = [Button(pg.image.load('Object Images/start_meow.png'), (140, 320), "start"),
                         Button(pg.image.load('Object Images/exit_game.png'), (360, 320), "exit"),
-                        Button(pg.image.load('restart.png'), (150, 300), "restart"), ]
+                        Button(pg.image.load('restart.png'), (250, 343), "Object Images/restart.png"), ]
         self.Active_buttons = [1, 1, 0]  # Pregame screen uses first 2 buttons
         self.myfont = pg.font.SysFont("comicsans", 50)
 
@@ -218,36 +218,11 @@ class Board:
             if self.lives == 0:
                 self.game_state = 3
                 self.Active_buttons[0] = 0
-                self.Active_buttons[1] = 1
+                self.Active_buttons[1] = 0
                 self.Active_buttons[2] = 1
             if fireball.get_position()[1] >= 490:
                 self.Fireballs.remove(fireball)
                     # self.Hearts.pop(len(self.Hearts) - 1)
-
-    def render_fog(self, display_screen):
-        """
-        Render the fog around the player. There will be a gradient circle
-        around the Sprite that the player will be able to see.
-        """
-        # Draw circles around the Sprite that get darker as they get further away.
-        # for i in range(1000, 1, -1):
-        #    pg.draw.circle(display_screen, (0, 0, 0, 0), self.Players.get_position(), i+100, width=2)
-
-        # screen = pg.display.set_mode(display_screen, 0, 32)
-        screen = pg.display.set_mode((self._width, self._height), 0, 32)
-        # Fill the screen with white
-        screen.fill((255, 255, 255))
-        # Make a black surface the size of the display
-        fog_of_war = pg.Surface(display_screen) # UNCOMMENT LATER
-        fog_of_war.fill((0, 0, 0))
-        # Make a gray circle on top of the black surface
-        pg.draw.circle(fog_of_war, (60, 60, 60), self.Players.get_position(), 100, 0)
-        # Set the transparent colorkey to gray
-        # Using this method (if it works), we can a
-        # gradient using different grays
-        fog_of_war.set_colorkey((60, 60, 60))
-        screen.blit(fog_of_war, (0, 0))
-        pg.display.update()
 
     def generate_gems(self):
         """
@@ -511,7 +486,7 @@ class Board:
                 elif button == 1:
                     self.Buttons[button].change_image(pg.image.load('Object Images/hov_exit_game.png'))
                 elif button == 2:
-                    self.Buttons[button].change_image(pg.image.load('restart1.png'))
+                    self.Buttons[button].change_image(pg.image.load('Object Images/hov_restart.png'))
             # Inactive button
             else:
                 if button == 0:
@@ -519,7 +494,7 @@ class Board:
                 elif button == 1:
                     self.Buttons[button].change_image(pg.image.load('Object Images/exit_game.png'))
                 elif button == 2:
-                    self.Buttons[button].change_image(pg.image.load('restart.png'))
+                    self.Buttons[button].change_image(pg.image.load('Object Images/restart.png'))
         
         for button in range(len(self.Cat_buttons)):
             # Active button
@@ -597,9 +572,6 @@ class Board:
             self.reference_ladder_group.draw(display_screen)
             self.reference_endcap_group.draw(display_screen)
             self.reference_cat_group.draw(display_screen)
-
-            # Fill the screen with a fog
-            # self.render_fog(display_screen)
 
             # Center text on the board
             score_width = score_label.get_width()
