@@ -69,8 +69,13 @@ class Board:
         self.Buttons = [Button(pg.image.load('start.png'), (150, 300), "start"),
                         Button(pg.image.load('exit.png'), (350, 300), "exit"),
                         Button(pg.image.load('restart.png'), (150, 300), "restart"), ]
-        self.ActiveButtons = [1, 1, 0]  # Pregame screen uses first 2 buttons
+        self.Active_buttons = [1, 1, 0]  # Pregame screen uses first 2 buttons
         self.myfont = pg.font.SysFont("comicsans", 20)
+
+        self.Cat_buttons = [Button(pg.image.load('start.png'), (100, 300), "cat1"),
+                        Button(pg.image.load('exit.png'), (250, 300), "cat2"),
+                        Button(pg.image.load('restart.png'), (400, 300), "cat3"), ]
+        self.Chosen_cat = ""
 
         # Initialize instance groups that are used to display instances on
         # the screen.
@@ -103,9 +108,12 @@ class Board:
 
         self.background = pg.image.load('purplebg.png')  # added image
         self.background = pg.transform.scale(self.background, (WIDTH, HEIGHT))
-        self.startbackground = pg.image.load('start_bg.png')
-        self.startbackground = pg.transform.scale(self.startbackground,
-                                                  (WIDTH, HEIGHT))
+        self.start_background = pg.image.load('startscreen.png')
+        self.choose_cat_background = pg.image.load('pickcat1.png')
+        self.end_background = pg.image.load('endscreen.png')
+        self.start_background = pg.transform.scale(self.start_background, (WIDTH, HEIGHT))
+        self.choose_cat_background = pg.transform.scale(self.choose_cat_background, (WIDTH, HEIGHT))
+        self.end_background = pg.transform.scale(self.end_background, (WIDTH, HEIGHT))
 
     def reset_groups(self, score, lives):
         """
@@ -174,7 +182,6 @@ class Board:
         self.reference_endcap_group = pg.sprite.RenderPlain(self.ReferenceEndcaps)
         self.player_group = pg.sprite.RenderPlain(self.Players)  
 
-
     def create_fireball(self, width):
         """
         Randomly generate fireballs.
@@ -204,35 +211,38 @@ class Board:
                 self.lives -= 1
                 self.create_groups()
             if self.lives == 0:
-                self.game_state = 2
+                self.game_state = 3
+                self.Active_buttons[0] = 0
+                self.Active_buttons[1] = 1
+                self.Active_buttons[2] = 1
             if fireball.get_position()[1] >= 490:
                 self.Fireballs.remove(fireball)
                     # self.Hearts.pop(len(self.Hearts) - 1)
 
-    # def render_fog(self, display_screen):
-    #     """
-    #     Render the fog around the player. There will be a gradient circle
-    #     around the Sprite that the player will be able to see.
-    #     """
-    #     # Draw circles around the Sprite that get darker as they get further away.
-    #     # for i in range(1000, 1, -1):
-    #     #    pg.draw.circle(display_screen, (0, 0, 0, 0), self.Players.get_position(), i+100, width=2)
+    def render_fog(self, display_screen):
+        """
+        Render the fog around the player. There will be a gradient circle
+        around the Sprite that the player will be able to see.
+        """
+        # Draw circles around the Sprite that get darker as they get further away.
+        # for i in range(1000, 1, -1):
+        #    pg.draw.circle(display_screen, (0, 0, 0, 0), self.Players.get_position(), i+100, width=2)
 
-    #     # screen = pg.display.set_mode(display_screen, 0, 32)
-    #     screen = pg.display.set_mode((self._width, self._height), 0, 32)
-    #     # Fill the screen with white
-    #     screen.fill((255, 255, 255))
-    #     # Make a black surface the size of the display
-    #     fog_of_war = pg.Surface(display_screen) UNCOMMENT LATER
-    #     fog_of_war.fill((0s_collided, 0, 0))
-    #     # Make a gray circle on top of the black surface
-    #     pg.draw.circle(fog_of_war, (60, 60, 60), self.Players.get_position(), 100, 0)
-    #     # Set the transparent colorkey to gray
-    #     # Using this method (if it works), we can a
-    #     # gradient using different grays
-    #     fog_of_war.set_colorkey((60, 60, 60))
-    #     screen.blit(fog_of_war, (0, 0))
-    #     pg.display.update()
+        # screen = pg.display.set_mode(display_screen, 0, 32)
+        screen = pg.display.set_mode((self._width, self._height), 0, 32)
+        # Fill the screen with white
+        screen.fill((255, 255, 255))
+        # Make a black surface the size of the display
+        fog_of_war = pg.Surface(display_screen) # UNCOMMENT LATER
+        fog_of_war.fill((0, 0, 0))
+        # Make a gray circle on top of the black surface
+        pg.draw.circle(fog_of_war, (60, 60, 60), self.Players.get_position(), 100, 0)
+        # Set the transparent colorkey to gray
+        # Using this method (if it works), we can a
+        # gradient using different grays
+        fog_of_war.set_colorkey((60, 60, 60))
+        screen.blit(fog_of_war, (0, 0))
+        pg.display.update()
 
     def generate_gems(self):
         """
@@ -447,25 +457,31 @@ class Board:
         Perform needed actions when a button is clicked.
         """
         # If the start button is pressed
-        if self.ActiveButtons[0] == 1 and \
+        if self.Active_buttons[0] == 1 and \
            self.Buttons[0].rect.collidepoint(pg.mouse.get_pos()):
             self.reset_groups(0, 3)
             self.game_state = 1
-            self.ActiveButtons[0] = 0
-            self.ActiveButtons[1] = 0
-            self.ActiveButtons[2] = 0
+            self.Active_buttons = [0, 0, 0]
         # If the exit button is pressed
-        if self.ActiveButtons[1] == 1 and \
+        if self.Active_buttons[1] == 1 and \
            self.Buttons[1].rect.collidepoint(pg.mouse.get_pos()):
             pg.quit()
             sys.exit()
         # If the restart button is pressed
-        if self.ActiveButtons[2] == 1 and \
+        if self.Active_buttons[2] == 1 and \
            self.Buttons[2].rect.collidepoint(pg.mouse.get_pos()):
-            self.game_state = 0
-            self.ActiveButtons[0] = 1
-            self.ActiveButtons[1] = 1
-            self.ActiveButtons[2] = 0
+            self.game_state = 1
+
+    def select_cat(self):
+        if self.Cat_buttons[0].rect.collidepoint(pg.mouse.get_pos()):
+            self.Chosen_cat = "cat1"
+            self.game_state = 2
+        if self.Cat_buttons[1].rect.collidepoint(pg.mouse.get_pos()):
+            self.Chosen_cat = "cat2"
+            self.game_state = 2
+        if self.Cat_buttons[2].rect.collidepoint(pg.mouse.get_pos()):
+            self.Chosen_cat = "cat3"
+            self.game_state = 2
 
     def check_button(self):
         """
@@ -475,7 +491,7 @@ class Board:
         mouse_pos = pg.mouse.get_pos()
         for button in range(len(self.Buttons)):
             # Active button
-            if self.ActiveButtons[button] == 1 and \
+            if self.Active_buttons[button] == 1 and \
                self.Buttons[button].rect.collidepoint(mouse_pos):
                 if button == 0:
                     self.Buttons[button].change_image(pg.image.load('start1.png'))
@@ -491,11 +507,35 @@ class Board:
                     self.Buttons[button].change_image(pg.image.load('exit.png'))
                 elif button == 2:
                     self.Buttons[button].change_image(pg.image.load('restart.png'))
+        
+        for button in range(len(self.Cat_buttons)):
+            # Active button
+            if self.Cat_buttons[button].rect.collidepoint(mouse_pos):
+                if button == 0:
+                    self.Cat_buttons[button].change_image(pg.image.load('start1.png'))
+                elif button == 1:
+                    self.Cat_buttons[button].change_image(pg.image.load('exit1.png'))
+                elif button == 2:
+                    self.Cat_buttons[button].change_image(pg.image.load('restart1.png'))
+            # Inactive button
+            else:
+                if button == 0:
+                    self.Cat_buttons[button].change_image(pg.image.load('start.png'))
+                elif button == 1:
+                    self.Cat_buttons[button].change_image(pg.image.load('exit.png'))
+                elif button == 2:
+                    self.Cat_buttons[button].change_image(pg.image.load('restart.png'))
 
     # changed the syntax of the display screen thing
     def redraw_screen(self, display_screen, score_label, lives_label, width, height):
         """
         Redraws the entire game screen.
+
+        Game states:
+        0 Game lobby
+        1 Choose cat
+        2 Gameplay
+        3 End screen
 
         Args:
             display_screen: PyGame display.
@@ -506,37 +546,45 @@ class Board:
         # Fill display screen with black
         display_screen.fill((0, 0, 0))  # Fill it with black
         # If we are in either pregame or postgame states
-        if self.game_state != 1:
-            display_screen.blit(self.startbackground, self.startbackground.get_rect())
+        if self.game_state == 0 or self.game_state == 3:
             if self.game_state == 0:
-                # Pregame state
-                # display_screen.blit(pg.image.load('Assets/donkeykongtext.png'), (340, 50))
-                pass
-            if self.game_state == 2:
+                # Game lobby
+                display_screen.blit(self.start_background, self.start_background.get_rect())
+            if self.game_state == 3:
                 # Post game state
-                label = self.myfont.render("Your score is " + str(self.score),
-                                           1, (255, 255, 255))
+                display_screen.blit(self.end_background, self.end_background.get_rect())
+                label = self.myfont.render(str(self.score), 10, (255, 255, 255))
                 display_screen.blit(label, (250, 250))
-            for button in range(len(self.ActiveButtons)):
-                if self.ActiveButtons[button] == 1:
+            for button in range(len(self.Active_buttons)):
+                if self.Active_buttons[button] == 1:
                     display_screen.blit(self.Buttons[button].image,
                                         self.Buttons[button].get_top_left_pos())
-        # If we are in the game state,
+
+        # If we are choosing a cat
         if self.game_state == 1:
+            # Choose cat
+            display_screen.blit(self.choose_cat_background, self.choose_cat_background.get_rect())
+            for button in range(len(self.Cat_buttons)):
+                display_screen.blit(self.Cat_buttons[button].image,
+                                     self.Cat_buttons[button].get_top_left_pos())
+        
+        # If we are in the game state,
+        if self.game_state == 2:
             # Draw the background first
             display_screen.blit(self.background, self.background.get_rect())
             # Draw all our groups on the background
             #self.board_group.draw(display_screen)
             self.platform_group.draw(display_screen)
-            self.gem_group.draw(display_screen)
             self.ladder_group.draw(display_screen)
+            self.gem_group.draw(display_screen)
             self.player_group.draw(display_screen)
             self.fireball_group.draw(display_screen)
             self.reference_platform_group.draw(display_screen)
             self.reference_ladder_group.draw(display_screen)
             self.reference_endcap_group.draw(display_screen)
+
             # Fill the screen with a fog
-            #self.render_fog(display_screen)
+            # self.render_fog(display_screen)
 
             # Center text on the board
             score_width = score_label.get_width()

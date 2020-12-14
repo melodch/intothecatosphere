@@ -69,13 +69,13 @@ class Game:
                                                     (0, 0, 0))
             self.lives_label = self.myFont.render(str(self.new_game.lives), 1,
                                                     (0, 0, 0))
-            # If the game state is not 1 then we will not have to run the game,
+            # If the game state is not 2 then we will not have to run the game,
             # we just need to display buttons
-            if self.new_game.game_state != 1:
+            if self.new_game.game_state == 0 or self.new_game.game_state == 3:
 
-                self.new_game.check_button()  # Checks the buttons for hover effects
-                self.new_game.redraw_screen(self.display_screen, self.score_label,self.lives_label, self.width,
+                self.new_game.redraw_screen(self.display_screen, self.score_label, self.lives_label, self.width,
                                           self.height)  # Redraws the buttons onto the screen
+                self.new_game.check_button()  # Checks the buttons for hover effects
 
                 for event in pg.event.get():
                     # Exit to desktop
@@ -85,12 +85,28 @@ class Game:
 
                     if event.type == pg.MOUSEBUTTONUP:
                         # Check which button was clicked and change game state accordingly
-                        self.new_game.process_button()  
+                        self.new_game.process_button()
                         # Assign groups again
-   
 
-            # If game state is 1 then run the game:
             if self.new_game.game_state == 1:
+
+                self.new_game.redraw_screen(self.display_screen, self.score_label, self.lives_label, self.width,
+                                          self.height)  # Redraws the buttons onto the screen
+                self.new_game.check_button()  # Checks the buttons for hover effects
+
+                for event in pg.event.get():
+                    # Exit to desktop
+                    if event.type == QUIT:
+                        pg.quit()
+                        sys.exit()
+
+                    if event.type == pg.MOUSEBUTTONUP:
+                        # Check which button was clicked and change game state accordingly
+                        self.new_game.select_cat()
+                        # Assign groups again
+
+            # If game state is 2 then run the game:
+            if self.new_game.game_state == 2:
                 self.gem_group = self.new_game.gem_group
 
                 # Get the appropriate groups
@@ -193,7 +209,6 @@ class Game:
                             self.new_game.Players.update_position(pg.image.load(image), -10,'H')
 
 
-                        
 
                 # Redraw all instances onto the screen
                 self.new_game.redraw_screen(self.display_screen,
