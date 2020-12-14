@@ -72,7 +72,7 @@ class Game:
                                                     (0, 0, 0))
             # If the game state is not 2 then we will not have to run the game,
             # we just need to display buttons
-            if self.new_game.game_state == 0 or self.new_game.game_state == 3:
+            if self.new_game.game_state != 2:
 
                 self.new_game.redraw_screen(self.display_screen, self.score_label, self.lives_label, self.width,
                                           self.height)  # Redraws the buttons onto the screen
@@ -86,24 +86,10 @@ class Game:
 
                     if event.type == pg.MOUSEBUTTONUP:
                         # Check which button was clicked and change game state accordingly
-                        self.new_game.process_button()
-                        # Assign groups again
-
-            if self.new_game.game_state == 1:
-
-                self.new_game.redraw_screen(self.display_screen, self.score_label, self.lives_label, self.width,
-                                          self.height)  # Redraws the buttons onto the screen
-                self.new_game.check_button()  # Checks the buttons for hover effects
-
-                for event in pg.event.get():
-                    # Exit to desktop
-                    if event.type == QUIT:
-                        pg.quit()
-                        sys.exit()
-
-                    if event.type == pg.MOUSEBUTTONUP:
-                        # Check which button was clicked and change game state accordingly
-                        self.new_game.select_cat()
+                        if self.new_game.game_state == 1:
+                            self.new_game.select_cat()
+                        else:
+                            self.new_game.process_button()
                         # Assign groups again
 
             # If game state is 2 then run the game:
@@ -155,7 +141,7 @@ class Game:
                         if reference_collided != []:
                             self.new_game.Players.update_position(pg.image.load(image), -self.new_game.Players.get_speed(), 'H')
                             x= self.new_game.Players.get_position()
-                            print(x)                 
+                            # print(x)                 
                             self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),x) 
                         
                         if walls_collided == [] and ladders_collided == []:
@@ -229,7 +215,26 @@ class Game:
                             self.new_game.Players.update_position(pg.image.load(image), -10,'H')
                             self.new_game.ReferenceCats.update_position(pg.image.load(image2), -10,'H')
                 
-                
+                # Use cycles to animate the stars
+                self.new_game.cycles = (self.new_game.cycles + 1) % 48
+                if self.new_game.cycles >= 1 and self.new_game.cycles <= 8:
+                    for gem in self.new_game.Gems:
+                        gem.update_image(pg.image.load('Object Images/yellow star.png'))
+                elif self.new_game.cycles >= 9 and self.new_game.cycles <= 16:
+                    for gem in self.new_game.Gems:
+                        gem.update_image(pg.image.load('Object Images/star_rot1.png'))
+                elif self.new_game.cycles >= 17 and self.new_game.cycles <= 24:
+                    for gem in self.new_game.Gems:
+                        gem.update_image(pg.image.load('Object Images/star_rot2.png'))
+                elif self.new_game.cycles >= 25 and self.new_game.cycles <= 32:
+                    for gem in self.new_game.Gems:
+                        gem.update_image(pg.image.load('Object Images/star_rot3.png'))
+                elif self.new_game.cycles >= 33 and self.new_game.cycles <= 40:
+                    for gem in self.new_game.Gems:
+                        gem.update_image(pg.image.load('Object Images/star_rot4.png'))
+                else:
+                    for gem in self.new_game.Gems:
+                        gem.update_image(pg.image.load('Object Images/star_rot5.png'))
 
                 # Redraw all instances onto the screen
                 self.new_game.redraw_screen(self.display_screen,

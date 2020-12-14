@@ -17,7 +17,6 @@ from reference import ReferenceEndcap
 from player import ReferenceCat
 
 
-
 class Board:
     """
     This class defines our gameboard.
@@ -85,7 +84,7 @@ class Board:
         self.score = 0
         self.lives = 9
         self.game_state = 0
-        self.white = (255, 255, 255)
+        self.cycles = 0
 
         # Arrays in which we store our instances of different classes
         self.Players = self.ReferenceLadders = []
@@ -450,7 +449,7 @@ class Board:
         # If the start button is pressed
         if self.Active_buttons[0] == 1 and \
            self.Buttons[0].rect.collidepoint(pg.mouse.get_pos()):
-            self.reset_groups(0, 3)
+            # self.reset_groups(0, 9)
             self.game_state = 1
             self.Active_buttons = [0, 0, 0]
         # If the exit button is pressed
@@ -461,6 +460,7 @@ class Board:
         # If the restart button is pressed
         if self.Active_buttons[2] == 1 and \
            self.Buttons[2].rect.collidepoint(pg.mouse.get_pos()):
+            self.reset_groups(0, 9)
             self.game_state = 1
 
     def select_cat(self):

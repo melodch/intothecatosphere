@@ -30,13 +30,12 @@ class Gem(OnBoard):
         self.image = raw_image
         self.image = pg.transform.scale(self.image, (20,20))
 
-    # def update_image(self, raw_image):
-    #     """
-    #     Update the gem image.
+    def update_image(self, raw_image):
+        """
+        Update the gem image.
 
-    #     Args:
-    #         raw_image: A string representing the path to a png.
-    #     """
-
-    #     # Update the gem image from the raw image and scale it
-    #     pass
+        Args:
+            raw_image: A string representing the path to a png.
+        """
+        self.image = raw_image
+        self.image = pg.transform.scale(self.image, (20,20))
