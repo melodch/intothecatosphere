@@ -570,11 +570,11 @@ class Board:
             self.ladder_group.draw(display_screen)
             self.gem_group.draw(display_screen)
             self.player_group.draw(display_screen)
-            self.reference_cat_group.draw(display_screen)
+            # self.reference_cat_group.draw(display_screen)
             self.fireball_group.draw(display_screen)
-            self.reference_platform_group.draw(display_screen)
-            self.reference_ladder_group.draw(display_screen)
-            self.reference_endcap_group.draw(display_screen)
+            # self.reference_platform_group.draw(display_screen)
+            # self.reference_ladder_group.draw(display_screen)
+            # self.reference_endcap_group.draw(display_screen)
             
 
             # Center text on the board
