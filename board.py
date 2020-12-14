@@ -14,7 +14,7 @@ from ladder import Ladder
 from reference import ReferencePlatform
 from reference import ReferenceLadder
 from reference import ReferenceEndcap
-from reference import ReferenceCat
+from player import ReferenceCat
 
 
 
@@ -141,7 +141,8 @@ class Board:
         self.ReferencePlatforms = []
         self.ReferenceLadders = []
         self.ReferenceEndcaps = []
-        self.ReferenceCats = []
+        self.ReferenceCats =  ReferenceCat(pg.image.load('Object Images/reference.png'),
+                              (self._width // 2, self._height - 35))
         #self.Boards = [OnBoard(pg.image.load('purplebg.png'), (0, 0))]
                        #OnBoard(pg.image.load('purplebg.png'), (685, 480))]
         
@@ -161,6 +162,7 @@ class Board:
             self.make_map()
             self.Ladders = self.Platforms = []
             self.ReferenceEndcaps = []
+            #self.ReferenceCats = []
             self.generate_platforms()
             self.create_endcap_reference_lines()
             self.generate_ladders()
@@ -176,6 +178,7 @@ class Board:
         Update all the game component groups from their corresponding lists.
         """
         # Here, we use the PyGame Sprite RenderPlain method
+        self.reference_cat_group = pg.sprite.RenderPlain(self.ReferenceCats)
         self.platform_group = pg.sprite.RenderPlain(self.Platforms)
         self.gem_group = pg.sprite.RenderPlain(self.Gems)
         #self.board_group = pg.sprite.RenderPlain(self.Boards)
@@ -185,7 +188,7 @@ class Board:
         self.reference_platform_group = pg.sprite.RenderPlain(self.ReferencePlatforms)
         self.reference_endcap_group = pg.sprite.RenderPlain(self.ReferenceEndcaps)
         self.player_group = pg.sprite.RenderPlain(self.Players)
-        self.reference_cat_group = pg.sprite.RenderPlain(self.ReferenceCats)
+        #self.reference_cat_group = pg.sprite.RenderPlain(self.ReferenceCats)
 
     def create_fireball(self, width):
         """
@@ -385,10 +388,10 @@ class Board:
                                 self.ReferenceEndcaps.append(ReferenceEndcap(pg.image.load(ref_ladder_image),((j-1)* 10, (k - 3) * 10 + 5 )))
                                 #self.ReferencePlatforms.append(ReferencePlatform(pg.image.load('reference.png'),((j+2)* 10, (k - 3) * 10 + 5)))
 
-    def create_cat_reference_point(self,position):
-        ref_image = 'Object Images/reference.png'
-       # position[1] = position[1] + 3
-        self.ReferenceCats.append(ReferenceCat(pg.image.load(ref_image),position))
+    # def create_cat_reference_point(self,position):
+    #     ref_image = 'Object Images/reference.png'
+    #    #position[1] = position[1] + 3
+    #     self.ReferenceCats = ReferenceCat(pg.image.load(ref_image),position)
 
     def make_map(self):
         """
@@ -567,11 +570,12 @@ class Board:
             self.ladder_group.draw(display_screen)
             self.gem_group.draw(display_screen)
             self.player_group.draw(display_screen)
+            self.reference_cat_group.draw(display_screen)
             self.fireball_group.draw(display_screen)
             self.reference_platform_group.draw(display_screen)
             self.reference_ladder_group.draw(display_screen)
             self.reference_endcap_group.draw(display_screen)
-            self.reference_cat_group.draw(display_screen)
+            
 
             # Center text on the board
             score_width = score_label.get_width()

@@ -74,9 +74,22 @@ class Person(pg.sprite.Sprite):
         colliders = pg.sprite.spritecollide(self, colliderGroup, False)
         return colliders
 
+        
+    def update_position_cat(self, raw_image, value, direction):
+        self.image = raw_image
+        #self.image = pg.transform.scale(self.image, (30, 30))
+        if direction == 'V':
+            self._position = (self._position[0], self._position[1] - value)
+        if direction == 'H':
+            self._position = (self._position[0] - value, self._position[1])
+        self.rect.center = self._position
+
     #     def check_collision2(self, colliderGroup1,colliderGroup2):
         #     colliders = pg.sprite.groupcollide(self,colliderGroup2, colliderGroup2, False)
         #     return colliders
+
+
+
 
 class Player(Person):
     """
@@ -118,19 +131,40 @@ class Player(Person):
         self.__speed = speed
 
 
-class PlayerView(Player):
+class ReferenceCat(Person):
     """
-    An object inheriting from the Player class, representing the
-    character's view. This updates every time the player moves.
-    The view is a circle centered around the player with a certain radius.
-    Everything else in the game is in black.
+    Defining all the platforms in the game.
+    """
+    """
+    A class that defines the player. A player is a person specialized with a
+    movement speed. Separation of the Person and Player classes allows for
+    more sustainable customization in the future.
 
     Attributes:
-        radius: An integer representing the radius of the player view.
+        _speed: An integer representing the movement speed of the player.
     """
 
-    def __init__(self):
+    def __init__(self, raw_image, position):
         """
-        Initiate the player view radius.
+        Initiate a player that inherits from the Person class with a certain
+        movement speed.
+
+        Args:
+            raw_image: A string representing the path to a png.
+            position: A tuple of integers representing coordinates.
         """
-        pass
+        super(ReferenceCat, self).__init__(raw_image, position)
+        
+        self.onLadder = 0
+        self.__gravity = 1  # Gravity affecting the jump velocity of the player
+        self.__speed = 5  # Movement speed of the player
+        self.image = raw_image
+        
+
+    def update_position_cat(self,raw_image, position):
+        #self.image = raw_image
+
+        self.image = raw_image
+        self._position = (self._position[0], self._position[1])
+        self.rect.center = self._position
+        # return self._position
