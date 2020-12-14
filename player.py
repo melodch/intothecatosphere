@@ -74,6 +74,10 @@ class Person(pg.sprite.Sprite):
         colliders = pg.sprite.spritecollide(self, colliderGroup, False)
         return colliders
 
+    #     def check_collision2(self, colliderGroup1,colliderGroup2):
+        #     colliders = pg.sprite.groupcollide(self,colliderGroup2, colliderGroup2, False)
+        #     return colliders
+
 class Player(Person):
     """
     A class that defines the player. A player is a person specialized with a

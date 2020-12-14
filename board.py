@@ -92,6 +92,7 @@ class Board:
         self.Fireballs = self.Gems = self.Platforms = []
         self.Ladders = self.ReferencePlatforms = []
         self.ReferenceEndcaps = []
+        self.ReferenceCats = []
 
         # Initialize instance groups which we use to display instances on screen
         self.player_group = pg.sprite.RenderPlain(self.Players)
@@ -103,12 +104,12 @@ class Board:
         self.reference_platform_group = pg.sprite.RenderPlain(self.ReferencePlatforms)
         self.reference_ladder_group = pg.sprite.RenderPlain(self.ReferenceLadders)
         self.reference_endcap_group = pg.sprite.RenderPlain(self.ReferenceEndcaps)
-        
+        self.reference_cat_group = pg.sprite.RenderPlain(self.ReferenceCats)
 
         # Resets the above groups and initializes the game for us
         self.reset_groups(0, 9)
 
-        self.background = pg.image.load('purplebg.png')  # added image
+        self.background = pg.image.load('Background Images/purplebg.png')  # added image
         self.background = pg.transform.scale(self.background, (WIDTH, HEIGHT))
         self.start_background = pg.image.load('Background Images/startscreen.png')
         self.choose_cat_background = pg.image.load('Background Images/pickcat1.png')
@@ -131,7 +132,7 @@ class Board:
         self.score = score
         self.lives = lives
         self.map = []  # We will create the map again when we reset the game
-        self.Players = Player(pg.image.load('Cat Images/orangeforward.png'),
+        self.Players = Player(pg.image.load('Cat Images/orangefront.png'),
                               (self._width // 2, self._height - 35))
         self.Gems = []
         self.Platforms = []
@@ -411,7 +412,7 @@ class Board:
 
     def create_cat_reference_point(self,position):
         ref_image = 'Object Images/reference.png'
-        position = position 
+       # position[1] = position[1] + 3
         self.ReferenceCats.append(ReferenceCat(pg.image.load(ref_image),position))
 
     def make_map(self):
@@ -500,15 +501,16 @@ class Board:
         Check for mouse hovering over buttons to change their images
         giving a hover button effect.
         """
+        file_path = "Object Images"
         mouse_pos = pg.mouse.get_pos()
         for button in range(len(self.Buttons)):
             # Active button
             if self.Active_buttons[button] == 1 and \
                self.Buttons[button].rect.collidepoint(mouse_pos):
                 if button == 0:
-                    self.Buttons[button].change_image(pg.image.load('start1.png'))
+                    self.Buttons[button].change_image(pg.image.load(f'{file_path}/button_start_meow.png'))
                 elif button == 1:
-                    self.Buttons[button].change_image(pg.image.load('exit1.png'))
+                    self.Buttons[button].change_image(pg.image.load('Object Images/button_exit_game.png'))
                 elif button == 2:
                     self.Buttons[button].change_image(pg.image.load('restart1.png'))
             # Inactive button
@@ -532,11 +534,11 @@ class Board:
             # Inactive button
             else:
                 if button == 0:
-                    self.Cat_buttons[button].change_image(pg.image.load('Cat Images/orangeright.png'))
+                    self.Cat_buttons[button].change_image(pg.image.load('Cat Images/orangefront.png'))
                 elif button == 1:
-                    self.Cat_buttons[button].change_image(pg.image.load('Cat Images/orangeright.png'))
+                    self.Cat_buttons[button].change_image(pg.image.load('Cat Images/greyfront.png'))
                 elif button == 2:
-                    self.Cat_buttons[button].change_image(pg.image.load('Cat Images/orangeright.png'))
+                    self.Cat_buttons[button].change_image(pg.image.load('Cat Images/brownfront.png'))
 
     # changed the syntax of the display screen thing
     def redraw_screen(self, display_screen, score_label, lives_label, width, height):

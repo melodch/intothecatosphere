@@ -48,7 +48,7 @@ class Game:
         self.FPS = 150
         self.clock = pg.time.Clock()
         self.myFont = pg.font.SysFont("comicsans", 30)
-        self.reference_cat_group = pg.sprite.RenderPlain(self.ReferenceCats)
+        
 
     def runGame(self):
         """
@@ -115,6 +115,7 @@ class Game:
                 self.new_game.create_fireball(self.width)
                 x = self.new_game.Players.get_position()
                 self.new_game.create_cat_reference_point(x)
+                #self.new_game.reference_cat_group.draw(display_screen)
                 # Check for collisions below
                 # Check for collisions above
                 #self.new_game.Players[0].updateY(-2)
@@ -143,7 +144,7 @@ class Game:
                 keys = pg.key.get_pressed()
 
                 # put catfacefront here/ defualt image when no key is being pressed
-                image = f'{self.new_game.Chosen_cat}forward.png'
+                image = f'Cat Images/{self.new_game.Chosen_cat}front.png'
 
                 #Change this
                 if keys[K_RIGHT]:
@@ -171,7 +172,7 @@ class Game:
 
                 if keys[K_DOWN]:
 
-                    image = f'Cat Images/{self.new_game.Chosen_cat}forward.png'
+                    image = f'Cat Images/{self.new_game.Chosen_cat}front.png'
                     self.new_game.Players.update_position(pg.image.load(image), -5,'V')                    
                     references_collided_down = self.new_game.Players.check_collision(self.new_game.reference_ladder_group)
                     self.new_game.Players.update_position(pg.image.load(image), 5,'V')
@@ -211,6 +212,8 @@ class Game:
                             self.new_game.Players.update_position(pg.image.load(image), 10,'H')
                         if walls_collided_left:
                             self.new_game.Players.update_position(pg.image.load(image), -10,'H')
+                
+                self.ReferenceCats = []
 
                 # Redraw all instances onto the screen
                 self.new_game.redraw_screen(self.display_screen,
