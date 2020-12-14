@@ -69,9 +69,9 @@ class Board:
         # The buttons used in the pregame and postgame screens
         self.Buttons = [Button(pg.image.load('Object Images/start_meow.png'), (140, 320), "start"),
                         Button(pg.image.load('Object Images/exit_game.png'), (360, 320), "exit"),
-                        Button(pg.image.load('restart.png'), (250, 343), "Object Images/restart.png"), ]
+                        Button(pg.image.load('Object Images/restart.png'), (250, 343), "Object Images/restart.png"), ]
         self.Active_buttons = [1, 1, 0]  # Pregame screen uses first 2 buttons
-        self.myfont = pg.font.SysFont("comicsans", 50)
+        self.myfont = pg.font.Font('slkscr.ttf', 50)
 
         self.Cat_buttons = [Button(pg.image.load('Cat Images/orangeright.png'), (90, 310), "cat1"),
                         Button(pg.image.load('Cat Images/greyright.png'), (250, 310), "cat2"),
@@ -432,7 +432,7 @@ class Board:
         # call collect_gem method from Gem class
         # update map, gem list, gem group
         for gem in gems_collected:
-            self.score += 1
+            self.score += 10
             # We also remove the coin entry from our map
             # self.map[(gem.get_position()[1]) // 10][(gem.get_position()[0]) // 10] = 0
             # Remove the coin entry from our list
@@ -541,8 +541,8 @@ class Board:
             if self.game_state == 3:
                 # Post game state
                 display_screen.blit(self.end_background, self.end_background.get_rect())
-                label = self.myfont.render(str(self.score), 20, (255, 255, 255))
-                display_screen.blit(label, (280, 250))
+                label = self.myfont.render(str(self.score), 10, (255, 255, 255))
+                display_screen.blit(label, (285, 255))
 
             for button in range(len(self.Active_buttons)):
                 if self.Active_buttons[button] == 1:
@@ -575,8 +575,8 @@ class Board:
 
             # Center text on the board
             score_width = score_label.get_width()
-            display_screen.blit(score_label, (265 - score_width / 2, 470))      
-            display_screen.blit(lives_label, (470, 470))
+            display_screen.blit(score_label, (20, 470))      
+            display_screen.blit(lives_label, (400, 470))
 
     def update_level(self, current_score, current_lives):
         """

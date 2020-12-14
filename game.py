@@ -47,7 +47,7 @@ class Game:
         # constants
         self.FPS = 150
         self.clock = pg.time.Clock()
-        self.myFont = pg.font.SysFont("Pokemon GB.ttf", 30)
+        self.myFont = pg.font.Font('slkscr.ttf', 20)
         
 
     def runGame(self):
@@ -66,9 +66,9 @@ class Game:
         while True:
 
             self.clock.tick(self.FPS)
-            self.score_label = self.myFont.render(str(self.new_game.score), 1,
+            self.score_label = self.myFont.render("Score " + str(self.new_game.score), 1,
                                                     (0, 0, 0))
-            self.lives_label = self.myFont.render(str(self.new_game.lives), 1,
+            self.lives_label = self.myFont.render("Lives: " + str(self.new_game.lives), 1,
                                                     (0, 0, 0))
             # If the game state is not 2 then we will not have to run the game,
             # we just need to display buttons
