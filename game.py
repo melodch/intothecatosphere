@@ -47,7 +47,7 @@ class Game:
         # constants
         self.FPS = 150
         self.clock = pg.time.Clock()
-        self.myFont = pg.font.SysFont("comicsans", 30)
+        self.myFont = pg.font.SysFont("Pokemon GB.ttf", 30)
         
 
     def runGame(self):

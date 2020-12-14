@@ -67,15 +67,15 @@ class Board:
         # Create the buttons used in the pregame and postgame screens.
         # Initialize font and background for those screens.
         # The buttons used in the pregame and postgame screens
-        self.Buttons = [Button(pg.image.load('start.png'), (150, 300), "start"),
-                        Button(pg.image.load('exit.png'), (350, 300), "exit"),
+        self.Buttons = [Button(pg.image.load('Object Images/start_meow.png'), (140, 320), "start"),
+                        Button(pg.image.load('Object Images/exit_game.png'), (360, 320), "exit"),
                         Button(pg.image.load('restart.png'), (150, 300), "restart"), ]
         self.Active_buttons = [1, 1, 0]  # Pregame screen uses first 2 buttons
         self.myfont = pg.font.SysFont("comicsans", 50)
 
-        self.Cat_buttons = [Button(pg.image.load('start.png'), (100, 300), "cat1"),
-                        Button(pg.image.load('exit.png'), (250, 300), "cat2"),
-                        Button(pg.image.load('restart.png'), (400, 300), "cat3"), ]
+        self.Cat_buttons = [Button(pg.image.load('Cat Images/orangeright.png'), (90, 310), "cat1"),
+                        Button(pg.image.load('Cat Images/greyright.png'), (250, 310), "cat2"),
+                        Button(pg.image.load('Cat Images/blueright.png'), (410, 310), "cat3"), ]
         self.Chosen_cat = ""
 
         # Initialize instance groups that are used to display instances on
@@ -493,7 +493,7 @@ class Board:
             self.Chosen_cat = "grey"
             self.game_state = 2
         if self.Cat_buttons[2].rect.collidepoint(pg.mouse.get_pos()):
-            self.Chosen_cat = "brown"
+            self.Chosen_cat = "blue"
             self.game_state = 2
 
     def check_button(self):
@@ -501,24 +501,23 @@ class Board:
         Check for mouse hovering over buttons to change their images
         giving a hover button effect.
         """
-        file_path = "Object Images"
         mouse_pos = pg.mouse.get_pos()
         for button in range(len(self.Buttons)):
             # Active button
             if self.Active_buttons[button] == 1 and \
                self.Buttons[button].rect.collidepoint(mouse_pos):
                 if button == 0:
-                    self.Buttons[button].change_image(pg.image.load(f'{file_path}/button_start_meow.png'))
+                    self.Buttons[button].change_image(pg.image.load('Object Images/hov_start_meow.png'))
                 elif button == 1:
-                    self.Buttons[button].change_image(pg.image.load('Object Images/button_exit_game.png'))
+                    self.Buttons[button].change_image(pg.image.load('Object Images/hov_exit_game.png'))
                 elif button == 2:
                     self.Buttons[button].change_image(pg.image.load('restart1.png'))
             # Inactive button
             else:
                 if button == 0:
-                    self.Buttons[button].change_image(pg.image.load('start.png'))
+                    self.Buttons[button].change_image(pg.image.load('Object Images/start_meow.png'))
                 elif button == 1:
-                    self.Buttons[button].change_image(pg.image.load('exit.png'))
+                    self.Buttons[button].change_image(pg.image.load('Object Images/exit_game.png'))
                 elif button == 2:
                     self.Buttons[button].change_image(pg.image.load('restart.png'))
         
@@ -526,19 +525,19 @@ class Board:
             # Active button
             if self.Cat_buttons[button].rect.collidepoint(mouse_pos):
                 if button == 0:
-                    self.Cat_buttons[button].change_image(pg.image.load('Cat Images/orangeright.png'))
-                elif button == 1:
-                    self.Cat_buttons[button].change_image(pg.image.load('Cat Images/greyright.png'))
-                elif button == 2:
-                    self.Cat_buttons[button].change_image(pg.image.load('Cat Images/brownright.png'))
-            # Inactive button
-            else:
-                if button == 0:
                     self.Cat_buttons[button].change_image(pg.image.load('Cat Images/orangefront.png'))
                 elif button == 1:
                     self.Cat_buttons[button].change_image(pg.image.load('Cat Images/greyfront.png'))
                 elif button == 2:
-                    self.Cat_buttons[button].change_image(pg.image.load('Cat Images/brownfront.png'))
+                    self.Cat_buttons[button].change_image(pg.image.load('Cat Images/bluefront.png'))
+            # Inactive button
+            else:
+                if button == 0:
+                    self.Cat_buttons[button].change_image(pg.image.load('Cat Images/orangeright.png'))
+                elif button == 1:
+                    self.Cat_buttons[button].change_image(pg.image.load('Cat Images/greyright.png'))
+                elif button == 2:
+                    self.Cat_buttons[button].change_image(pg.image.load('Cat Images/blueright.png'))
 
     # changed the syntax of the display screen thing
     def redraw_screen(self, display_screen, score_label, lives_label, width, height):
