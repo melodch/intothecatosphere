@@ -108,9 +108,9 @@ class Board:
 
         self.background = pg.image.load('purplebg.png')  # added image
         self.background = pg.transform.scale(self.background, (WIDTH, HEIGHT))
-        self.start_background = pg.image.load('startscreen.png')
-        self.choose_cat_background = pg.image.load('pickcat1.png')
-        self.end_background = pg.image.load('endscreen.png')
+        self.start_background = pg.image.load('Background Images/startscreen.png')
+        self.choose_cat_background = pg.image.load('Background Images/pickcat1.png')
+        self.end_background = pg.image.load('Background Images/endscreen.png')
         self.start_background = pg.transform.scale(self.start_background, (WIDTH, HEIGHT))
         self.choose_cat_background = pg.transform.scale(self.choose_cat_background, (WIDTH, HEIGHT))
         self.end_background = pg.transform.scale(self.end_background, (WIDTH, HEIGHT))
