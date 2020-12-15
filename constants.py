@@ -22,4 +22,5 @@ Set various constants that will stay the same throughout the game.
 # h and w: 720s
 HEIGHT = 500
 WIDTH = 500
+FPS = 150
 

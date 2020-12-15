@@ -22,6 +22,10 @@ class Board:
     This class defines our gameboard.
     A gameboard contains everthing related to our game on it
     like our player, platforms, ladders, stars, etc.
+<<<<<<< HEAD
+=======
+
+>>>>>>> b65aa66422d82abe6cd6e458ff37b9c4b17a1e88
     Attributes:
         self._width = WIDTH
         self._height = HEIGHT
@@ -31,6 +35,10 @@ class Board:
         self.cycles = 0         # Used for animation
         self.map = []
         self.myfont = pg.font.Font('slkscr.ttf', 50)
+<<<<<<< HEAD
+=======
+
+>>>>>>> b65aa66422d82abe6cd6e458ff37b9c4b17a1e88
         width: An integer that represents the width of the display screen.
         height: An integer that represents the height of the display screen.
         score: An integer representing the player's score which updates as they
@@ -49,6 +57,10 @@ class Board:
         ReferenenceLadders: A list of ReferenceLadder instances on screen.
         ReferenceEndcaps: A list of ReferenceEndcap instances on screen.
         ReferenceCats: A list of ReferenceCat instances on screen.
+<<<<<<< HEAD
+=======
+
+>>>>>>> b65aa66422d82abe6cd6e458ff37b9c4b17a1e88
         Fireballs: A list of Fireball instances on screen.
         Buttons: A list of Button instances that represent on-screen buttons
             to be pressed (for start, restart and exit).
@@ -109,9 +121,15 @@ class Board:
         self.cycles = 0         # Used for animation
         self.map = []
         self.myfont = pg.font.Font('slkscr.ttf', 50)
+<<<<<<< HEAD
 
         
 
+=======
+
+        
+
+>>>>>>> b65aa66422d82abe6cd6e458ff37b9c4b17a1e88
         # Initialize empty lists in which we store instances of different game
         # components.
         self.Players = self.ReferenceLadders = []
@@ -215,6 +233,10 @@ class Board:
     def create_fireball(self, width):
         """
         Randomly generate fireballs.
+<<<<<<< HEAD
+=======
+
+>>>>>>> b65aa66422d82abe6cd6e458ff37b9c4b17a1e88
         Generates fireballs on the screen such that 
         there are no more than 3 at anytime on the screen
         """
@@ -234,6 +256,10 @@ class Board:
     def fireball_check(self):
         """
         Update all the fireball positions and check for collisions with player.
+<<<<<<< HEAD
+=======
+
+>>>>>>> b65aa66422d82abe6cd6e458ff37b9c4b17a1e88
         Makes the fireball fall down on the screen and if it collides
         with the player, then the player loses a life and the fireball
         disapears.
@@ -392,6 +418,10 @@ class Board:
     def create_reference_lines(self):
         """
        Create reference lines for the platforms.
+<<<<<<< HEAD
+=======
+
+>>>>>>> b65aa66422d82abe6cd6e458ff37b9c4b17a1e88
        Reference lines are created along the top edge of the platform 
        to help define the movement of the player. If the player
        is colliding with these lines then it can move left and 
@@ -421,6 +451,10 @@ class Board:
     def create_ladder_reference(self):
         """
        Create reference lines for the ladders.
+<<<<<<< HEAD
+=======
+
+>>>>>>> b65aa66422d82abe6cd6e458ff37b9c4b17a1e88
        Reference lines are created along the length of the ladder 
        to help define the movement of the player. If the player
        is colliding with these lines then it can move up and down.
@@ -440,6 +474,10 @@ class Board:
     def create_endcap_reference_lines(self):
         """
        Create reference lines for the edges of the platforms.
+<<<<<<< HEAD
+=======
+
+>>>>>>> b65aa66422d82abe6cd6e458ff37b9c4b17a1e88
        Reference lines are created along the edge of the platform 
        to help define the movement of the player. If the player
        is colliding with these lines then it bounces from these 

@@ -26,7 +26,7 @@ class Person(pg.sprite.Sprite):
         super(Person, self).__init__()
         self._position = position
         self.image = image
-        self.image = pg.transform.scale(self.image, (30, 30))
+        # self.image = pg.transform.scale(self.image, (30, 30))
         self.rect = self.image.get_rect()
         self.rect.center = self._position
 
@@ -75,18 +75,15 @@ class Person(pg.sprite.Sprite):
         return colliders
 
         
-    def update_position_cat(self, raw_image, value, direction):
-        self.image = raw_image
-        #self.image = pg.transform.scale(self.image, (30, 30))
-        if direction == 'V':
-            self._position = (self._position[0], self._position[1] - value)
-        if direction == 'H':
-            self._position = (self._position[0] - value, self._position[1])
-        self.rect.center = self._position
+    # def update_position_cat(self, raw_image, value, direction):
+    #     self.image = raw_image
+    #     #self.image = pg.transform.scale(self.image, (30, 30))
+    #     if direction == 'V':
+    #         self._position = (self._position[0], self._position[1] - value)
+    #     if direction == 'H':
+    #         self._position = (self._position[0] - value, self._position[1])
+    #     self.rect.center = self._position
 
-    #     def check_collision2(self, colliderGroup1,colliderGroup2):
-        #     colliders = pg.sprite.groupcollide(self,colliderGroup2, colliderGroup2, False)
-        #     return colliders
 
 
 
@@ -154,17 +151,36 @@ class ReferenceCat(Person):
             position: A tuple of integers representing coordinates.
         """
         super(ReferenceCat, self).__init__(raw_image, position)
-        
+        self._position = position
         self.onLadder = 0
         self.__gravity = 1  # Gravity affecting the jump velocity of the player
         self.__speed = 5  # Movement speed of the player
         self.image = raw_image
         
 
-    def update_position_cat(self,raw_image, position):
+    def update_position_cat(self, raw_image, position):
         #self.image = raw_image
 
         self.image = raw_image
-        self._position = (self._position[0], self._position[1])
+        self._position = (position[0] - 2 , position[1] + 10)
         self.rect.center = self._position
+        return self._position
         # return self._position
+
+    # def update_position_cat(self, raw_image, value, direction):
+    #     self.image = raw_image
+    #     #self.image = pg.transform.scale(self.image, (30, 30))
+    #     if direction == 'V':
+    #         self._position = (self._position[0], self._position[1] - value)
+    #     if direction == 'H':
+    #         self._position = (self._position[0] - value, self._position[1])
+    #     self.rect.center = self._position
+
+    def check_collision_cat(self, colliderGroup):
+        colliders = pg.sprite.spritecollide(self, colliderGroup, False)
+        return colliders
+
+    
+    def check_collision2(self, colliderGroup1,colliderGroup2):
+        colliders = pg.sprite.groupcollide(self,colliderGroup1, colliderGroup2, False)
+        return colliders
