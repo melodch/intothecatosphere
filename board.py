@@ -3,7 +3,8 @@ import math
 import random
 import sys
 import time
-from constants import *
+from constants import WIDTH
+from constants import HEIGHT
 from onboard import OnBoard
 from star import Star
 from player import Player
@@ -41,6 +42,7 @@ class Board:
         map: A list of lists representing a 2D array to keep track of the
             positions of the game componenets on screen
             (where 1 represents a platform, 2 ladder, and 3 star).
+        h_spacing: Vertcial spacing between platforms.
         Players: A list of Player instances on screen.
         Stars: A list of Star instances on screen.
         Platforms: A list of Platform instances on screen.
@@ -75,11 +77,6 @@ class Board:
         Set up a board that connects and initializes all aspects of our game
         as instance variables.
         """
-        # Things that are initialized here include:
-        # dimensions of board (height and width)
-        # score
-        # game state
-
         # Create the buttons used in the pregame and postgame screens.
         self.Buttons = [Button(pg.image.load('Object Images/start_meow.png'),
                                             (140, 320), "start"),
@@ -110,11 +107,13 @@ class Board:
 
         self._width = WIDTH
         self._height = HEIGHT
+        #self.fps = FPS
         self.score = 0          # Initialize player's score
         self.lives = 9          # Initialize player's lives
         self.game_state = 0     # Initialize game state to pregame
         self.cycles = 0         # Used for animation
         self.map = []
+        self.h_spacing = 10     # Set vertical spacing between platforms
         self.myfont = pg.font.Font('slkscr.ttf', 50)
 
         # Initialize empty lists in which we store instances of different game
@@ -129,7 +128,6 @@ class Board:
         self.player_group = pg.sprite.RenderPlain(self.Players)
         self.platform_group = pg.sprite.RenderPlain(self.Platforms)
         self.star_group = pg.sprite.RenderPlain(self.Stars)
-        #self.board_group = pg.sprite.RenderPlain(self.Boards)
         self.fireball_group = pg.sprite.RenderPlain(self.Fireballs)
         self.ladder_group = pg.sprite.RenderPlain(self.Ladders)
         self.ref_platform_group = pg.sprite.RenderPlain(self.ReferencePlatforms)
@@ -144,6 +142,10 @@ class Board:
         """
         Reset game components. This includes the score, lives, map,
         and lists of game component instances.
+
+        Args:
+            score: An int that represents player's current score.
+            lives: An int that represents player's current number of lives.
         """
         self.score = score
         self.lives = lives
@@ -177,7 +179,7 @@ class Board:
             self.ReferenceEndcaps = []
             self.generate_platforms()
             self.generate_ladders()
-            if self.is_top_reachable(0, 0) is True:
+            if self.is_top_reachable(25, 0) is True:
                 break
         self.make_boundaries()
         self.create_ladder_reference()
@@ -268,15 +270,20 @@ class Board:
         """
         width = len(self.map)
         height = len(self.map[0])
-        h_spacing = 10
-        w_spacing = 5  # Horizontal spacing between the stars
-        offset = -8    # Vertical offset that places the star above the platform
+        w_spacing = 5   # Horizontal spacing between the stars
+        offset = -8     # Vertical offset that places the star above the platform
+
         # Traverse the platforms
-        for y in range(h_spacing, height, h_spacing):
+        for y in range(self.h_spacing, height, self.h_spacing):
             for x in range(w_spacing, width, w_spacing):
                 rand_star = random.randint(1, 5)
+                # Conditions to generate star:
+                # If there is a platform on this level
+                # 1/5 chance of a ladder being placed (for randomness)
+                # If there isn't already a star to the left or right
                 if self.map[x][y] == 1 and rand_star == 1 and \
-                   self.map[x - w_spacing][y - 3] != 3:
+                   self.map[x - w_spacing][y - 1] != 3 and \
+                   self.map[x + w_spacing][y - 1] != 3:
                     self.map[x][y - 1] = 3
                     self.Stars.append(Star(pg.image.load(
                         'Object Images/yellow star.png'),
@@ -304,10 +311,7 @@ class Board:
         width = len(self.map[0])
 
         # Generate platforms at all levels except for ground
-        # Vertical spacing of 10
-        h_spacing = 10
-
-        for y in range(0, height - h_spacing, h_spacing):
+        for y in range(0, height - self.h_spacing, self.h_spacing):
             x = 1
             while x < width:
                 rand_platform_size = random.randint(7, 15)
@@ -337,33 +341,37 @@ class Board:
         """
         height = len(self.map) - 1
         width = len(self.map[0]) - 1
-        h_spacing = 10
-        w_spacing = 6
+        w_spacing = 6    # Horizontal spacing between the ladders
 
         # Loop through each platform level
-        for y in range(0, height, h_spacing):
+        for y in range(0, height, self.h_spacing):
             num_on_this_lvl = 0
+            # Randomly decide if there should be 1 platform on this level or 2
             rand_num = random.randint(1, 2)
             while num_on_this_lvl < rand_num:
                 for x in range(w_spacing, width - w_spacing, w_spacing):
                     rand_ladder = random.randint(1, 7)
                     if num_on_this_lvl == rand_num:
                         break
-                    # Conditions:
+                    # Conditions to generate ladder:
                     # If there is a platform on this level and one level lower
                     # 1/7 chance of a ladder being placed (for randomness)
                     # If there isn't already a ladder to the left or right
-                    elif self.map[x][y] == self.map[x][y + h_spacing] == 1 and \
+                    elif self.map[x][y] == self.map[x][y + self.h_spacing] == 1 and \
                         rand_ladder == 1 and self.map[x - w_spacing][y] != 2 \
                         and self.map[x + w_spacing][y] != 2:
                         # Call helper method to create a ladder to connect
                         # between upper and lower platform
-                        self.create_ladder(x, y, y + h_spacing)
+                        self.create_ladder(x, y, y + self.h_spacing)
                         num_on_this_lvl += 1
 
     def create_ladder(self, x, upper_y, lower_y):
         """
         Helper method to create a ladder between two platforms.
+
+        Args:
+            upper_y: y position of the upper platfrom.
+            lower_y: y position of the lower platfrom.
         """
         # Given an upper and lower platform, connect them with ladder objects
         # with a vertical spacing of 3
@@ -383,6 +391,10 @@ class Board:
     def is_top_reachable(self, x, y):
         """
         Recursive method to check that player has a path to reach the top.
+
+        Args:
+            x: x position of starting point.
+            y: y position of starting point.
         """
         height = len(self.map)
         # Base case: If reached the other end of the board
@@ -393,17 +405,21 @@ class Board:
         # If the value of the ladder to the left is valid,
         # call the function again
         if next_ladder[0] != 0 and self.map[next_ladder[0]][y] == 2:
-            return self.is_top_reachable(next_ladder[0], y + 10)
+            return self.is_top_reachable(next_ladder[0], y + self.h_spacing)
         # If the value of the ladder to the right is valid,
         # call the function again
         if next_ladder[1] != 49 and self.map[next_ladder[1]][y] == 2:
-            return self.is_top_reachable(next_ladder[1], y + 10)
+            return self.is_top_reachable(next_ladder[1], y + self.h_spacing)
         else:
             return False
 
     def traverse_left_right(self, x, y):
         """
         Helper method to find ladders to the left and right of given position.
+
+        Args:
+            x: x position of starting point.
+            y: y position of platform that we are traversing.
         """
         left = right = x
         # Keep updating left value until we reach the left edge of the
@@ -518,6 +534,7 @@ class Board:
         """
         Perform star collection by updating score, star list, and map.
         This method is called if player has collided with a star.
+
         Args:
             stars_collected: A list of star instances that the player has
             collided with.
@@ -539,7 +556,7 @@ class Board:
         # If the exit button is pressed
         if self.Active_buttons[1] == 1 and \
            self.Buttons[1].rect.collidepoint(pg.mouse.get_pos()):
-            pg.quit()
+            #pg.quit()
             sys.exit()
         # If the restart button is pressed
         if self.Active_buttons[2] == 1 and \
@@ -619,11 +636,13 @@ class Board:
                       lives_label, width, height):
         """
         Redraws the entire game screen.
+
         Game states:
         0 Game lobby
         1 Choose cat
         2 Gameplay
         3 End screen
+
         Args:
             display_screen: PyGame display.
             score_label: rendering of the score.
@@ -631,11 +650,12 @@ class Board:
             height: An integer representing the height of the screen.
         """
         # Fill display screen with black
-        display_screen.fill((0, 0, 0))  # Fill it with black
+        display_screen.fill((0, 0, 0))
+
         # If we are in either pregame or postgame states
         if self.game_state == 0 or self.game_state == 3:
             if self.game_state == 0:
-                # Game lobby
+                # Pre game state
                 display_screen.blit(self.start_background,
                                     self.start_background.get_rect())
             if self.game_state == 3:
@@ -645,6 +665,7 @@ class Board:
                 label = self.myfont.render(str(self.score), 10, (255, 255, 255))
                 display_screen.blit(label, (285, 255))
 
+            # Display the active buttons
             for button in range(len(self.Active_buttons)):
                 if self.Active_buttons[button] == 1:
                     display_screen.blit(self.Buttons[button].image,
@@ -652,9 +673,9 @@ class Board:
 
         # If we are choosing a cat
         if self.game_state == 1:
-            # Choose cat
             display_screen.blit(self.choose_cat_background,
                                 self.choose_cat_background.get_rect())
+            # Display the cat buttons
             for button in range(len(self.Cat_buttons)):
                 display_screen.blit(self.Cat_buttons[button].image,
                                     self.Cat_buttons[button].get_top_left_pos())
@@ -674,6 +695,8 @@ class Board:
             # self.ref_ladder_group.draw(display_screen)
             # self.ref_endcap_group.draw(display_screen)
 
+            # Display the player's score and lives in the lower
+            # left and right corners of the screen.
             display_screen.blit(score_label, (15, 470))
             display_screen.blit(lives_label, (390, 470))
 
@@ -681,5 +704,9 @@ class Board:
         """
         Initialize the game, preserving the player's score and
         remaining number of lives.
+
+        Args:
+            current_score: player's current score.
+            current_lives: player's current number of lives.
         """
         self.reset_groups(current_score, current_lives)

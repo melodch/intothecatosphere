@@ -2,24 +2,25 @@ from collections import Counter
 import pytest
 from board import Board
 
-from board import (
-    reset_groups,
-    initialize_game,
-    make_map,           # check is emtpy 2D list
-    create_fireball,    # maybe check that there are three fireball objects in Fireballs
-    generate_stars,     # maybe check that there are more than two star objects in Stars
-    make_boundaries,    # check that map sides are 4
-    generate_platforms,     # check levels
-    generate_ladders,       # check that there isn't more than two ladders on one level
-    create_ladder,          # check spacing
-    is_top_reachable,       # check with True board and False board
-    traverse_left_right,    # check that it gives the right left right values
-    update_level,           # check that things are reset and then score, lives stay the same
-)
+# from board import (
+#     reset_groups,
+#     initialize_game,
+#     make_map,           # check is emtpy 2D list
+#     create_fireball,    # maybe check that there are three fireball objects in Fireballs
+#     generate_stars,     # maybe check that there are more than two star objects in Stars
+#     make_boundaries,    # check that map sides are 4
+#     generate_platforms,     # check levels
+#     generate_ladders,       # check that there isn't more than two ladders on one level
+#     create_ladder,          # check spacing
+#     is_top_reachable,       # check with True board and False board
+#     traverse_left_right,    # check that it gives the right left right values
+#     update_level,           # check that things are reset and then score, lives stay the same
+# )
 
 test_game = Board()
 test_game._width = 50
 test_game._height = 50
+test_game.h_spacing = 3
 
 '''
 attribute reset_groups
@@ -60,12 +61,12 @@ reset_groups = [
 #     ("ATGAATGA", "ATGAATGA"),
 # ]
 
-# find_all_orfs_cases = [
+# is_top_reachable = [
 #     # This case from find_all_orfs has no ORFs in other frames, so it should
 #     # return the same result as in the one_frame case.
-#     ("ATGTAAATGAAATAA", ["ATG", "ATGAAA"]),
+#     ([[]], True),
 #     # Check case with ORFs in every frame
-#     ("ATGGATGCCTGATTGAAATGTGA", ["ATGGATGCC", "ATGCCTGAT", "ATG"]),
+#     ("ATGGATGCCTGATTGAAATGTGA", False),
 # ]
 
 
@@ -85,7 +86,7 @@ def test_reset_groups(attribute, value):
 
 # @pytest.mark.parametrize("attribute,value",
 #                          initialize_game)
-# def initialize_game(attribute, value):
+# def test_initialize_game(attribute, value):
 #     test_game.initialize_game()
 #     assert initialize_game == value
 
