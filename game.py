@@ -180,15 +180,15 @@ class Game:
 
                 # moving the player down if the down key is pressed
                 if keys[K_DOWN]:               
-                    # setting the image of the cat to be the one that is 
+                    # Setting the image of the cat to be the one that is 
                     # facing down
                     image = f'Cat Images/{self.new_game.Chosen_cat}front.png'                    
-                    # moving the reference and the player slightly downward, 
-                    # checking for collisions with the reference ladder group
+                    # Moving the reference and the player slightly downward, 
+                    # Checking for collisions with the reference ladder group
                     # and moving the player back up to its original position
                     self.new_game.Players.update_position(pg.image.load(image), -5,'V')
                     self.new_game.ReferenceCats.update_position(pg.image.load(image2), -5,'V')                    
-                    reference_ladders_collided_down = self.new_game.ReferenceCats.check_collision(self.new_game.ref_ladder_group)
+                    reference_ladders_collided_down = self.new_game.ReferenceCats.check_collision(self.new_game.ladder_group)
                     self.new_game.Players.update_position(pg.image.load(image), 5,'V')
                     self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position())                   
                     # if the player is on the ladder and its not at the  
@@ -197,15 +197,15 @@ class Game:
                         self.new_game.Players.update_position(pg.image.load(image), -self.new_game.Players.get_speed(),'V')
                         self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position())           
 
-                # moving the player down if the up key is pressed
+                # Moving the player down if the up key is pressed
                 if keys[K_UP]: 
-                    # setting the image of the cat to be the one that is 
+                    # Setting the image of the cat to be the one that is 
                     # facing up                   
                     image = f'Cat Images/{self.new_game.Chosen_cat}up.png'
-                    #checking for collisions between the ladder reference 
-                    #  and the player reference.
+                    # Checking for collisions between the ladder reference 
+                    # and the player reference.
                     ladders_collided = self.new_game.ReferenceCats.check_collision(self.new_game.ladder_group)              
-                    # if the cat collides with the ladder than it 
+                    # If the cat collides with the ladder than it 
                     # can move upwards
                     if ladders_collided != []:# and self.new_game.Players.get_position()[1] >= 0:                        
                         self.new_game.Players.update_position(pg.image.load(image), self.new_game.Players.get_speed(),'V')

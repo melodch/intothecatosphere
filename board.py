@@ -175,17 +175,14 @@ class Board:
             self.make_map()
             self.Ladders = self.Platforms = []
             self.ReferenceEndcaps = []
-            #self.ReferenceCats = []
             self.generate_platforms()
-            self.create_reference_lines()
-            self.create_endcap_reference_lines()
             self.generate_ladders()
-            # self.create_ladder_reference()
             if self.is_top_reachable(0, 0) is True:
                 break
         self.make_boundaries()
         self.create_ladder_reference()
-        #self.create_reference_lines()
+        self.create_reference_lines()
+        self.create_endcap_reference_lines()
         self.generate_stars()
         self.create_groups()
 
@@ -319,7 +316,6 @@ class Board:
                     self.Platforms.append(Platform(
                         pg.image.load('Object Images/platform28.png'),
                         (x * 10 + 5, y * 10 + 5)))
-                    #self.Platforms[i].modify_size(self.Platforms[i].image, 2, 2)
                     x += 1
                     if x >= width - 1:
                         break
@@ -357,10 +353,9 @@ class Board:
                     # If there is a platform on this level and one level lower
                     # 1/7 chance of a ladder being placed (for randomness)
                     # If there isn't already a ladder to the left or right
-                    elif self.map[x][y] == self.map[x][y + h_spacing] == 1 \
-                        and rand_ladder == 1 \
-                        and self.map[x - w_spacing][y] != 2 and \
-                            self.map[x + w_spacing][y] != 2:
+                    elif self.map[x][y] == self.map[x][y + h_spacing] == 1 and \
+                        rand_ladder == 1 and self.map[x - w_spacing][y] != 2 \
+                        and self.map[x + w_spacing][y] != 2:
                         # Call helper method to create a ladder to connect
                         # between upper and lower platform
                         self.create_ladder(x, y, y + h_spacing)
@@ -477,9 +472,9 @@ class Board:
         # Traverse across the map
         for j in range(len(self.map)):
             for i in range(len(self.map)):
-               # Checking to find a platform which is indexed as 2
-               # and a ladder reference point at a certain position close
-               # to that line
+                # Checking to find a platform which is indexed as 2
+                # and a ladder reference point at a certain position close
+                # to that line
                 if self.map[j][i - 1] == 2:
                     self.ReferenceLadders.append(ReferenceLadder(
                         pg.image.load(ref_ladder_image), (
