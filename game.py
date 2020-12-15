@@ -27,7 +27,7 @@ class Game:
         height: An integer that represents the height of the display screen.
         display_screen: A PyGame display to view the game.
         new_game: A new instance of the Board class.
-        fps: 
+        fps: frames per second
         clock: 
         my_font: Loaded font used to display text on screen.
     """
@@ -96,139 +96,172 @@ class Game:
                 # Get the appropriate groups
                 # Create fireballs
                 self.new_game.create_fireball(self.width)                
-                #self.new_game.reference_cat_group.draw(display_screen)
-                # Check for collisions below
-                # Check for collisions above
-                #self.new_game.Players[0].updateY(-2)
+              
+                
                 self.wallsCollidedAbove = self.new_game.ReferenceCats.check_collision(self.new_game.platform_group)
-                #self.new_game.Players[0].updateY(2)
-                # Set the on_ladder state of the player
+                
+               
 
                 # In a PyGame event loop, check which key is being pressed:
                 for event in pg.event.get():
-                    # Exit to desktop
+                    # If QUIT, Exit to desktop
                     if event.type == QUIT:
                         pg.quit()
                         sys.exit()
 
-                # If QUIT, exit to desktop
-
-                # If KEYDOWN,
-                # If quit key pressed:
-                # We quit the game and go to the restart screen
-
-                # If up key pressed and player is on a ladder:
-                # Set the player to move up
-
-                # Update the player's position
-                #self.new_game.Players[0].continuousUpdate(self.new_game.platform_group, self.ladder_group)
+               
+                # getting the keys that are pressed by the player
                 keys = pg.key.get_pressed()
 
                 # put catfacefront here/ defualt image when no key is being pressed
                 image = f'Cats/{self.new_game.Chosen_cat}front.png'
+                
+                # setting up the reference image of the cat as image2
                 image2 = 'Object Images/referencecat.png'
-                #Change this
-                if keys[K_RIGHT]:                   
-
-                    reference_collided = self.new_game.ReferenceCats.check_collision(self.new_game.reference_platform_group) 
-                    #print(reference_collided)                                      
-                    reference_ladders_collided =  self.new_game.Players.check_collision(self.new_game.reference_ladder_group)
+                
+                # moving the player to the right if the right arrow key
+                # is pressed
+                if keys[K_RIGHT]: 
+                    # checking the collisions between the reference image for
+                    # the cat and the reference images for the ladders and 
+                    # platforms                    
+                    reference_platforms_collided = self.new_game.ReferenceCats.check_collision(self.new_game.reference_platform_group)                                                          
+                    reference_ladders_collided =  self.new_game.Players.check_collision(self.new_game.reference_ladder_group)                    
+                    # checking the collisions between the reference image for 
+                    # the cat and the ladders and platform
                     ladders_collided =  self.new_game.ReferenceCats.check_collision(self.new_game.ladder_group)
-                    walls_collided = self.new_game.ReferenceCats.check_collision(self.new_game.platform_group)
-                    image = f'Cats/{self.new_game.Chosen_cat}right.png'
+                    platforms_collided = self.new_game.ReferenceCats.check_collision(self.new_game.platform_group)                    
+                    # setting the image of the cat to be the one that is 
+                    # facing towards the right
+                    image = f'Cats/{self.new_game.Chosen_cat}right.png'                    
+                    # making sure the sprite does not move past the edge
+                    # of the board
                     if self.new_game.Players.get_position()[0] <= self.width - 5:
-                        if reference_collided != []:
-                            #print(reference_collided)
+                        # move the reference and player's position to 
+                        # the right if the reference is touching the 
+                        # platform
+                        if reference_platforms_collided != []:                                                  
+                            self.new_game.Players.update_position(pg.image.load(image), -self.new_game.Players.get_speed(), 'H')                                         
+                            self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position())                     
+                        # making the player bouce to the right if its at the top
+                        # of the ladder
+                        if ladders_collided == [] and reference_ladders_collided != []:                       
                             self.new_game.Players.update_position(pg.image.load(image), -self.new_game.Players.get_speed(), 'H')
-                            # x= self.new_game.Players.get_position()
-                            # print(x)                 
-                            self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position()) 
-
-                        if ladders_collided == [] and reference_ladders_collided != []:
-                            self.new_game.Players.update_position(pg.image.load(image), -self.new_game.Players.get_speed(), 'H')
-                            self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position()) 
-                        
-                        if walls_collided == [] and ladders_collided == []:
+                            self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position())                         
+                        # letting the player move right when it is in free fall
+                        if platforms_collided == [] and ladders_collided == []:                        
                             self.new_game.Players.update_position(pg.image.load(image), -self.new_game.Players.get_speed(), 'H')
                             self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position())  
-                if keys[K_LEFT]:                 
-
-
-                    reference_collided = self.new_game.ReferenceCats.check_collision(self.new_game.reference_platform_group)                 
+                
+                # moving the player to the left if the left key is pressed
+                if keys[K_LEFT]: 
+                    # checking the collisions between the reference image for
+                    # the cat and the reference images for the ladders and 
+                    # platforms               
+                    reference_platforms_collided = self.new_game.ReferenceCats.check_collision(self.new_game.reference_platform_group)                 
                     reference_ladders_collided =  self.new_game.Players.check_collision(self.new_game.reference_ladder_group)
+                    # checking the collisions between the reference image for 
+                    # the cat and the ladders and platform
                     ladders_collided =  self.new_game.ReferenceCats.check_collision(self.new_game.ladder_group)
-                    walls_collided = self.new_game.ReferenceCats.check_collision(self.new_game.platform_group)
-                    
+                    platforms_collided = self.new_game.ReferenceCats.check_collision(self.new_game.platform_group)
+                    # setting the image of the cat to be the one that is 
+                    # facing towards the left
                     image = f'Cats/{self.new_game.Chosen_cat}left.png'
-                    if reference_collided != [] and self.new_game.Players.get_position()[0] >= 5:                        
-                        self.new_game.Players.update_position(pg.image.load(image), self.new_game.Players.get_speed(), 'H')
-                        self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position())
-
-                    if ladders_collided == [] and reference_ladders_collided != []:
+                    # making sure the sprite does not move past the edge
+                    # of the board
+                    if self.new_game.Players.get_position()[0] >= 5:                        
+                        # move the reference and player's position to 
+                        # the right if the reference is touching the 
+                        # platform
+                        if reference_platforms_collided != []:                        
                             self.new_game.Players.update_position(pg.image.load(image), self.new_game.Players.get_speed(), 'H')
-                            self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position())  
-                    
-                    if walls_collided == [] and ladders_collided == [] and self.new_game.Players.get_position()[0] >= 5:
-                            self.new_game.Players.update_position(pg.image.load(image), self.new_game.Players.get_speed(), 'H')
-                            self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position()) 
+                            self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position())                        
+                        # making the player bouce to the right if its at the top
+                        # of the ladder
+                        if ladders_collided == [] and reference_ladders_collided != []:
+                                self.new_game.Players.update_position(pg.image.load(image), self.new_game.Players.get_speed(), 'H')
+                                self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position())                        
+                        # letting the player move right when it is in free fall
+                        if platforms_collided == [] and ladders_collided == [] and self.new_game.Players.get_position()[0] >= 5:
+                                self.new_game.Players.update_position(pg.image.load(image), self.new_game.Players.get_speed(), 'H')
+                                self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position()) 
 
-                if keys[K_DOWN]:                   
-
-                    image = f'Cats/{self.new_game.Chosen_cat}front.png'
+                # moving the player down if the down key is pressed
+                if keys[K_DOWN]:               
+                    # setting the image of the cat to be the one that is 
+                    # facing down
+                    image = f'Cats/{self.new_game.Chosen_cat}front.png'                    
+                    # moving the reference and the player slightly downward, 
+                    # checking for collisions with the reference ladder group
+                    # and moving the player back up to its original position
                     self.new_game.Players.update_position(pg.image.load(image), -5,'V')
                     self.new_game.ReferenceCats.update_position(pg.image.load(image2), -5,'V')                    
-                    references_collided_down = self.new_game.ReferenceCats.check_collision(self.new_game.reference_ladder_group)
+                    reference_ladders_collided_down = self.new_game.ReferenceCats.check_collision(self.new_game.reference_ladder_group)
                     self.new_game.Players.update_position(pg.image.load(image), 5,'V')
-                    self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position()) 
-                    
-                    if references_collided_down != [] and self.new_game.Players.get_position()[1] <= self.height + 10:
+                    self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position())                   
+                    # if the player is on the ladder and its not at the  
+                    # bottom of the screen, it can move downward
+                    if reference_ladders_collided_down != [] and self.new_game.Players.get_position()[1] <= self.height + 10:
                         self.new_game.Players.update_position(pg.image.load(image), -self.new_game.Players.get_speed(),'V')
                         self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position())           
 
-
-                if keys[K_UP]:                    
+                # moving the player down if the up key is pressed
+                if keys[K_UP]: 
+                    # setting the image of the cat to be the one that is 
+                    # facing up                   
                     image = f'Cats/{self.new_game.Chosen_cat}up.png'
-                    reference_up_collided = self.new_game.ReferenceCats.check_collision(self.new_game.reference_ladder_group)
-                    #print(reference_up_collided)
-                    if reference_up_collided != []:# and self.new_game.Players.get_position()[1] >= 0:
-                        #print('here')
+                    #checking for collisions between the ladder reference 
+                    #  and the player reference.
+                    ladders_collided = self.new_game.ReferenceCats.check_collision(self.new_game.ladder_group)              
+                    # if the cat collides with the ladder than it 
+                    # can move upwards
+                    if ladders_collided != []:# and self.new_game.Players.get_position()[1] >= 0:                        
                         self.new_game.Players.update_position(pg.image.load(image), self.new_game.Players.get_speed(),'V')
-                        self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position()) 
-                    # If the player has reached the tope of the screen, update level
+                        self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position())                     
+                    # If the player has reached the tope of the 
+                    # screen, update level
                     if self.new_game.Players.get_position()[1] <= 30:
                         self.new_game.update_level(self.new_game.score, self.new_game.lives)
-
-                               
-                reference_ladders_collided = self.new_game.ReferenceCats.check_collision(self.new_game.ladder_group)
-                #print(reference_ladders_collided)
+                # checking for collisions with the ladders               
+                ladders_collided = self.new_game.ReferenceCats.check_collision(self.new_game.ladder_group)                
+                # checking for collisions with the endcaps of 
+                # the platforms
+                reference_ends_collided = self.new_game.ReferenceCats.check_collision(self.new_game.reference_endcap_group)
+                # moving the reference and the player slightly downward, 
+                # checking for collisions with the platform group
+                # and moving the player back up to its original position
                 self.new_game.Players.update_position(pg.image.load(image), -5,'V')  
                 self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position())               
-                walls_collided_down = self.new_game.ReferenceCats.check_collision(self.new_game.platform_group)
-                #print(walls_collided_down)
+                platforms_collided_down = self.new_game.ReferenceCats.check_collision(self.new_game.platform_group)                
                 self.new_game.Players.update_position(pg.image.load(image), 5,'V')
-                self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position()) 
-                reference_ends_collided = self.new_game.ReferenceCats.check_collision(self.new_game.reference_endcap_group)
-
-                if reference_ladders_collided == [] and walls_collided_down == [] and self.new_game.Players.get_position()[1] <= self.height - 10:
-                    #print('here')
+                self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position())          
+                # if the player is not colliding with anything then 
+                # simulate gravity and make the player fall
+                if ladders_collided == [] and platforms_collided_down == [] and self.new_game.Players.get_position()[1] <= self.height - 10:                    
                     self.new_game.Players.update_position(pg.image.load(image), -self.new_game.Players.get_speed()*1.2,'V')
                     self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position()) 
+                # if the player collides with an endcap check to see
+                # if it collided to the right or left
                 if reference_ends_collided:
+                    # checking to the right
                     self.new_game.Players.update_position(pg.image.load(image), -2,'H')
                     self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position())                  
                     walls_collided_right = self.new_game.ReferenceCats.check_collision(self.new_game.platform_group)
                     self.new_game.Players.update_position(pg.image.load(image), 2,'H')
                     self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position())
-
+                    # checking to the left
                     self.new_game.Players.update_position(pg.image.load(image), 2,'H')
                     self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position())                   
                     walls_collided_left = self.new_game.ReferenceCats.check_collision(self.new_game.platform_group)
                     self.new_game.Players.update_position(pg.image.load(image), -2,'H')
                     self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position())
-
+                    # if it collided to the right, then move
+                    # the player to the left
                     if walls_collided_right:
                         self.new_game.Players.update_position(pg.image.load(image), 10,'H')
                         self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position()) 
+                    # if it collided to the left, then move
+                    # the player to the right
                     if walls_collided_left:
                         self.new_game.Players.update_position(pg.image.load(image), -10,'H')
                         self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position()) 
@@ -269,6 +302,6 @@ class Game:
                 gems_collected = pg.sprite.spritecollide(self.new_game.Players,
                                                          self.gem_group, True)
                 self.new_game.gem_check(gems_collected)
-                #self.ReferenceCats = []
+                
             # Update the display to view changes
             pg.display.update()

@@ -47,6 +47,11 @@ class Board:
         Stars: A list of Star instances on screen.
         Platforms: A list of Platform instances on screen.
         Ladders: A list of Ladder instances on screen.
+        ReferencePlatforms: A list of ReferencePlatform instances on screen.
+        ReferenenceLadders: A list of ReferenceLadder instances on screen.
+        ReferenceEndcaps: A list of ReferenceEndcap instances on screen.
+        ReferenceCats: A list of ReferenceCat instances on screen.
+
         Fireballs: A list of Fireball instances on screen.
         Buttons: A list of Button instances that represent on-screen buttons
             to be pressed (for start, restart and exit).
@@ -59,6 +64,10 @@ class Board:
         platform_group: A PyGame group that contains Platform instances.
         ladder_group: A PyGame group that contains Ladder instances.
         gem_group: A PyGame group that contains Gem instances to be displayed.
+        platform_reference_group: A PyGame group that contains ReferencePlatform instances.
+        ladder_reference_group: A PyGame group that contains ReferenceLadder instances.
+        endcap_reference_group: A PyGame group that contains ReferenceEndcap instances.
+        cat_reference_group:  PyGame group that contains ReferenceCat instances.
     """
 
     def __init__(self):
@@ -209,10 +218,19 @@ class Board:
     def create_fireball(self, width):
         """
         Randomly generate fireballs.
+
+        Generates fireballs on the screen such that 
+        there are no more than 3 at anytime on the screen
         """
+        # making it so the number of fireballs on the board cannot exceed 3 at
+        # anytime.
         if len(self.Fireballs) < 3:
-            #time.sleep(0.5)
+            # initializing the x randomly between the length of the width
+            # and the y position at a random point above the 
+            # board so that the fireballs dont all fall at the same
+            # time
             location = (random.randint(5, width),random.randint(-1000,0))
+            # add the fireball to the list
             self.Fireballs.append(Fireball(pg.image.load('Object Images/fireball.png'),
                                   location, len(self.Fireballs), -3))
             self.create_groups()
@@ -220,25 +238,31 @@ class Board:
     def fireball_check(self):
         """
         Update all the fireball positions and check for collisions with player.
+
+        Makes the fireball fall down on the screen and if it collides
+        with the player, then the player loses a life and the fireball
+        disapears.
         """
-        # Loop through all fireballs
-        # Call continuous_update method in Fireball class to
-        # updatetheir position
-        # Call check_collision method in Fireball class to
-        # check for collisions with player
-        # If it has hit the player, game over
+        
+        # checking to see if the fireball collides with
+        # the player
         for fireball in self.fireball_group:
+            # update the position of the fireball
             fireball.continuous_update(self.player_group)
-            if fireball.check_collision(self.player_group):
-                # if len(self.Hearts) >= 2:  # Reduce the player's life by 1
+            # if the fireball collides, then reduce a life
+            if fireball.check_collision(self.player_group):                
                 self.Fireballs.remove(fireball)
                 self.lives -= 1
                 self.create_groups()
+            # if the player loses a life, then change the gamestate
+            # such that the game over screen is displayed
             if self.lives == 0:
                 self.game_state = 3
                 self.Active_buttons[0] = 0
                 self.Active_buttons[1] = 0
                 self.Active_buttons[2] = 1
+            # if the fireball reaches the bottom of the screen, then 
+            # get rid of it
             if fireball.get_position()[1] >= 490:
                 self.Fireballs.remove(fireball)
                     # self.Hearts.pop(len(self.Hearts) - 1)
@@ -371,60 +395,84 @@ class Board:
         return (left, right)
 
     def create_reference_lines(self):
+        """
+       Create reference lines for the platforms.
+
+       Reference lines are created along the top edge of the platform 
+       to help define the movement of the player. If the player
+       is colliding with these lines then it can move left and 
+       right.        
+        """
+        # loading the image used as a reference for the platform
         ref_image = 'Object Images/reference.png'
+        # traversing across the map
         for j in range(len(self.map)):
-            # print(self.map[j])
-            # if 1 in self.map[j]:
-            #     for i in range(len(self.map[j])):
-            #         self.References.append(Reference(pg.image.load(ref_image),(i* 10, (j - 2) * 10 )))
-            for i in range(len(self.map)):
-               # for platforms
-                if self.map[j][i] == 1:
-                    #position = [i,j]                  
+             for i in range(len(self.map)):
+                # checking to find a platform which is indexed as 1               
+                if self.map[j][i] == 1:                                     
                     self.ReferencePlatforms.append(ReferencePlatform(pg.image.load(ref_image),(j* 10, (i - 2) * 10 + 8 )))
                     self.ReferencePlatforms.append(ReferencePlatform(pg.image.load(ref_image),(j* 10, (i - 3) * 10 + 8 )))
+                    # if the index is not at the end of the map
                     if j != len(self.map) - 1:
-                        # Edges of platforms
-                        if self.map[j+1][i] == 0 or self.map[j+1][i] == 4:
-                            #for k in range(i, i+6):
+                        # if it is a platform edge then add two reference
+                        # at the end so that the player wont get stuck 
+                        # at the edge of the platform
+                        if self.map[j+1][i] == 0 or self.map[j+1][i] == 4:                            
                             self.ReferencePlatforms.append(ReferencePlatform(pg.image.load(ref_image),((j+1)* 10, (i - 2) * 10 + 8 )))
                             self.ReferencePlatforms.append(ReferencePlatform(pg.image.load(ref_image),((j+2)* 10, (i - 2) * 10 + 8)))
                         if self.map[j-1][i] == 0 or self.map[j-1][i] == 4:
                             self.ReferencePlatforms.append(ReferencePlatform(pg.image.load(ref_image),((j-1)* 10, (i - 2) * 10 + 8)))
                             self.ReferencePlatforms.append(ReferencePlatform(pg.image.load(ref_image),((j-2)* 10, (i - 2) * 10 + 8)))
-                # #for ladders
-                # if self.map[j][i] == 2:
-                #     #for k in range(i + 1, i + 2):
-                #         self.ReferenceLadders.append(ReferenceLadder(pg.image.load(ref_ladder_image),((j * 10) + 5, ((i+2) * 10) - 34)))
 
     def create_ladder_reference(self):
+        """
+       Create reference lines for the ladders.
+
+       Reference lines are created along the length of the ladder 
+       to help define the movement of the player. If the player
+       is colliding with these lines then it can move up and down.
+        """
+        # loading the image used a reference for the ladders
         ref_ladder_image = 'Object Images/referenceladder.png'
+        # traverse across the map
         for j in range(len(self.map)):
             for i in range(len(self.map)):
-                if self.map[j][i - 1] == 2:
-                    #for k in range(i + 1, i + 2):
-                        self.ReferenceLadders.append(ReferenceLadder(pg.image.load(ref_ladder_image),((j * 10) + 5, ((i+2) * 10) - 34)))
+               # checking to find a platform which is indexed as 2
+               # and a ladder reference point at a certain position close
+               # to that line 
+                if self.map[j][i - 1] == 2:                    
+                    self.ReferenceLadders.append(ReferenceLadder(pg.image.load(ref_ladder_image),((j * 10) + 5, ((i+2) * 10) - 34)))
 
                 
     def create_endcap_reference_lines(self):
+        """
+       Create reference lines for the edges of the platforms.
+
+       Reference lines are created along the edge of the platform 
+       to help define the movement of the player. If the player
+       is colliding with these lines then it bounces from these 
+       lines.
+        """
+        # loading the image used a reference for the ladders
         ref_ladder_image = 'Object Images/referenceladder.png'
+        # traversing across the map
         for j in range(len(self.map)):
             for i in range(len(self.map)):
+                # if a platform is found and the item at an index
+                # next to the platform is empty indicating the end
+                # of the platform then create an endcap reference 
                 if self.map[j][i] == 1:           
                     if j != len(self.map) - 1:
+                        # checking to the right of the platform
                         if self.map[j+1][i] == 0:
                             for k in range(i + 2, i + 6):
                                 self.ReferenceEndcaps.append(ReferenceEndcap(pg.image.load(ref_ladder_image),((j+2)* 10, (k - 3) * 10 + 5 )))
+                        # checking to left of platform
                         if self.map[j-1][i] == 0:
                             for k in range(i + 2, i + 6):
                                 self.ReferenceEndcaps.append(ReferenceEndcap(pg.image.load(ref_ladder_image),((j-1)* 10, (k - 3) * 10 + 5 )))
-                                #self.ReferencePlatforms.append(ReferencePlatform(pg.image.load('reference.png'),((j+2)* 10, (k - 3) * 10 + 5)))
-
-    # def create_cat_reference_point(self,position):
-    #     ref_image = 'Object Images/reference.png'
-    #    #position[1] = position[1] + 3
-    #     self.ReferenceCats = ReferenceCat(pg.image.load(ref_image),position)
-
+                              
+ 
     def make_map(self):
         """
         Create an empty map.
