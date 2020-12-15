@@ -3,16 +3,16 @@ from onboard import OnBoard
 from constants import *
 
 
-class Gem(OnBoard):
+class Star(OnBoard):
     """
-    Defining all the gems in the game. This class inherits
-    from the OnBoard class. The gems increase the player score. SImrun is here.
+    Defining all the stars in the game. This class inherits
+    from the OnBoard class. The stars increase the player score. SImrun is here.
 
     Attributes:
-        position: A tuple representing the coordinates of a gem.
+        position: A tuple representing the coordinates of a star.
         image: A string representing the path to a png.
         rect: A tuple representing the dimensions of a rectangle.
-        value: An integer representing the score value of a gem.
+        value: An integer representing the score value of a star.
     """
 
     def __init__(self, raw_image, position):
@@ -32,7 +32,7 @@ class Gem(OnBoard):
 
     def update_image(self, raw_image):
         """
-        Update the gem image.
+        Update the star image.
 
         Args:
             raw_image: A string representing the path to a png.

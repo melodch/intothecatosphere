@@ -52,8 +52,6 @@ class Game:
         Since our game goes on infinitely, we have the code that runs the game
         in a while loop that exits only when the player dies.
         """
-        
-
         # If game state is not 1 then don't run the game,
         # just display menu buttons
         # Check which button was clicked and change game state accordingly
@@ -89,16 +87,13 @@ class Game:
 
             # If game state is 2 then run the game:
             if self.new_game.game_state == 2:
-                self.gem_group = self.new_game.gem_group
+                self.star_group = self.new_game.star_group
 
                 # Get the appropriate groups
                 # Create fireballs
-                self.new_game.create_fireball(self.width)                
-              
+                self.new_game.create_fireball(self.width)
                 
                 self.wallsCollidedAbove = self.new_game.ReferenceCats.check_collision(self.new_game.platform_group)
-                
-               
 
                 # In a PyGame event loop, check which key is being pressed:
                 for event in pg.event.get():
@@ -107,12 +102,11 @@ class Game:
                         pg.quit()
                         sys.exit()
 
-               
                 # getting the keys that are pressed by the player
                 keys = pg.key.get_pressed()
 
                 # put catfacefront here/ defualt image when no key is being pressed
-                image = f'Cats/{self.new_game.Chosen_cat}front.png'
+                image = f'Cat Images/{self.new_game.Chosen_cat}front.png'
                 
                 # setting up the reference image of the cat as image2
                 image2 = 'Object Images/referencecat.png'
@@ -123,15 +117,15 @@ class Game:
                     # checking the collisions between the reference image for
                     # the cat and the reference images for the ladders and 
                     # platforms                    
-                    reference_platforms_collided = self.new_game.ReferenceCats.check_collision(self.new_game.reference_platform_group)                                                          
-                    reference_ladders_collided =  self.new_game.Players.check_collision(self.new_game.reference_ladder_group)                    
+                    reference_platforms_collided = self.new_game.ReferenceCats.check_collision(self.new_game.ref_platform_group)                                                          
+                    reference_ladders_collided =  self.new_game.Players.check_collision(self.new_game.ref_ladder_group)                    
                     # checking the collisions between the reference image for 
                     # the cat and the ladders and platform
                     ladders_collided =  self.new_game.ReferenceCats.check_collision(self.new_game.ladder_group)
                     platforms_collided = self.new_game.ReferenceCats.check_collision(self.new_game.platform_group)                    
                     # setting the image of the cat to be the one that is 
                     # facing towards the right
-                    image = f'Cats/{self.new_game.Chosen_cat}right.png'                    
+                    image = f'Cat Images/{self.new_game.Chosen_cat}right.png'                    
                     # making sure the sprite does not move past the edge
                     # of the board
                     if self.new_game.Players.get_position()[0] <= self.width - 5:
@@ -156,15 +150,15 @@ class Game:
                     # checking the collisions between the reference image for
                     # the cat and the reference images for the ladders and 
                     # platforms               
-                    reference_platforms_collided = self.new_game.ReferenceCats.check_collision(self.new_game.reference_platform_group)                 
-                    reference_ladders_collided =  self.new_game.Players.check_collision(self.new_game.reference_ladder_group)
+                    reference_platforms_collided = self.new_game.ReferenceCats.check_collision(self.new_game.ref_platform_group)                 
+                    reference_ladders_collided =  self.new_game.Players.check_collision(self.new_game.ref_ladder_group)
                     # checking the collisions between the reference image for 
                     # the cat and the ladders and platform
                     ladders_collided =  self.new_game.ReferenceCats.check_collision(self.new_game.ladder_group)
                     platforms_collided = self.new_game.ReferenceCats.check_collision(self.new_game.platform_group)
                     # setting the image of the cat to be the one that is 
                     # facing towards the left
-                    image = f'Cats/{self.new_game.Chosen_cat}left.png'
+                    image = f'Cat Images/{self.new_game.Chosen_cat}left.png'
                     # making sure the sprite does not move past the edge
                     # of the board
                     if self.new_game.Players.get_position()[0] >= 5:                        
@@ -188,13 +182,13 @@ class Game:
                 if keys[K_DOWN]:               
                     # setting the image of the cat to be the one that is 
                     # facing down
-                    image = f'Cats/{self.new_game.Chosen_cat}front.png'                    
+                    image = f'Cat Images/{self.new_game.Chosen_cat}front.png'                    
                     # moving the reference and the player slightly downward, 
                     # checking for collisions with the reference ladder group
                     # and moving the player back up to its original position
                     self.new_game.Players.update_position(pg.image.load(image), -5,'V')
                     self.new_game.ReferenceCats.update_position(pg.image.load(image2), -5,'V')                    
-                    reference_ladders_collided_down = self.new_game.ReferenceCats.check_collision(self.new_game.reference_ladder_group)
+                    reference_ladders_collided_down = self.new_game.ReferenceCats.check_collision(self.new_game.ref_ladder_group)
                     self.new_game.Players.update_position(pg.image.load(image), 5,'V')
                     self.new_game.ReferenceCats.update_position_cat(pg.image.load(image2),self.new_game.Players.get_position())                   
                     # if the player is on the ladder and its not at the  
@@ -207,7 +201,7 @@ class Game:
                 if keys[K_UP]: 
                     # setting the image of the cat to be the one that is 
                     # facing up                   
-                    image = f'Cats/{self.new_game.Chosen_cat}up.png'
+                    image = f'Cat Images/{self.new_game.Chosen_cat}up.png'
                     #checking for collisions between the ladder reference 
                     #  and the player reference.
                     ladders_collided = self.new_game.ReferenceCats.check_collision(self.new_game.ladder_group)              
@@ -224,7 +218,7 @@ class Game:
                 ladders_collided = self.new_game.ReferenceCats.check_collision(self.new_game.ladder_group)                
                 # checking for collisions with the endcaps of 
                 # the platforms
-                reference_ends_collided = self.new_game.ReferenceCats.check_collision(self.new_game.reference_endcap_group)
+                reference_ends_collided = self.new_game.ReferenceCats.check_collision(self.new_game.ref_endcap_group)
                 # moving the reference and the player slightly downward, 
                 # checking for collisions with the platform group
                 # and moving the player back up to its original position
@@ -270,23 +264,23 @@ class Game:
                 cycle = cycle_rate / 6
                 self.new_game.cycles = (self.new_game.cycles + 1) % cycle_rate
                 if self.new_game.cycles >= 1 and self.new_game.cycles <= cycle:
-                    for gem in self.new_game.Gems:
-                        gem.update_image(pg.image.load('Object Images/yellow star.png'))
+                    for star in self.new_game.Stars:
+                        star.update_image(pg.image.load('Object Images/yellow star.png'))
                 elif self.new_game.cycles >= cycle + 1 and self.new_game.cycles <= cycle * 2:
-                    for gem in self.new_game.Gems:
-                        gem.update_image(pg.image.load('Object Images/star_rot1.png'))
+                    for star in self.new_game.Stars:
+                        star.update_image(pg.image.load('Object Images/star_rot1.png'))
                 elif self.new_game.cycles >= cycle * 2 + 1 and self.new_game.cycles <= cycle * 3:
-                    for gem in self.new_game.Gems:
-                        gem.update_image(pg.image.load('Object Images/star_rot2.png'))
+                    for star in self.new_game.Stars:
+                        star.update_image(pg.image.load('Object Images/star_rot2.png'))
                 elif self.new_game.cycles >= cycle * 3 + 1 and self.new_game.cycles <= cycle * 4:
-                    for gem in self.new_game.Gems:
-                        gem.update_image(pg.image.load('Object Images/star_rot3.png'))
+                    for star in self.new_game.Stars:
+                        star.update_image(pg.image.load('Object Images/star_rot3.png'))
                 elif self.new_game.cycles >= cycle * 4 + 1 and self.new_game.cycles <= cycle * 5:
-                    for gem in self.new_game.Gems:
-                        gem.update_image(pg.image.load('Object Images/star_rot4.png'))
+                    for star in self.new_game.Stars:
+                        star.update_image(pg.image.load('Object Images/star_rot4.png'))
                 else:
-                    for gem in self.new_game.Gems:
-                        gem.update_image(pg.image.load('Object Images/star_rot5.png'))
+                    for star in self.new_game.Stars:
+                        star.update_image(pg.image.load('Object Images/star_rot5.png'))
 
                 # Redraw all instances onto the screen
                 self.new_game.redraw_screen(self.display_screen,
@@ -296,10 +290,10 @@ class Game:
                 # Update the fireball and check for collisions with player.
                 self.new_game.fireball_check()
 
-                # Check for gem collection
-                gems_collected = pg.sprite.spritecollide(self.new_game.Players,
-                                                         self.gem_group, True)
-                self.new_game.gem_check(gems_collected)
+                # Check for star collection
+                stars_collected = pg.sprite.spritecollide(self.new_game.Players,
+                                                         self.star_group, True)
+                self.new_game.star_check(stars_collected)
                 
             # Update the display to view changes
             pg.display.update()
