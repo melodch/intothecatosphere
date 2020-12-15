@@ -8,14 +8,14 @@ from constants import HEIGHT
 from onboard import OnBoard
 from star import Star
 from player import Player
-from fireball import Fireball
+from onboard import Fireball
 from button import Button
-from platform import Platform
-from ladder import Ladder
+from onboard import Platform
+from onboard import Ladder
 from reference import ReferencePlatform
 from reference import ReferenceLadder
 from reference import ReferenceEndcap
-from player import ReferenceCat
+from reference import ReferenceCat
 
 
 class Board:
@@ -78,36 +78,41 @@ class Board:
         as instance variables.
         """
         # Create the buttons used in the pregame and postgame screens.
-        self.Buttons = [Button(pg.image.load('Object Images/start_meow.png'),
-                                            (140, 320), "start"),
-                        Button(pg.image.load('Object Images/exit_game.png'),
-                                            (360, 320), "exit"),
-                        Button(pg.image.load('Object Images/restart.png'),
-                                            (250, 343),
-                               "Object Images/restart.png"), ]
+        self.Buttons = [
+            Button(pg.image.load('Object Images/start_meow.png'),
+                   (140, 320), "start"),
+            Button(pg.image.load('Object Images/exit_game.png'),
+                   (360, 320), "exit"),
+            Button(pg.image.load('Object Images/restart.png'),
+                   (250, 343), "Object Images/restart.png"), ]
         self.Active_buttons = [1, 1, 0]  # Pregame screen uses first 2 buttons
 
-        self.Cat_buttons = [Button(pg.image.load(
-                           'Cat Images/orangeright_80.png'), (90, 310), "cat1"),
-                            Button(pg.image.load(
-                            'Cat Images/greyright_80.png'), (250, 310), "cat2"),
-                            Button(pg.image.load(
-                            'Cat Images/blueright_80.png'), (410, 310), "cat3"), ]
+        self.Cat_buttons = [
+            Button(pg.image.load('Cat Images/orangeright_80.png'),
+                   (90, 310), "cat1"),
+            Button(pg.image.load('Cat Images/greyright_80.png'),
+                   (250, 310), "cat2"),
+            Button(pg.image.load('Cat Images/blueright_80.png'),
+                   (410, 310), "cat3"), ]
         self.Chosen_cat = ""
 
         # Initialize background for different game state screens.
         self.background = pg.image.load('Background Images/purplebg.png')
         self.background = pg.transform.scale(self.background, (WIDTH, HEIGHT))
-        self.start_background = pg.image.load('Background Images/startscreen.png')
-        self.choose_cat_background = pg.image.load('Background Images/pickcat1.png')
+        self.start_background = pg.image.load(
+            'Background Images/startscreen.png')
+        self.choose_cat_background = pg.image.load(
+            'Background Images/pickcat1.png')
         self.end_background = pg.image.load('Background Images/endscreen.png')
-        self.start_background = pg.transform.scale(self.start_background, (WIDTH, HEIGHT))
-        self.choose_cat_background = pg.transform.scale(self.choose_cat_background, (WIDTH, HEIGHT))
-        self.end_background = pg.transform.scale(self.end_background, (WIDTH, HEIGHT))
+        self.start_background = pg.transform.scale(
+            self.start_background, (WIDTH, HEIGHT))
+        self.choose_cat_background = pg.transform.scale(
+            self.choose_cat_background, (WIDTH, HEIGHT))
+        self.end_background = pg.transform.scale(
+            self.end_background, (WIDTH, HEIGHT))
 
         self._width = WIDTH
         self._height = HEIGHT
-        #self.fps = FPS
         self.score = 0          # Initialize player's score
         self.lives = 9          # Initialize player's lives
         self.game_state = 0     # Initialize game state to pregame
@@ -124,7 +129,8 @@ class Board:
         self.ReferenceEndcaps = []
         self.ReferenceCats = []
 
-        # Initialize pygame sprite groups which we use to display instances on screen.
+        # Initialize pygame sprite groups
+        # which we use to display instances on screen.
         self.player_group = pg.sprite.RenderPlain(self.Players)
         self.platform_group = pg.sprite.RenderPlain(self.Platforms)
         self.star_group = pg.sprite.RenderPlain(self.Stars)
@@ -159,8 +165,9 @@ class Board:
         self.ReferencePlatforms = []
         self.ReferenceLadders = []
         self.ReferenceEndcaps = []
-        self.ReferenceCats =  ReferenceCat(pg.image.load('Object Images/reference.png'),
-                              (self._width // 2, self._height - 35))
+        self.ReferenceCats = ReferenceCat(pg.image.load(
+            'Object Images/reference.png'),
+            (self._width // 2, self._height - 35))
         self.initialize_game()  # Initialize game and generate map
         self.create_groups()    # Create instance groups
 
@@ -190,7 +197,7 @@ class Board:
 
     def create_groups(self):
         """
-        Render the game components as PyGame Sprites.
+        Render the game compone nts as PyGame Sprites.
         """
         self.ref_cat_group = pg.sprite.RenderPlain(self.ReferenceCats)
         self.platform_group = pg.sprite.RenderPlain(self.Platforms)
@@ -270,8 +277,8 @@ class Board:
         """
         width = len(self.map)
         height = len(self.map[0])
-        w_spacing = 5   # Horizontal spacing between the stars
-        offset = -8     # Vertical offset that places the star above the platform
+        w_spacing = 5  # Horizontal spacing between the stars
+        offset = -8    # Vertical offset that places the star above the platform
 
         # Traverse the platforms
         for y in range(self.h_spacing, height, self.h_spacing):
@@ -357,9 +364,11 @@ class Board:
                     # If there is a platform on this level and one level lower
                     # 1/7 chance of a ladder being placed (for randomness)
                     # If there isn't already a ladder to the left or right
-                    elif self.map[x][y] == self.map[x][y + self.h_spacing] == 1 and \
-                        rand_ladder == 1 and self.map[x - w_spacing][y] != 2 \
-                        and self.map[x + w_spacing][y] != 2:
+                    elif self.map[x][y] == 1 \
+                        and self.map[x][y + self.h_spacing] == 1 \
+                        and rand_ladder == 1 \
+                        and self.map[x - w_spacing][y] != 2 and \
+                            self.map[x + w_spacing][y] != 2:
                         # Call helper method to create a ladder to connect
                         # between upper and lower platform
                         self.create_ladder(x, y, y + self.h_spacing)
@@ -556,7 +565,7 @@ class Board:
         # If the exit button is pressed
         if self.Active_buttons[1] == 1 and \
            self.Buttons[1].rect.collidepoint(pg.mouse.get_pos()):
-            #pg.quit()
+            pg.quit()
             sys.exit()
         # If the restart button is pressed
         if self.Active_buttons[2] == 1 and \

@@ -5,7 +5,7 @@ from constants import *
 class Person(pg.sprite.Sprite):
     """
     This class defines all 'living' objects in the game. These objects
-    are capable of climbing ladders and moving horizontally.
+    are capable of climbing ladders, moving horizontally and falling.
 
     Attributes:
         image: A string representing the path to a png.
@@ -23,10 +23,11 @@ class Person(pg.sprite.Sprite):
             image: A string representing the path to a png.
             position: A tuple of integers representing coordinates.
         """
-        super(Person, self).__init__()
-        self._position = position
+        super().__init__()
+        # create attributes for the image and the position
+        self._position = position        
         self.image = image
-        # self.image = pg.transform.scale(self.image, (30, 30))
+        #sets the rect attribute to be the image 
         self.rect = self.image.get_rect()
         self.rect.center = self._position
 
@@ -48,44 +49,40 @@ class Person(pg.sprite.Sprite):
         """
         self._position = position
 
-    def get_speed(self):
-        """
-        Abstract method that is implemented in the subclass.
-        """
-        raise NotImplementedError("Subclass must implement this.")
-
-    def set_speed(self):
-        """
-        Abstract method that is implemented in the subclass.
-        """
-        raise NotImplementedError("Subclass must implement this.")
-
     
     def update_position(self, raw_image, value, direction):
+        """
+        Update the players position based on the direction its
+        moving in. 
+
+        Args:
+            image: A string representing the path to a png.
+            position: A tuple of integers representing coordinates.
+        """
+        # intializes the image again so that it can be changed
+        # based on whether player is moving right, left up or down
         self.image = raw_image
-        self.image = pg.transform.scale(self.image, (30, 30))
+        #self.image = pg.transform.scale(self.image, (30, 30))
+        # if the player is moving vertically, change the y value
+        # of the position based on the input value
         if direction == 'V':
             self._position = (self._position[0], self._position[1] - value)
+        # if the player is moving horizantally, change the x value
+        # of the position based on the input value
         if direction == 'H':
             self._position = (self._position[0] - value, self._position[1])
         self.rect.center = self._position
 
-    def check_collision(self, colliderGroup):
-        colliders = pg.sprite.spritecollide(self, colliderGroup, False)
+    def check_collision(self, collider_group):
+        """
+        Check for collisions between the player and the input
+        collider group which can be ladders, platforms or fireballs.
+
+        Args:
+            collider_group: A pygame sprite group
+        """
+        colliders = pg.sprite.spritecollide(self, collider_group, False)
         return colliders
-
-        
-    # def update_position_cat(self, raw_image, value, direction):
-    #     self.image = raw_image
-    #     #self.image = pg.transform.scale(self.image, (30, 30))
-    #     if direction == 'V':
-    #         self._position = (self._position[0], self._position[1] - value)
-    #     if direction == 'H':
-    #         self._position = (self._position[0] - value, self._position[1])
-    #     self.rect.center = self._position
-
-
-
 
 
 class Player(Person):
@@ -107,7 +104,7 @@ class Player(Person):
             raw_image: A string representing the path to a png.
             position: A tuple of integers representing coordinates.
         """
-        super(Player, self).__init__(raw_image, position)
+        super().__init__(raw_image, position)
         self.onLadder = 0
         self.__gravity = 1  # Gravity affecting the jump velocity of the player
         self.__speed = 5  # Movement speed of the player
@@ -128,59 +125,5 @@ class Player(Person):
         self.__speed = speed
 
 
-class ReferenceCat(Person):
-    """
-    Defining all the platforms in the game.
-    """
-    """
-    A class that defines the player. A player is a person specialized with a
-    movement speed. Separation of the Person and Player classes allows for
-    more sustainable customization in the future.
 
-    Attributes:
-        _speed: An integer representing the movement speed of the player.
-    """
 
-    def __init__(self, raw_image, position):
-        """
-        Initiate a player that inherits from the Person class with a certain
-        movement speed.
-
-        Args:
-            raw_image: A string representing the path to a png.
-            position: A tuple of integers representing coordinates.
-        """
-        super(ReferenceCat, self).__init__(raw_image, position)
-        self._position = position
-        self.onLadder = 0
-        self.__gravity = 1  # Gravity affecting the jump velocity of the player
-        self.__speed = 5  # Movement speed of the player
-        self.image = raw_image
-        
-
-    def update_position_cat(self, raw_image, position):
-        #self.image = raw_image
-
-        self.image = raw_image
-        self._position = (position[0] - 2 , position[1] + 10)
-        self.rect.center = self._position
-        return self._position
-        # return self._position
-
-    # def update_position_cat(self, raw_image, value, direction):
-    #     self.image = raw_image
-    #     #self.image = pg.transform.scale(self.image, (30, 30))
-    #     if direction == 'V':
-    #         self._position = (self._position[0], self._position[1] - value)
-    #     if direction == 'H':
-    #         self._position = (self._position[0] - value, self._position[1])
-    #     self.rect.center = self._position
-
-    def check_collision_cat(self, colliderGroup):
-        colliders = pg.sprite.spritecollide(self, colliderGroup, False)
-        return colliders
-
-    
-    def check_collision2(self, colliderGroup1,colliderGroup2):
-        colliders = pg.sprite.groupcollide(self,colliderGroup1, colliderGroup2, False)
-        return colliders

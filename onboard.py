@@ -1,6 +1,7 @@
 import pygame as pg
 from constants import *
-
+import random
+import math
 
 class OnBoard(pg.sprite.Sprite):
     """
@@ -22,38 +23,16 @@ class OnBoard(pg.sprite.Sprite):
         Args:
             raw_image: A string representing the path to a png.
             position: A tuple representing coordinates of the position.
-        """
-
+        """  
+        super().__init__()
         # create attributes for the image and the position
-        # sets the rect attribute to be the image
-        # sets the center of the rect atrribute as the position
-        super(OnBoard, self).__init__()
         self._position = position
-        self.image = raw_image        
+        self.image = raw_image 
+        # sets the rect attribute to be the image       
         self.rect = self.image.get_rect()
-        self.rect.center = self._position
-        
-
-
-    # def modify_size(self, raw_image, height, width):
-    #     """
-    #     Scale the raw image.
-
-    #     Args:
-    #         raw_image: A string representing the path to a png.
-    #         height: An integer representing the height of the object.
-    #         width: An integer representing the width o the object.
-    #     """   
-    #     self.image = raw_image
-    #     self.image = pg.transform.scale(self.image, (width, height))
-
-    # Getters and Setters
-    def set_center(self, position):
-        """
-        Set the center of the object.
-        """
-        self.rect.center = position
-
+        # sets the center of the rect atrribute as the position
+        self.rect.center = self._position      
+      
     def get_position(self):
         """
         Get the position of the object.
@@ -65,3 +44,132 @@ class OnBoard(pg.sprite.Sprite):
         Set the position of the object.
         """
         self._position = position
+
+
+class Platform(OnBoard):
+    """
+    Defining all the platforms in the game.
+   
+    Attributes:
+        position: A tuple representing coordinates.
+        image: A string representing the path to a png.        
+    """
+    def __init__(self, raw_image, position):
+        """
+        Initialize the image, position and rect instance attributes
+
+        Args:
+            raw_image: A string representing the path to a png.
+            position: A tuple representing the coordinates of
+            the platform.
+        """
+        super().__init__(raw_image, position)
+
+
+class Ladder(OnBoard):
+    """
+    Defining all the ladders in the game.
+    
+    Attributes:
+        position: A tuple representing coordinates.
+        image: A string representing the path to a png.        
+    """
+    def __init__(self, raw_image, position):
+        """
+        Initialize the image, position and rect instance attributes
+
+        Args:
+            raw_image: A string representing the path to a png.
+            position: A tuple representing the coordinates of
+            the ladder.
+        """
+        # Using super to call the attributes from the parent OnBoard class.
+        super().__init__(raw_image, position)
+
+
+class Fireball(OnBoard):
+    """
+    Creates all the fireballs for the board that
+    fall down the screen. Checks whether the player collides
+    with these fireballs or not. This class inherits from the
+    OnBoard parent class.
+
+        Attributes:
+            position: The position of the image
+            image: The image file for that object
+            index: A number that uniquely identifies every fireball
+            speed: The speed of the fireball
+            fall: A 0 for if the fireball is not falling and a 1 if it is.
+    """
+
+    def __init__(self, raw_image, position, index, speed):
+        """
+        Initialize the image, position and rect instance attributes
+
+        Args:
+            raw_image: A string representing the path to a png.
+            position: A tuple representing coordinates of
+            the position.
+            index: An integer that uniquely identifies each fireball
+            speed: An integer that sets the speed of the fireball.
+        """
+        super().__init__(raw_image, position)
+        self.index = index
+        #The newly spawned fireball is not falling
+        self._fall = 0
+        #The speed of a fireball is set
+        self._speed = speed
+    
+    def get_fall(self):
+        # returns the index 1 or 0 
+        # for falling or not falling
+        return self._fall
+
+    def update(self, raw_image, speed):
+        """
+        Moving the fireball downwards in the based on an input value.
+
+        Attributes:
+            raw_image: A fireball image file
+            speed: The speed at which the fireball moves.
+        """
+        # Move the fireball in the required direction with
+        # the required value and also set the image of the fireball        
+        self.set_position((self.get_position()[0], self.get_position()[1] - speed))
+        self.rect.center = self.get_position()
+
+    def check_collision(self, collider_group):
+        """
+        Checking to see if the fireball collides with the player.
+
+        Args:
+            collider_group: A pygame group that the 
+            which contains instances of a specific object.
+
+        Returns:
+            Colliders: An empty or filled list which tells it whether
+            it collides with a group or not.
+        """      
+        # uses the pygame sprite collider to check if there is a collison
+        # between the sprite and the player.
+        self.update(self.image, self._speed)  # Bottom collision
+        colliders = pg.sprite.spritecollide(self, collider_group, True)
+        return colliders
+
+    def continuous_update(self, collider_group):
+        """
+        Continously updating the fireball.
+
+        Args:
+            collider_group: A pygame group that the 
+            fireball collides with
+        """        
+        # Set the fireball as falling
+        # Update the position of the fireball        
+        if self._fall == 1:
+        #We move the fireball downwards with speed of self.__speed
+            self.update(self.image, self._speed)
+            if self.check_collision(collider_group):
+                # If the fireball collides with a group
+                # then it stops falling
+                self._fall = 0
