@@ -9,7 +9,6 @@ class ReferencePlatform(OnBoard):
     def __init__(self, raw_image, position):
         """
         Initialize the image, position and rect instance attributes
-
         Args:
             raw_image: A string representing the path to a png.
             position: A tuple representing the coordinates of
@@ -18,7 +17,7 @@ class ReferencePlatform(OnBoard):
         # boundary problem will fix if the lines are bigger
         super(ReferencePlatform, self).__init__(raw_image, position)
         self.image = raw_image
-        self.image = pg.transform.scale(self.image, (15,5))
+        #self.image = pg.transform.scale(self.image, (15,5))
 
 class ReferenceLadder(OnBoard):
     """
@@ -27,16 +26,15 @@ class ReferenceLadder(OnBoard):
     def __init__(self, raw_image, position):
         """
         Initialize the image, position and rect instance attributes
-
         Args:
             raw_image: A string representing the path to a png.
             position: A tuple representing the coordinates of
-            the platform.
+                the ladder.
         """
         # boundary problem will fix if the lines are bigger
         super(ReferenceLadder, self).__init__(raw_image, position)
         self.image = raw_image
-        self.image = pg.transform.scale(self.image, (3,5))
+        #self.image = pg.transform.scale(self.image, (3,26))
 
 class ReferenceEndcap(OnBoard):
     """
@@ -45,7 +43,6 @@ class ReferenceEndcap(OnBoard):
     def __init__(self, raw_image, position):
         """
         Initialize the image, position and rect instance attributes
-
         Args:
             raw_image: A string representing the path to a png.
             position: A tuple representing the coordinates of
@@ -54,5 +51,3 @@ class ReferenceEndcap(OnBoard):
         # boundary problem will fix if the lines are bigger
         super(ReferenceEndcap, self).__init__(raw_image, position)
         self.image = raw_image
-
-
