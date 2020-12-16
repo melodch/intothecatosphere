@@ -1,7 +1,8 @@
+import pygame as pg
 from collections import Counter
 import pytest
 from board import Board
-
+pg.init() 
 # from board import (
 #     reset_groups,
 #     initialize_game,
@@ -17,35 +18,34 @@ from board import Board
 #     update_level,           # check that things are reset and then score, lives stay the same
 # )
 
+# Set up a Board instance for testing
 test_game = Board()
-test_game._width = 50
-test_game._height = 50
-test_game.h_spacing = 3
+# test_game._width = 50
+# test_game._height = 50
+# test_game.h_spacing = 3
 
-'''
-attribute reset_groups
-self.score = score
-self.lives = lives
-self.map = []
-self.Players = Player(pg.image.load('Cat Images/orangefront.png'),
-                        (self._width // 2, self._height - 25))
-self.Stars = []
-self.Platforms = []
-self.Fireballs = []
-self.Ladders = []
-self.ReferencePlatforms = []
-self.ReferenceLadders = []
-self.ReferenceEndcaps = []
-self.ReferenceCats
-'''
 # Define sets of test cases.
 reset_groups = [
     # Check that score is set to int given.
     (test_game.score, 0),
     # Check that lives is set to int given.
     (test_game.lives, 9),
+    # Check that the map is empty.
+    (test_game.map, []),
+    # Check that the star list is empty.
+    (test_game.Stars, []),
+    # Check that the fireball is empty.
+    (test_game.Fireballs, []),
+    # Check that the platform list is empty.
+    (test_game.Platforms, []),
     # Check that the Ladders list is empty.
     (test_game.Ladders, []),
+    # Check that the endcaps list is empty.
+    (test_game.ReferenceEndcaps, []),
+    # Check that the platform references list is empty.
+    (test_game.ReferencePlatforms, []),
+    # Check that the ladder references list is empty.
+    (test_game.ReferenceLadders, []),
  ]
 
 # rest_of_orf_cases = [
@@ -80,7 +80,7 @@ reset_groups = [
 # inputs defined above.
 @pytest.mark.parametrize("attribute,value", reset_groups)
 def test_reset_groups(attribute, value):
-    test_game.reset_groups(0, 9)    
+    test_game.reset_groups(0, 9)
     assert attribute == value
 
 

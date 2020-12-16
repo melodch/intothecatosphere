@@ -50,7 +50,7 @@ class Board:
         ReferencePlatforms: A list of ReferencePlatform instances on screen.
         ReferenenceLadders: A list of ReferenceLadder instances on screen.
         ReferenceEndcaps: A list of ReferenceEndcap instances on screen.
-        ReferenceCats: A list of ReferenceCat instances on screen.
+        RefCats: A list of ReferenceCat instances on screen.
         Fireballs: A list of Fireball instances on screen.
         Buttons: A list of Button instances that represent on-screen buttons
             to be pressed (for start, restart and exit).
@@ -127,7 +127,7 @@ class Board:
         self.Fireballs = self.Stars = self.Platforms = []
         self.Ladders = self.ReferencePlatforms = []
         self.ReferenceEndcaps = []
-        self.ReferenceCats = []
+        self.RefCats = []
 
         # Initialize pygame sprite groups
         # which we use to display instances on screen.
@@ -139,10 +139,7 @@ class Board:
         self.ref_platform_group = pg.sprite.RenderPlain(self.ReferencePlatforms)
         self.ref_ladder_group = pg.sprite.RenderPlain(self.ReferenceLadders)
         self.ref_endcap_group = pg.sprite.RenderPlain(self.ReferenceEndcaps)
-        self.ref_cat_group = pg.sprite.RenderPlain(self.ReferenceCats)
-
-        # Resets the above groups and initializes the game
-        self.reset_groups(0, 9)
+        self.ref_cat_group = pg.sprite.RenderPlain(self.RefCats)
 
     def reset_groups(self, score, lives):
         """
@@ -165,11 +162,9 @@ class Board:
         self.ReferencePlatforms = []
         self.ReferenceLadders = []
         self.ReferenceEndcaps = []
-        self.ReferenceCats = ReferenceCat(pg.image.load(
+        self.RefCats = ReferenceCat(pg.image.load(
             'Object Images/reference.png'),
             (self._width // 2, self._height - 35))
-        self.initialize_game()  # Initialize game and generate map
-        self.create_groups()    # Create instance groups
 
     def initialize_game(self):
         """
@@ -199,7 +194,7 @@ class Board:
         """
         Render the game compone nts as PyGame Sprites.
         """
-        self.ref_cat_group = pg.sprite.RenderPlain(self.ReferenceCats)
+        self.ref_cat_group = pg.sprite.RenderPlain(self.RefCats)
         self.platform_group = pg.sprite.RenderPlain(self.Platforms)
         self.star_group = pg.sprite.RenderPlain(self.Stars)
         self.ladder_group = pg.sprite.RenderPlain(self.Ladders)
@@ -208,7 +203,7 @@ class Board:
         self.ref_platform_group = pg.sprite.RenderPlain(self.ReferencePlatforms)
         self.ref_endcap_group = pg.sprite.RenderPlain(self.ReferenceEndcaps)
         self.player_group = pg.sprite.RenderPlain(self.Players)
-        self.ref_cat_group = pg.sprite.RenderPlain(self.ReferenceCats)
+        self.ref_cat_group = pg.sprite.RenderPlain(self.RefCats)
 
     def make_map(self):
         """
@@ -571,6 +566,8 @@ class Board:
         if self.Active_buttons[2] == 1 and \
            self.Buttons[2].rect.collidepoint(pg.mouse.get_pos()):
             self.reset_groups(0, 9)
+            self.initialize_game()  # Initialize game and generate map
+            self.create_groups()    # Create instance groups
             self.game_state = 1
 
     def select_cat(self):
@@ -719,3 +716,5 @@ class Board:
             current_lives: player's current number of lives.
         """
         self.reset_groups(current_score, current_lives)
+        self.initialize_game()  # Initialize game and generate map
+        self.create_groups()    # Create instance groups
