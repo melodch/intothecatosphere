@@ -4,7 +4,7 @@ import pytest
 from board import Board
 from game import Game
 
-pg.init() 
+pg.init()
 
 test_game = Board()
 test_game.reset_groups(0, 9) # Resets the above groups
@@ -24,7 +24,7 @@ test_game.Players.update_position(pg.image.load('Cat Images/orangefront.png'), -
 position = test_game.Players.get_position()
 
 update_position_right = [
-# checking to see that the update position method moves 
+# checking to see that the update position method moves
 # the player to the right position
 (position, ((test_game._width // 2) + 10, test_game._height - 25))
 ]
@@ -36,7 +36,7 @@ test_game.Players.update_position(pg.image.load('Cat Images/orangefront.png'), 1
 position = test_game.Players.get_position()
 
 update_position_up = [
-# checking to see that the update position method moves 
+# checking to see that the update position method moves
 # the player to the right position
 (position, ((test_game._width // 2) , test_game._height - 35))
 ]

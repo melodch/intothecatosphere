@@ -5,6 +5,7 @@ from board import Board
 pg.init() 
 
 """
+Board Methods
 #     reset_groups,
 #     initialize_game,
 #     make_map,           # check is emtpy 2D list
@@ -43,7 +44,7 @@ reset_groups = [
     (test_board.ReferencePlatforms, []),
     # Check that the ladder references list is empty.
     (test_board.ReferenceLadders, []),
- ]
+]
 
 test_board.make_map()
 make_map = [
@@ -71,13 +72,13 @@ create_fireball = [
 
 # Set up two more Board instances for map testing
 test_map1 = Board()
-map_file1 = open('test_files/map1.txt','r')
+map_file1 = open('test_files/map1.txt', 'r')
 map1 = map_file1.readlines()
 map_file1.close()
 test_map1.map = map1
 
 test_map2 = Board()
-map_file2 = open('test_files/map2.txt','r')
+map_file2 = open('test_files/map2.txt', 'r')
 map2 = map_file2.readlines()
 map_file2.close()
 test_map2.map = map2
@@ -103,24 +104,29 @@ is_top_reachable = [
 def test_reset_groups(attribute, value):
     assert attribute == value
 
+
 @pytest.mark.parametrize("attribute,length", make_map)
 def test_make_map(attribute, length):
     assert attribute == length
+
 
 @pytest.mark.parametrize("col,value", make_boundaries)
 def test_make_boundaries(col, value):
     for j in range(0, height):
         assert test_board.map[col][j] == value
 
+
 @pytest.mark.parametrize("fireball,value",
                          create_fireball)
 def test_create_fireball(fireball, value):
     assert fireball <= value
 
+
 @pytest.mark.parametrize("test_map,return_val",
                          is_top_reachable)
 def test_is_top_reachable(test_map, return_val):
     assert test_map.is_top_reachable(25, 0) is return_val
+
 
 # @pytest.mark.parametrize("strand,rest", rest_of_orf_cases)
 # def test_rest_of_orf(strand, rest):
