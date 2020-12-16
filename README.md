@@ -1,7 +1,8 @@
 # Final SoftDes Project
 
 ### Installation
-Describe relevant installation packages to modify and play the game with.
+Executing our game requires the installation of the Pygame library in Python.
+Install Pygame using these <a href="https://www.pygame.org/wiki/GettingStarted" target="_blank">instructions</a>.
 
 ### Usage
 Run `python main.py` to start the game.
