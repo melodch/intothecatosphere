@@ -1,4 +1,4 @@
-# Final SoftDes Project
+# Into the Catosphere
 
 ### Installation
 Executing our game requires the installation of the Pygame library in Python. </br>
