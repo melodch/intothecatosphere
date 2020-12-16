@@ -1,4 +1,4 @@
-# Final SoftDes Project
+# Into the Catosphere
 
 ### Summary
 Our game “Into the Catosphere” is a game where you follow a cat’s journey to space by helping the cat collect stars and navigate in the right direction. It is a simple platform game where you can interact with the platforms and ladders on the gameboard and move in all four directions. 
