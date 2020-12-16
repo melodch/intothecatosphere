@@ -187,6 +187,8 @@ class Board:
             self.ReferenceEndcaps = []
             self.generate_platforms()
             self.generate_ladders()
+            # print(self.map)
+            # print(self.is_top_reachable(25, 0))
             if self.is_top_reachable(25, 0) is True:
                 break
         self.make_boundaries()
@@ -600,51 +602,17 @@ class Board:
             if self.Active_buttons[button] == 1 and \
                self.Buttons[button].rect.collidepoint(mouse_pos):
                 self.Buttons[button].create_hover()
-                # if button == 0:
-                #     self.Buttons[button].change_image(
-                #         pg.image.load('Object Images/hov_start_meow.png'))
-                # elif button == 1:
-                #     self.Buttons[button].change_image(
-                #         pg.image.load('Object Images/hov_exit_game.png'))
-                # elif button == 2:
-                #     self.Buttons[button].change_image(
-                #         pg.image.load('Object Images/hov_restart.png'))
             # Inactive button
             else:
                 self.Buttons[button].return_non_hover()
-                # if button == 0:
-                #     self.Buttons[button].change_image(
-                #         pg.image.load('Object Images/start_meow.png'))
-                # elif button == 1:
-                #     self.Buttons[button].change_image(
-                #         pg.image.load('Object Images/exit_game.png'))
-                # elif button == 2:
-                #     self.Buttons[button].change_image(
-                #         pg.image.load('Object Images/restart.png'))
 
-        # for button in range(len(self.Cat_buttons)):
-        #     # Active button
-        #     if self.Cat_buttons[button].rect.collidepoint(mouse_pos):
-        #         if button == 0:
-        #             self.Cat_buttons[button].change_image(
-        #                 pg.image.load('Cat Images/orangefront_80.png'))
-        #         elif button == 1:
-        #             self.Cat_buttons[button].change_image(
-        #                 pg.image.load('Cat Images/greyfront_80.png'))
-        #         elif button == 2:
-        #             self.Cat_buttons[button].change_image(
-        #                 pg.image.load('Cat Images/bluefront_80.png'))
-        #     # Inactive button
-        #     else:
-        #         if button == 0:
-        #             self.Cat_buttons[button].change_image(
-        #                 pg.image.load('Cat Images/orangeright_80.png'))
-        #         elif button == 1:
-        #             self.Cat_buttons[button].change_image(
-        #                 pg.image.load('Cat Images/greyright_80.png'))
-        #         elif button == 2:
-        #             self.Cat_buttons[button].change_image(
-        #                 pg.image.load('Cat Images/blueright_80.png'))
+        for button in range(len(self.Cat_buttons)):
+            # Active button
+            if self.Cat_buttons[button].rect.collidepoint(mouse_pos):
+                self.Cat_buttons[button].create_hover()
+            # Inactive button
+            else:
+                self.Cat_buttons[button].return_non_hover()
 
     def redraw_screen(self, display_screen, score_label,
                       lives_label, width, height):
@@ -682,7 +650,7 @@ class Board:
             # Display the active buttons
             for button in range(len(self.Active_buttons)):
                 if self.Active_buttons[button] == 1:
-                    display_screen.blit(self.Buttons[button].non_hov_image,
+                    display_screen.blit(self.Buttons[button].image,
                                         self.Buttons[button].get_top_left_pos())
 
         # If we are choosing a cat
@@ -691,7 +659,7 @@ class Board:
                                 self.choose_cat_background.get_rect())
             # Display the cat buttons
             for button in range(len(self.Cat_buttons)):
-                display_screen.blit(self.Cat_buttons[button].non_hov_image,
+                display_screen.blit(self.Cat_buttons[button].image,
                                     self.Cat_buttons[button].get_top_left_pos())
 
         # If we are in the game state,

@@ -2,7 +2,7 @@ import pygame as pg
 from collections import Counter
 import pytest
 from board import Board
-pg.init() 
+pg.init()
 
 """
 Board Methods
@@ -11,11 +11,8 @@ Board Methods
 #     make_map,           # check is emtpy 2D list
 #     create_fireball,    # maybe check that there are three fireball objects in Fireballs
 #     generate_stars,     # maybe check that there are more than two star objects in Stars
-#     make_boundaries,    # check that map sides are 4
 #     generate_platforms,     # check levels
 #     generate_ladders,       # check that there isn't more than two ladders on one level
-#     create_ladder,          # check spacing
-#     is_top_reachable,       # check with True board and False board
 #     traverse_left_right,    # check that it gives the right left right values
 #     update_level,           # check that things are reset and then score, lives stay the same
 """
@@ -65,9 +62,9 @@ make_boundaries = [
 ]
 
 create_fireball = [
-# Check that no more than 3 fireballs are inside
-# that the list is not empty
-(len(test_board.Fireballs), 3),
+    # Check that no more than 3 fireballs are inside
+    # that the list is not empty
+    (len(test_board.Fireballs), 3),
 ]
 
 # Set up two more Board instances for map testing
@@ -92,6 +89,16 @@ is_top_reachable = [
     (test_map2, False),
 ]
 
+# Set up a new Board instance for testing
+test_board2 = Board()
+test_board2.update_level(100, 5)
+# Define sets of test cases.
+update_level = [
+    # Check that score is set to int given.
+    (test_board2.score, 100),
+    # Check that lives is set to int given.
+    (test_board2.lives, 5),
+]
 
 ################################################################################
 # Don't change anything below these lines.
@@ -122,35 +129,12 @@ def test_create_fireball(fireball, value):
     assert fireball <= value
 
 
-@pytest.mark.parametrize("test_map,return_val",
+@pytest.mark.parametrize("map_to_test,return_val",
                          is_top_reachable)
-def test_is_top_reachable(test_map, return_val):
-    assert test_map.is_top_reachable(25, 0) is return_val
+def test_is_top_reachable(map_to_test, return_val):
+    assert map_to_test.is_top_reachable(25, 0) is return_val
 
 
-# @pytest.mark.parametrize("strand,rest", rest_of_orf_cases)
-# def test_rest_of_orf(strand, rest):
-#     assert rest_of_orf(strand) == rest
-
-
-# @pytest.mark.parametrize("strand,orfs", find_all_orfs_one_frame_cases)
-# def test_find_all_orfs_oneframe(strand, orfs):
-#     assert Counter(find_all_orfs_one_frame(strand)) == Counter(orfs)
-
-# @pytest.mark.parametrize("strand,orfs", find_all_orfs_cases)
-# def test_find_all_orfs(strand, orfs):
-#     assert Counter(find_all_orfs(strand)) == Counter(orfs)
-
-# @pytest.mark.parametrize("strand,orfs", find_all_orfs_both_strands_cases)
-# def test_find_all_orfs_both_strands(strand, orfs):
-#     assert Counter(find_all_orfs_both_strands(strand)) == Counter(orfs)
-
-
-# @pytest.mark.parametrize("strand,orf", get_longest_orf_cases)
-# def test_get_longest_orf(strand, orf):
-#     assert find_longest_orf(strand) == orf
-
-
-# @pytest.mark.parametrize("strand,protein", coding_strand_to_aa_cases)
-# def test_coding_strand_to_aa(strand, protein):
-#     assert encode_amino_acids(strand) == protein
+@pytest.mark.parametrize("attribute,value", update_level)
+def test_update_level(attribute, value):
+    assert attribute == value

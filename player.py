@@ -23,17 +23,17 @@ class Person(pg.sprite.Sprite):
             position: A tuple of integers representing coordinates.
         """
         super().__init__()
-        # create attributes for the image and the position
-        self._position = position        
+        # Create attributes for the image and the position
+        self._position = position
         self.image = image
-        #sets the rect attribute to be the image 
+        # Sets the rect attribute to be the image
         self.rect = self.image.get_rect()
         self.rect.center = self._position
 
     def set_center(self, position):
         """
         Set the center of the person's image to the position.
-        
+
         Args:
             A tuple representing a position on the board
         """
@@ -54,11 +54,10 @@ class Person(pg.sprite.Sprite):
         """
         self._position = position
 
-    
     def update_position(self, raw_image, speed, direction):
         """
         Update the players position based on the direction its
-        moving in. 
+        moving in.
 
         Args:
             raw_image: A string representing the path to a png.
@@ -69,7 +68,6 @@ class Person(pg.sprite.Sprite):
         # intializes the image again so that it can be changed
         # based on whether player is moving right, left up or down
         self.image = raw_image
-        #self.image = pg.transform.scale(self.image, (30, 30))
         # if the player is moving vertically, change the y value
         # of the position based on the input value
         if direction == 'V':
@@ -133,7 +131,3 @@ class Player(Person):
             An intger representing the players movement speed.
         """
         self._speed = speed
-
-
-
-

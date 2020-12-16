@@ -25,7 +25,7 @@ class Button:
         # Initialize attributes for the image, position and name
         # Sets the rect attribute to be the image
         # Sets the center of the rect atrribute as the position
-        # self.image = raw_image
+        self.image = non_hov_image
         self.non_hov_image = non_hov_image
         self.hov_image = hov_image
         self._position = position

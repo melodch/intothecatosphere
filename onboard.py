@@ -191,8 +191,7 @@ class Star(OnBoard):
 
     Attributes:
         position: A tuple representing the coordinates of a star.
-        image: A string representing the path to a png.    
-        
+        image: A string representing the path to a png.
     """
 
     def __init__(self, raw_image, position):
@@ -206,7 +205,7 @@ class Star(OnBoard):
         """
         # Use super to call the attributes from the parent OnBoard class.
         # Initialize the value attribute as some integer.
-        super().__init__(raw_image, position)        
+        super().__init__(raw_image, position)
         self.image = pg.transform.scale(self.image, (20, 20))
 
     def update_image(self, raw_image):

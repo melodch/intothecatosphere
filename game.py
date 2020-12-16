@@ -229,10 +229,11 @@ class Game:
                     # and moving the player back up to its original position
                     self.new_game.Players.update_position(
                         pg.image.load(image), -5, 'V')
-                    self.new_game.RefCats.update_position(
-                        pg.image.load(image2), -5, 'V')
+                    self.new_game.RefCats.update_position_cat(
+                        pg.image.load(image2),
+                        self.new_game.Players.get_position())
                     reference_ladders_collided_down = self.new_game.RefCats.\
-                        check_collision(self.new_game.ladder_group)
+                        check_collision(self.new_game.ref_ladder_group)
                     self.new_game.Players.update_position(
                         pg.image.load(image), 5, 'V')
                     self.new_game.RefCats.update_position_cat(
