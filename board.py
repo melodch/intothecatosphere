@@ -187,8 +187,8 @@ class Board:
             self.ReferenceEndcaps = []
             self.generate_platforms()
             self.generate_ladders()
-            # print(self.map)
-            # print(self.is_top_reachable(25, 0))
+            print(self.map)
+            print(self.is_top_reachable(25, 0))
             if self.is_top_reachable(25, 0) is True:
                 break
         self.make_boundaries()
@@ -409,6 +409,7 @@ class Board:
             y: y position of starting point.
         """
         height = len(self.map)
+        print("x, y: ", x, y)
         # Base case: If reached the other end of the board
         if y == height - 1:
             return True
