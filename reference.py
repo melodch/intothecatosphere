@@ -2,10 +2,17 @@ from onboard import OnBoard
 import pygame as pg
 from player import Person
 
+
 class ReferencePlatform(OnBoard):
     """
-    Defining all the platforms in the game.
+    Defining all the reference images for the platforms.
+
+    Attributes:
+        raw_image: A string representing the path to a png.
+        position: A tuple representing the coordinates of
+        the image.
     """
+
     def __init__(self, raw_image, position):
         """
         Initialize the image, position and rect instance attributes
@@ -14,15 +21,20 @@ class ReferencePlatform(OnBoard):
             position: A tuple representing the coordinates of
             the platform.
         """
-        # boundary problem will fix if the lines are bigger
+        # initializing the position and image
         super().__init__(raw_image, position)
-        self.image = raw_image
-        #self.image = pg.transform.scale(self.image, (15,5))
+
 
 class ReferenceLadder(OnBoard):
     """
-    Defining all the platforms in the game.
+    Defining all the reference images for the ladders.
+
+    Attributes:
+        raw_image: A string representing the path to a png.
+        position: A tuple representing the coordinates of
+        the image.
     """
+
     def __init__(self, raw_image, position):
         """
         Initialize the image, position and rect instance attributes
@@ -31,15 +43,20 @@ class ReferenceLadder(OnBoard):
             position: A tuple representing the coordinates of
                 the ladder.
         """
-        # boundary problem will fix if the lines are bigger
+        # initializing the position and image
         super().__init__(raw_image, position)
-        self.image = raw_image
-        #self.image = pg.transform.scale(self.image, (3,26))
+
 
 class ReferenceEndcap(OnBoard):
     """
-    Defining all the platforms in the game.
+    Defining all the reference images for the ends of the platforms.
+
+    Attributes:
+        raw_image: A string representing the path to a png.
+        position: A tuple representing the coordinates of
+        the image.
     """
+
     def __init__(self, raw_image, position):
         """
         Initialize the image, position and rect instance attributes
@@ -48,22 +65,18 @@ class ReferenceEndcap(OnBoard):
             position: A tuple representing the coordinates of
             the platform.
         """
-        # boundary problem will fix if the lines are bigger
+        # initializing the position and image
         super().__init__(raw_image, position)
-        self.image = raw_image
 
 
 class ReferenceCat(Person):
     """
-    Defining all the platforms in the game.
-    """
-    """
-    A class that defines the player. A player is a person specialized with a
-    movement speed. Separation of the Person and Player classes allows for
-    more sustainable customization in the future.
+    Defining the reference image for the cat.
 
     Attributes:
-        _speed: An integer representing the movement speed of the player.
+        raw_image: A string representing the path to a png.
+        position: A tuple representing the coordinates of
+        the image.
     """
 
     def __init__(self, raw_image, position):
@@ -75,18 +88,21 @@ class ReferenceCat(Person):
             raw_image: A string representing the path to a png.
             position: A tuple of integers representing coordinates.
         """
+        # initializing the position and image
         super().__init__(raw_image, position)
-        self._position = position
-        self.onLadder = 0
-        self.__gravity = 1  # Gravity affecting the jump velocity of the player
-        self.__speed = 5  # Movement speed of the player
-        self.image = raw_image
-        
 
     def update_position_cat(self, raw_image, position):
-        #self.image = raw_image
+        """
+        Update the position of the reference image for the cat
 
+        Args:
+            position: A tuple representing the position of the cat
+            raw_image: A string representing the path to a png.
+
+        Return:
+            _position: The position of the reference image for the cat.
+        """
         self.image = raw_image
-        self._position = (position[0] - 2 , position[1] + 10)
+        self._position = (position[0] - 2, position[1] + 10)
         self.rect.center = self._position
-        return self._position  
+        return self._position

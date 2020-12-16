@@ -1,5 +1,3 @@
-from constants import *
-
 
 class Button:
     """
@@ -14,7 +12,7 @@ class Button:
         name: A string that represents the name of a button
     """
 
-    def __init__(self, raw_image, position, name):
+    def __init__(self, non_hov_image, hov_image, position, name):
         """
         Initialize the image, position, name and rect instance attributes.
 
@@ -27,20 +25,34 @@ class Button:
         # Initialize attributes for the image, position and name
         # Sets the rect attribute to be the image
         # Sets the center of the rect atrribute as the position
-        self.image = raw_image
+        self.image = non_hov_image
+        self.non_hov_image = non_hov_image
+        self.hov_image = hov_image
         self._position = position
-        self.rect = self.image.get_rect()
+        self.rect = self.non_hov_image.get_rect()
         self.rect.center = self._position
         self.name = name  # Set the name of the button with a string
 
-    def change_image(self, raw_image):
-        """
-        Updating the buttons image as the input image
+    # def change_image(self, raw_image):
+    #     """
+    #     Updating the buttons image as the input image
 
-        Args:
-            raw_image: A string representing the path to a png.
+    #     Args:
+    #         raw_image: A string representing the path to a png.
+    #     """
+    #     self.image = raw_image
+
+    def return_non_hover(self):
         """
-        self.image = raw_image
+        Updating the buttons image to the hover image.
+        """
+        self.image = self.non_hov_image
+
+    def create_hover(self):
+        """
+        Updating the buttons image to the hover image.
+        """
+        self.image = self.hov_image
 
     def get_top_left_pos(self):
         """
@@ -59,5 +71,9 @@ class Button:
     def set_position(self, position):
         """
         Set the position of a button.
+
+        Args:
+            A tuple representing the position
+            of the button
         """
         self._position = position
