@@ -4,7 +4,7 @@
 Describe relevant installation packages to modify and play the game with.
 
 ### Usage
-Run python main.py to start the game.
+Run `python main.py` to start the game.
 
 Instructions:
 
