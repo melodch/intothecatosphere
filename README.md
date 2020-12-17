@@ -15,6 +15,6 @@ Instructions:
 * Use arrow keys to move around and climb ladders.
 
 ### Contributors
-- Serena Chang, Olin College of Engineering
+- Serena Chang, Babson College
 - Melody Chiu, Olin College of Engineering
 - Simrun Mutha, Olin College of Engineering
