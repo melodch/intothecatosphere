@@ -24,8 +24,8 @@ class Board:
     A gameboard contains everthing related to our game on it
     like our player, platforms, ladders, stars, etc.
     Attributes:
-        self._width = WIDTH
-        self._height = HEIGHT
+        self.width = WIDTH
+        self.height = HEIGHT
         self.score = 0          # Initialize player's score
         self.lives = 9          # Initialize player's lives
         self.game_state = 0     # Initialize game state to pregame
@@ -42,7 +42,7 @@ class Board:
         map: A list of lists representing a 2D array to keep track of the
             positions of the game componenets on screen
             (where 1 represents a platform, 2 ladder, and 3 star).
-        h_spacing: Vertcial spacing between platforms.
+        _h_spacing: Vertcial spacing between platforms.
         Players: A list of Player instances on screen.
         Stars: A list of Star instances on screen.
         Platforms: A list of Platform instances on screen.
@@ -101,31 +101,31 @@ class Board:
                    pg.image.load('Cat Images/bluefront_80.png'),
                    (410, 310), "cat3"), ]
         self.Chosen_cat = ""
+        self.width = WIDTH
+        self.height = HEIGHT
+        self.score = 0          # Initialize player's score
+        self.lives = 9          # Initialize player's lives
+        self.game_state = 0     # Initialize game state to pregame
+        self.cycles = 0         # Used for animation
+        self.map = []
+        self._h_spacing = 10     # Set vertical spacing between platforms
+        self.myfont = pg.font.Font('slkscr.ttf', 50)
 
         # Initialize background for different game state screens.
         self.background = pg.image.load('Background Images/purplebg.png')
-        self.background = pg.transform.scale(self.background, (WIDTH, HEIGHT))
+        self.background = pg.transform.scale(self.background, (
+            self.width, self.height))
         self.start_background = pg.image.load(
             'Background Images/startscreen.png')
         self.choose_cat_background = pg.image.load(
             'Background Images/pickcat1.png')
         self.end_background = pg.image.load('Background Images/endscreen.png')
         self.start_background = pg.transform.scale(
-            self.start_background, (WIDTH, HEIGHT))
+            self.start_background, (self.width, self.height))
         self.choose_cat_background = pg.transform.scale(
-            self.choose_cat_background, (WIDTH, HEIGHT))
+            self.choose_cat_background, (self.width, self.height))
         self.end_background = pg.transform.scale(
-            self.end_background, (WIDTH, HEIGHT))
-
-        self._width = WIDTH
-        self._height = HEIGHT
-        self.score = 0          # Initialize player's score
-        self.lives = 9          # Initialize player's lives
-        self.game_state = 0     # Initialize game state to pregame
-        self.cycles = 0         # Used for animation
-        self.map = []
-        self.h_spacing = 10     # Set vertical spacing between platforms
-        self.myfont = pg.font.Font('slkscr.ttf', 50)
+            self.end_background, (self.width, self.height))
 
         # Initialize empty lists in which we store instances of different game
         # components.
@@ -160,7 +160,7 @@ class Board:
         self.lives = lives
         self.map = []
         self.Players = Player(pg.image.load('Cat Images/orangefront.png'),
-                              (self._width // 2, self._height - 25))
+                              (self.width // 2, self.height - 25))
         self.Stars = []
         self.Platforms = []
         self.Fireballs = []
@@ -170,7 +170,7 @@ class Board:
         self.ReferenceEndcaps = []
         self.RefCats = ReferenceCat(pg.image.load(
             'Object Images/reference.png'),
-            (self._width // 2, self._height - 35))
+            (self.width // 2, self.height - 35))
 
     def initialize_game(self):
         """
@@ -182,20 +182,18 @@ class Board:
         # where player has a path to the top
         while True:
             self.map = []
-            self.make_map()
+            self._make_map()
             self.Ladders = self.Platforms = []
             self.ReferenceEndcaps = []
-            self.generate_platforms()
-            self.generate_ladders()
-            print(self.map)
-            print(self.is_top_reachable(25, 0))
-            if self.is_top_reachable(25, 0) is True:
+            self._generate_platforms()
+            self._generate_ladders()
+            if self._is_top_reachable(25, 0) is True:
                 break
-        self.make_boundaries()
+        self._make_boundaries()
         self.create_ladder_reference()
         self.create_reference_lines()
         self.create_endcap_reference_lines()
-        self.generate_stars()
+        self._generate_stars()
         self.create_groups()
 
     def create_groups(self):
@@ -213,22 +211,23 @@ class Board:
         self.player_group = pg.sprite.RenderPlain(self.Players)
         self.ref_cat_group = pg.sprite.RenderPlain(self.RefCats)
 
-    def make_map(self):
+    def _make_map(self):
         """
         Create an empty map.
         """
         # Make 2D array filled with zeros
-        for _ in range(0, self._height // 10 + 1):
+        for _ in range(0, self.height // 10 + 1):
             row = []
-            for _ in range(0, self._width // 10 + 1):
+            for _ in range(0, self.width // 10 + 1):
                 row.append(0)
             self.map.append(row)
 
-    def create_fireball(self, width):
+    def create_fireball(self):
         """
         Randomly generate fireballs.
         Generates fireballs on the screen such that
         there are no more than 3 at anytime on the screen
+
         """
         # Making it so the number of fireballs on the board cannot exceed 3 at
         # anytime.
@@ -237,7 +236,7 @@ class Board:
             # and the y position at a random point above the
             # board so that the fireballs don't all fall at the same
             # time
-            location = (random.randint(5, width), random.randint(-1000, 0))
+            location = (random.randint(5, self.width), random.randint(-1000, 0))
             # Add the fireball to the list
             self.Fireballs.append(Fireball(pg.image.load(
                 'Object Images/fireball.png'),
@@ -273,7 +272,7 @@ class Board:
             if fireball.get_position()[1] >= 490:
                 self.Fireballs.remove(fireball)
 
-    def generate_stars(self):
+    def _generate_stars(self):
         """
         Randomly generate stars (where there is a platform below the star so
         the player can reach it). Add the star to map and update star list.
@@ -284,7 +283,7 @@ class Board:
         offset = -8    # Vertical offset that places the star above the platform
 
         # Traverse the platforms
-        for y in range(self.h_spacing, height, self.h_spacing):
+        for y in range(self._h_spacing, height, self._h_spacing):
             for x in range(w_spacing, width, w_spacing):
                 rand_star = random.randint(1, 5)
                 # Conditions to generate star:
@@ -300,9 +299,9 @@ class Board:
                         (x * 10, (y - 1) * 10 + offset)))
         # If less than 3 stars are generated, call the function again
         if len(self.Stars) < 3:
-            self.generate_stars()
+            self._generate_stars()
 
-    def make_boundaries(self):
+    def _make_boundaries(self):
         """
         Add boundaries to the left and right sides of our map.
         """
@@ -312,7 +311,7 @@ class Board:
             self.map[0][j] = 4
             self.map[width - 1][j] = 4
 
-    def generate_platforms(self):
+    def _generate_platforms(self):
         """
         Randomly generate platforms.
         Add the platform to map and update platforms list.
@@ -321,7 +320,7 @@ class Board:
         width = len(self.map[0])
 
         # Generate platforms at all levels except for ground
-        for y in range(0, height - self.h_spacing, self.h_spacing):
+        for y in range(0, height - self._h_spacing, self._h_spacing):
             x = 1
             while x < width:
                 rand_platform_size = random.randint(7, 15)
@@ -344,7 +343,7 @@ class Board:
                 pg.image.load('Object Images/platform28.png'),
                 (i * 10 + 10 / 2, (height - 1) * 10 + 10 / 2)))
 
-    def generate_ladders(self):
+    def _generate_ladders(self):
         """
         Randomly generate ladders between two platforms.
         Add the ladder to map and update ladders list.
@@ -354,7 +353,7 @@ class Board:
         w_spacing = 6    # Horizontal spacing between the ladders
 
         # Loop through each platform level
-        for y in range(0, height, self.h_spacing):
+        for y in range(0, height, self._h_spacing):
             num_on_this_lvl = 0
             # Randomly decide if there should be 1 platform on this level or 2
             rand_num = random.randint(1, 2)
@@ -368,16 +367,16 @@ class Board:
                     # 1/7 chance of a ladder being placed (for randomness)
                     # If there isn't already a ladder to the left or right
                     elif self.map[x][y] == 1 \
-                        and self.map[x][y + self.h_spacing] == 1 \
+                        and self.map[x][y + self._h_spacing] == 1 \
                         and rand_ladder == 1 \
                         and self.map[x - w_spacing][y] != 2 and \
                             self.map[x + w_spacing][y] != 2:
                         # Call helper method to create a ladder to connect
                         # between upper and lower platform
-                        self.create_ladder(x, y, y + self.h_spacing)
+                        self._create_ladder(x, y, y + self._h_spacing)
                         num_on_this_lvl += 1
 
-    def create_ladder(self, x, upper_y, lower_y):
+    def _create_ladder(self, x, upper_y, lower_y):
         """
         Helper method to create a ladder between two platforms.
 
@@ -400,7 +399,7 @@ class Board:
                             'Object Images/ladder figure.png'),
                            (x * 10 + 5, (upper_y - 1) * 10 + 10)))
 
-    def is_top_reachable(self, x, y):
+    def _is_top_reachable(self, x, y):
         """
         Recursive method to check that player has a path to reach the top.
 
@@ -409,24 +408,23 @@ class Board:
             y: y position of starting point.
         """
         height = len(self.map)
-        print("x, y: ", x, y)
         # Base case: If reached the other end of the board
         if y == height - 1:
             return True
         # Find position of next possible ladder to use
-        next_ladder = self.traverse_left_right(x, y)
+        next_ladder = self._traverse_left_right(x, y)
         # If the value of the ladder to the left is valid,
         # call the function again
         if next_ladder[0] != 0 and self.map[next_ladder[0]][y] == 2:
-            return self.is_top_reachable(next_ladder[0], y + self.h_spacing)
+            return self._is_top_reachable(next_ladder[0], y + self._h_spacing)
         # If the value of the ladder to the right is valid,
         # call the function again
         if next_ladder[1] != 49 and self.map[next_ladder[1]][y] == 2:
-            return self.is_top_reachable(next_ladder[1], y + self.h_spacing)
+            return self._is_top_reachable(next_ladder[1], y + self._h_spacing)
         else:
             return False
 
-    def traverse_left_right(self, x, y):
+    def _traverse_left_right(self, x, y):
         """
         Helper method to find ladders to the left and right of given position.
 
@@ -629,6 +627,7 @@ class Board:
         Args:
             display_screen: PyGame display.
             score_label: rendering of the score.
+            lives_label: rendering of the lives.
             width: An integer representing the width of the screen.
             height: An integer representing the height of the screen.
         """

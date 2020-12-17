@@ -11,7 +11,7 @@ class OnBoard(pg.sprite.Sprite):
     classes.
 
     Attributes:
-        _position: A tuple representing coordinates.
+        position: A tuple representing coordinates.
         image: A string representing the path to a png.
         rect: A tuple representing the dimensions of an image.
     """
@@ -26,21 +26,21 @@ class OnBoard(pg.sprite.Sprite):
         """
         super().__init__()
         # Create attributes for the image and the position
-        self._position = position
+        self.position = position
         self.image = raw_image
         # Set the rect attribute to be the image
         self.rect = self.image.get_rect()
         # Set the center of the rect atrribute as the position
-        self.rect.center = self._position
+        self.rect.center = self.position
 
     def get_position(self):
         """
         Get the position of the sprite
 
         Return:
-            self._position: The position of the sprite.
+            self.position: The position of the sprite.
         """
-        return self._position
+        return self.position
 
     def set_position(self, position):
         """
@@ -50,7 +50,7 @@ class OnBoard(pg.sprite.Sprite):
             position: A tuple representing the position
             of the sprite on the board.
         """
-        self._position = position
+        self.position = position
 
 
 class Platform(OnBoard):
@@ -129,7 +129,7 @@ class Fireball(OnBoard):
         # The speed of a fireball is set
         self._speed = speed
 
-    def get_fall(self):
+    def _get_fall(self):
         # Return the index 1 or 0 for falling or not falling
         return self._fall
 

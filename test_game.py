@@ -27,7 +27,7 @@ position = test_game.Players.get_position()
 update_position_right = [
     # checking to see that the update position method moves
     # the player to the right position
-    (position, ((test_game._width // 2) + 10, test_game._height - 25)),
+    (position, ((test_game.width // 2) + 10, test_game.height - 25)),
 ]
 
 test_game.reset_groups(0, 9)  # Resets the above groups
@@ -40,7 +40,7 @@ position = test_game.Players.get_position()
 update_position_up = [
     # checking to see that the update position method moves
     # the player to the right position
-    (position, ((test_game._width // 2), test_game._height - 35)),
+    (position, ((test_game.width // 2), test_game.height - 35)),
 ]
 
 

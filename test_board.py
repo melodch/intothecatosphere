@@ -4,19 +4,6 @@ import pytest
 from board import Board
 pg.init()
 
-"""
-Board Methods
-#     reset_groups,
-#     initialize_game,
-#     make_map,           # check is emtpy 2D list
-#     create_fireball,    # maybe check that there are three fireball objects in Fireballs
-#     generate_stars,     # maybe check that there are more than two star objects in Stars
-#     generate_platforms,     # check levels
-#     generate_ladders,       # check that there isn't more than two ladders on one level
-#     traverse_left_right,    # check that it gives the right left right values
-#     update_level,           # check that things are reset and then score, lives stay the same
-"""
-
 # Set up a Board instance for testing
 test_board = Board()
 
@@ -43,7 +30,7 @@ reset_groups = [
     (test_board.ReferenceLadders, []),
 ]
 
-test_board.make_map()
+test_board._make_map()
 make_map = [
     # Check that the map height is correct.
     (len(test_board.map), 51),
@@ -51,7 +38,7 @@ make_map = [
     (len(test_board.map[0]), 51),
 ]
 
-test_board.make_boundaries()
+test_board._make_boundaries()
 height = len(test_board.map)
 width = len(test_board.map[0])
 make_boundaries = [
@@ -67,24 +54,16 @@ create_fireball = [
     (len(test_board.Fireballs), 3),
 ]
 
-# Set up two more Board instances for map testing
-test_map1 = Board()
-map_file1 = open('test_files/map1.txt', 'r')
-map1 = map_file1.readlines()
-map_file1.close()
-test_map1.map = list(map1)
-
-
 # Set up a new Board instance for testing
 test_board2 = Board()
 test_board2.update_level(100, 5)
 # Define sets of test cases.
 update_level = [
-     # Check that score is set to int given.
-     (test_board2.score, 100),
-     # Check that lives is set to int given.
-     (test_board2.lives, 5),
- ]
+    # Check that score is set to int given.
+    (test_board2.score, 100),
+    # Check that lives is set to int given.
+    (test_board2.lives, 5),
+]
 
 ################################################################################
 # Don't change anything below these lines.
@@ -115,6 +94,6 @@ def test_create_fireball(fireball, value):
     assert fireball <= value
 
 
- @pytest.mark.parametrize("attribute,value", update_level)
- def test_update_level(attribute, value):
+@pytest.mark.parametrize("attribute,value", update_level)
+def test_update_level(attribute, value):
     assert attribute == value

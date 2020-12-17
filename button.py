@@ -59,7 +59,13 @@ class Button:
         Return a tuple representing the coordinates of the top left
         corner of a button.
         """
-        return (self._position[0] - self.rect.width / 2, self._position[1] - self.rect.height / 2)
+        return (
+            self._position[0]
+            - self.rect.width
+            / 2,
+            self._position[1]
+            - self.rect.height
+            / 2)
 
     # Getters and Setters
     def get_position(self):

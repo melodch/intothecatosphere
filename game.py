@@ -37,9 +37,7 @@ class Game:
         from this instance to the group attributes. Initialize the rest of the
         instance attributes.
         """
-        self.width = WIDTH
-        self.height = HEIGHT
-        self.display_screen = pg.display.set_mode((self.width, self.height))
+        self.display_screen = pg.display.set_mode((WIDTH, HEIGHT))
         self.new_game = Board()
         self.fps = FPS
         self.clock = pg.time.Clock()
@@ -72,8 +70,8 @@ class Game:
                     self.display_screen,
                     self.score_label,
                     self.lives_label,
-                    self.width,
-                    self.height)
+                    self.new_game.width,
+                    self.new_game.height)
 
                 # Create buttons hover effects
                 self.new_game.check_button()
@@ -95,7 +93,7 @@ class Game:
             # If game state is 2 then run the game:
             if self.new_game.game_state == 2:
                 # Create fireballs
-                self.new_game.create_fireball(self.width)
+                self.new_game.create_fireball()
 
                 self.wallsCollidedAbove = self.new_game.RefCats.check_collision(
                     self.new_game.platform_group)
@@ -140,7 +138,7 @@ class Game:
                     # Make sure the sprite does not move past the edge
                     # of the board
                     if self.new_game.Players.get_position()[
-                            0] <= self.width - 5:
+                            0] <= self.new_game.width - 5:
                         # Move the reference and player's position to
                         # the right if the reference is touching the
                         # platform
@@ -244,7 +242,7 @@ class Game:
                     # bottom of the screen, it can move downward
                     if reference_ladders_collided_down != [] and \
                             self.new_game.Players.get_position()[1] \
-                            <= self.height - 10:
+                            <= self.new_game.height - 10:
                         self.new_game.Players.update_position(pg.image.load(
                             image), -self.new_game.Players.get_speed(), 'V')
                         self.new_game.RefCats.update_position_cat(
@@ -300,7 +298,7 @@ class Game:
                 # simulate gravity and make the player fall
                 if ladders_collided == [] and platforms_collided_down == [
                 ] and self.new_game.Players.get_position()[1] <= \
-                        self.height - 10:
+                        self.new_game.height - 10:
                     self.new_game.Players.update_position(
                         pg.image.load(image),
                         -self.new_game.Players.get_speed() * 1.2, 'V')
@@ -385,7 +383,8 @@ class Game:
                 # Redraw all instances onto the screen
                 self.new_game.redraw_screen(self.display_screen,
                                             self.score_label, self.lives_label,
-                                            self.width, self.height)
+                                            self.new_game.width,
+                                            self.new_game.height)
 
                 # Update the fireball and check for collisions with player.
                 self.new_game.fireball_check()
