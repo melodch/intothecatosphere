@@ -582,13 +582,15 @@ class Board:
         Process which cat the player has chosen based on which
         cat button is clicked on, then update game state.
         """
+        self.game_state = 2
         if self.Cat_buttons[0].rect.collidepoint(pg.mouse.get_pos()):
             self.Chosen_cat = "orange"
-        if self.Cat_buttons[1].rect.collidepoint(pg.mouse.get_pos()):
+        elif self.Cat_buttons[1].rect.collidepoint(pg.mouse.get_pos()):
             self.Chosen_cat = "grey"
-        if self.Cat_buttons[2].rect.collidepoint(pg.mouse.get_pos()):
+        elif self.Cat_buttons[2].rect.collidepoint(pg.mouse.get_pos()):
             self.Chosen_cat = "blue"
-        self.game_state = 2
+        else:
+            self.game_state = 1
 
     def check_button(self):
         """
