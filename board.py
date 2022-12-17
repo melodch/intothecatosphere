@@ -1,11 +1,8 @@
 import pygame as pg
-import math
 import random
 import sys
-import time
 from constants import WIDTH
 from constants import HEIGHT
-from onboard import OnBoard
 from onboard import Star
 from player import Player
 from onboard import Fireball
@@ -191,7 +188,6 @@ class Board:
                 break
         self._make_boundaries()
         self.create_ladder_reference()
-        self.create_reference_lines()
         self.create_endcap_reference_lines()
         self._generate_stars()
         self.create_groups()
@@ -316,6 +312,9 @@ class Board:
         Randomly generate platforms.
         Add the platform to map and update platforms list.
         """
+        self.ref_platform_group = []
+        self.ReferencePlatforms = []
+
         height = len(self.map)
         width = len(self.map[0])
 
@@ -342,6 +341,7 @@ class Board:
             self.Platforms.append(Platform(
                 pg.image.load('Object Images/platform28.png'),
                 (i * 10 + 10 / 2, (height - 1) * 10 + 10 / 2)))
+        self.create_reference_lines()
 
     def _generate_ladders(self):
         """
@@ -355,11 +355,19 @@ class Board:
         # Loop through each platform level
         for y in range(0, height, self._h_spacing):
             num_on_this_lvl = 0
-            # Randomly decide if there should be 1 platform on this level or 2
+            num_attempts = 0
+            # Randomly decide if there should be 1 ladder on this level or 2
             rand_num = random.randint(1, 2)
             while num_on_this_lvl < rand_num:
+                # If for a given platform level, we've attempted and failed
+                # to generate ladders 10 times, then go back and generate
+                # another set of platforms
+                if num_attempts > 5:
+                    self._generate_platforms()
+                    return
                 for x in range(w_spacing, width - w_spacing, w_spacing):
-                    rand_ladder = random.randint(1, 7)
+                    num_attempts += 1
+                    rand_ladder = random.randint(1, 5)
                     if num_on_this_lvl == rand_num:
                         break
                     # Conditions to generate ladder:
@@ -464,9 +472,11 @@ class Board:
                 # Checking to find a platform which is indexed as 1
                 if self.map[j][i] == 1:
                     self.ReferencePlatforms.append(ReferencePlatform(
-                        pg.image.load(ref_image), (j * 10, (i - 2) * 10 + 8)))
+                        pg.image.load(ref_image), (j * 10, (i - 2) * 10 + 7)))
                     self.ReferencePlatforms.append(ReferencePlatform(
-                        pg.image.load(ref_image), (j * 10, (i - 3) * 10 + 8)))
+                        pg.image.load(ref_image), (j * 10, (i - 2.75) * 10 + 7)))
+                    self.ReferencePlatforms.append(ReferencePlatform(
+                        pg.image.load(ref_image), (j * 10, (i - 3.50) * 10 + 7)))
                     # If the index is not at the end of the map
                     if j != len(self.map) - 1:
                         # If it is a platform edge then add two reference
@@ -475,17 +485,29 @@ class Board:
                         if self.map[j + 1][i] == 0 or self.map[j + 1][i] == 4:
                             self.ReferencePlatforms.append(ReferencePlatform(
                                 pg.image.load(ref_image),
-                                ((j + 1) * 10, (i - 2) * 10 + 8)))
+                                ((j + 1) * 10, (i - 2.75) * 10 + 7)))
                             self.ReferencePlatforms.append(ReferencePlatform(
                                 pg.image.load(ref_image),
-                                ((j + 2) * 10, (i - 2) * 10 + 8)))
+                                ((j + 2) * 10, (i - 2.75) * 10 + 7)))
+                            self.ReferencePlatforms.append(ReferencePlatform(
+                                pg.image.load(ref_image),
+                                ((j + 1) * 10, (i - 2) * 10 + 7)))
+                            self.ReferencePlatforms.append(ReferencePlatform(
+                                pg.image.load(ref_image),
+                                ((j + 2) * 10, (i - 2) * 10 + 7)))
                         if self.map[j - 1][i] == 0 or self.map[j - 1][i] == 4:
                             self.ReferencePlatforms.append(ReferencePlatform(
                                 pg.image.load(ref_image),
-                                ((j - 1) * 10, (i - 2) * 10 + 8)))
+                                ((j - 1) * 10, (i - 2.75) * 10 + 7)))
                             self.ReferencePlatforms.append(ReferencePlatform(
                                 pg.image.load(ref_image),
-                                ((j - 2) * 10, (i - 2) * 10 + 8)))
+                                ((j - 2) * 10, (i - 2.75) * 10 + 7)))
+                            self.ReferencePlatforms.append(ReferencePlatform(
+                                pg.image.load(ref_image),
+                                ((j - 1) * 10, (i - 2) * 10 + 7)))
+                            self.ReferencePlatforms.append(ReferencePlatform(
+                                pg.image.load(ref_image),
+                                ((j - 2) * 10, (i - 2) * 10 + 7)))
 
     def create_ladder_reference(self):
         """
@@ -505,8 +527,12 @@ class Board:
                 if self.map[j][i - 1] == 2:
                     self.ReferenceLadders.append(ReferenceLadder(
                         pg.image.load(ref_ladder_image), (
-                                     (j * 10) + 5,
-                                     ((i + 2) * 10) - 34)))
+                                     (j * 10) + 7,
+                                     ((i + 2) * 10) - 50)))
+                    self.ReferenceLadders.append(ReferenceLadder(
+                        pg.image.load(ref_ladder_image), (
+                                     (j * 10) + 3,
+                                     ((i + 2) * 10) - 50)))
 
     def create_endcap_reference_lines(self):
         """
