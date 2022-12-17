@@ -13,6 +13,7 @@ from reference import ReferencePlatform
 from reference import ReferenceLadder
 from reference import ReferenceEndcap
 from reference import ReferenceCat
+import datetime
 
 
 class Board:
@@ -84,8 +85,11 @@ class Board:
                    (360, 320), "exit"),
             Button(pg.image.load('Object Images/restart.png'),
                    pg.image.load('Object Images/hov_restart.png'),
-                   (250, 343), "Object Images/restart.png"), ]
-        self.Active_buttons = [1, 1, 0]  # Pregame screen uses first 2 buttons
+                   (250, 343), "Object Images/restart.png"), 
+            Button(pg.image.load('Object Images/help.png'),
+                   pg.image.load('Object Images/help.png'),
+                   (210, 485), "I'm stuck")]
+        self.Active_buttons = [1, 1, 0, 0]  # Pregame screen uses first 2 buttons
 
         self.Cat_buttons = [
             Button(pg.image.load('Cat Images/orangeright_80.png'),
@@ -165,6 +169,13 @@ class Board:
         self.ReferencePlatforms = []
         self.ReferenceLadders = []
         self.ReferenceEndcaps = []
+        self.RefCats = ReferenceCat(pg.image.load(
+            'Object Images/reference.png'),
+            (self.width // 2, self.height - 35))
+
+    def reset_player(self):
+        self.Players = Player(pg.image.load('Cat Images/orangefront.png'),
+                              (self.width // 2, self.height - 25))
         self.RefCats = ReferenceCat(pg.image.load(
             'Object Images/reference.png'),
             (self.width // 2, self.height - 35))
@@ -263,10 +274,25 @@ class Board:
                 self.Active_buttons[0] = 0
                 self.Active_buttons[1] = 0
                 self.Active_buttons[2] = 1
+                self.Active_buttons[3] = 0
             # If the fireball reaches the bottom of the screen, then
             # get rid of it
             if fireball.get_position()[1] >= 490:
                 self.Fireballs.remove(fireball)
+    
+    def log_game_state(self):
+        """
+        Log the state of the game (player position and map make-up)
+        Add to logs folder for future debugging
+        """
+        datetime_object = datetime.datetime.now()
+        print(datetime_object)
+        f = open(f"logs/log{datetime_object}.txt", "w")
+        f.write("Player position: ")
+        f.write(str(self.RefCats.get_position()) + "\n")
+        f.write("Map state: ")
+        f.write(str(self.map))
+        f.close()
 
     def _generate_stars(self):
         """
@@ -362,7 +388,7 @@ class Board:
                 # If for a given platform level, we've attempted and failed
                 # to generate ladders 10 times, then go back and generate
                 # another set of platforms
-                if num_attempts > 5:
+                if num_attempts > 8:
                     self._generate_platforms()
                     return
                 for x in range(w_spacing, width - w_spacing, w_spacing):
@@ -589,7 +615,9 @@ class Board:
         if self.Active_buttons[0] == 1 and \
            self.Buttons[0].rect.collidepoint(pg.mouse.get_pos()):
             self.game_state = 1
-            self.Active_buttons = [0, 0, 0]
+            self.Active_buttons = [0, 0, 0, 0]
+            print("button ")
+
         # If the exit button is pressed
         if self.Active_buttons[1] == 1 and \
            self.Buttons[1].rect.collidepoint(pg.mouse.get_pos()):
@@ -598,10 +626,17 @@ class Board:
         # If the restart button is pressed
         if self.Active_buttons[2] == 1 and \
            self.Buttons[2].rect.collidepoint(pg.mouse.get_pos()):
+            self.Active_buttons[2] = 0
             self.reset_groups(0, 9)
             self.initialize_game()  # Initialize game and generate map
             self.create_groups()    # Create instance groups
             self.game_state = 1
+        # If the I'm stuck! button is pressed
+        if self.Active_buttons[3] == 1 and \
+           self.Buttons[3].rect.collidepoint(pg.mouse.get_pos()):
+                print("help button pressed")
+                self.reset_player()
+                self.log_game_state()
 
     def select_cat(self):
         """
@@ -609,6 +644,7 @@ class Board:
         cat button is clicked on, then update game state.
         """
         self.game_state = 2
+        # self.Active_buttons = [0, 0, 0, 1]
         if self.Cat_buttons[0].rect.collidepoint(pg.mouse.get_pos()):
             self.Chosen_cat = "orange"
         elif self.Cat_buttons[1].rect.collidepoint(pg.mouse.get_pos()):
@@ -641,7 +677,7 @@ class Board:
             else:
                 self.Cat_buttons[button].return_non_hover()
 
-    def redraw_screen(self, display_screen, score_label,
+    def redraw_screen(self, display_screen, ingame_score_label,
                       lives_label, width, height):
         """
         Redraws the entire game screen.
@@ -662,6 +698,7 @@ class Board:
         # Fill display screen with black
         display_screen.fill((0, 0, 0))
 
+
         # If we are in either pregame or postgame states
         if self.game_state == 0 or self.game_state == 3:
             if self.game_state == 0:
@@ -672,15 +709,9 @@ class Board:
                 # Post game state
                 display_screen.blit(self.end_background,
                                     self.end_background.get_rect())
-                label = self.myfont.render(str(self.score), 10, (255, 255, 255))
-                display_screen.blit(label, (285, 255))
+                score_label = self.myfont.render(str(self.score), 10, (255, 255, 255))
 
-            # Display the active buttons
-            for button in range(len(self.Active_buttons)):
-                if self.Active_buttons[button] == 1:
-                    display_screen.blit(self.Buttons[button].image,
-                                        self.Buttons[button].get_top_left_pos())
-
+                display_screen.blit(score_label, (285, 255))
         # If we are choosing a cat
         if self.game_state == 1:
             display_screen.blit(self.choose_cat_background,
@@ -688,10 +719,11 @@ class Board:
             # Display the cat buttons
             for button in range(len(self.Cat_buttons)):
                 display_screen.blit(self.Cat_buttons[button].image,
-                                    self.Cat_buttons[button].get_top_left_pos())
+                                        self.Cat_buttons[button].get_top_left_pos())
 
         # If we are in the game state,
         if self.game_state == 2:
+            self.Active_buttons = [0, 0, 0, 1]
             # Draw the background first
             display_screen.blit(self.background, self.background.get_rect())
             # Draw all our groups on the background
@@ -705,10 +737,23 @@ class Board:
             # self.ref_ladder_group.draw(display_screen)
             # self.ref_endcap_group.draw(display_screen)
 
+            # Display the I'm stucl! text in the
+            # middle of the screen.
+            stuck_font = pg.font.Font('slkscr.ttf', 15)
+            stuck_label = stuck_font.render("I'm stuck!", 1, (0, 0, 0))
+            display_screen.blit(stuck_label, (225, 480))
+
             # Display the player's score and lives in the lower
             # left and right corners of the screen.
-            display_screen.blit(score_label, (15, 470))
+            display_screen.blit(ingame_score_label, (15, 470))
             display_screen.blit(lives_label, (390, 470))
+        
+        # Display the active buttons
+        for button in range(len(self.Active_buttons)):
+            if self.Active_buttons[button] == 1:
+                # print("button name: ", self.Buttons[button].name)
+                display_screen.blit(self.Buttons[button].image,
+                                    self.Buttons[button].get_top_left_pos())
 
     def update_level(self, current_score, current_lives):
         """
@@ -722,3 +767,4 @@ class Board:
         self.reset_groups(current_score, current_lives)
         self.initialize_game()  # Initialize game and generate map
         self.create_groups()    # Create instance groups
+ 

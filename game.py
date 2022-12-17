@@ -42,6 +42,24 @@ class Game:
         self.fps = FPS
         self.clock = pg.time.Clock()
         self.my_font = pg.font.Font('slkscr.ttf', 20)
+    
+    def handle_button_input(self):
+        # Create buttons hover effects
+        self.new_game.check_button()
+
+        for event in pg.event.get():
+            # Exit to desktop
+            if event.type == QUIT:
+                pg.quit()
+                sys.exit()
+
+            if event.type == pg.MOUSEBUTTONUP:
+                # Check which button was clicked and change game state
+                # accordingly
+                if self.new_game.game_state == 1:
+                    self.new_game.select_cat()
+                else:
+                    self.new_game.process_button()
 
     def runGame(self):
         """
@@ -60,7 +78,8 @@ class Game:
                 "Score " + str(self.new_game.score), 1, (0, 0, 0))
             self.lives_label = self.my_font.render(
                 "Lives: " + str(self.new_game.lives), 1, (0, 0, 0))
-
+            self.handle_button_input()
+            
             # If the game state is not 2 then redraw screen accordingly and
             # display buttons
             if self.new_game.game_state != 2:
@@ -72,23 +91,6 @@ class Game:
                     self.lives_label,
                     self.new_game.width,
                     self.new_game.height)
-
-                # Create buttons hover effects
-                self.new_game.check_button()
-
-                for event in pg.event.get():
-                    # Exit to desktop
-                    if event.type == QUIT:
-                        pg.quit()
-                        sys.exit()
-
-                    if event.type == pg.MOUSEBUTTONUP:
-                        # Check which button was clicked and change game state
-                        # accordingly
-                        if self.new_game.game_state == 1:
-                            self.new_game.select_cat()
-                        else:
-                            self.new_game.process_button()
 
             # If game state is 2 then run the game:
             if self.new_game.game_state == 2:
