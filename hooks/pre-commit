@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+pytest test_game.py
+exit $?

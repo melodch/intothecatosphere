@@ -34,6 +34,8 @@ If you'd like to make a contribution to the development of our game, please see 
     * Create a new branch. Use this command to create a new branch and switch to it: `git checkout -b branch-name`
     * Start coding!
 
+* Run the following command in the project repo `git config core.hooksPath hooks` in order to execute git hooks. Run `chmod a+x hooks/pre-commit` and `chmod a+x hooks/commit-msg` to make the git hooks executable.
+
 * Format code to conform to the PEP 8 style guide. Any commits that you make will run an style check! To autoformat your code to this standard, install the autopep8 library and use the command `autopep8 -i script_name.py`
 
 * Any functions that you add should make use of docstrings to ensure readability of this project. The image below illustrates what kind of information is contained in a docstring.
