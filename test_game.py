@@ -60,3 +60,8 @@ def test_update_position_right(position, value):
                          update_position_up)
 def test_update_position_up(position, value):
     assert position == value
+
+def test_platform_generation():
+    for _ in range(10):
+        test_game.update_level(0, 0)
+        assert test_game.map is not None
